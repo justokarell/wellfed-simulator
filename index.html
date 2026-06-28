@@ -8,57 +8,63 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:#0F1A14;color:#E8F0E4;font-size:14px;min-height:100vh}
-.header{border-bottom:1px solid #2A3D22;padding:16px 24px;display:flex;align-items:baseline;gap:10px}
-.logo{font-size:18px;font-weight:700;color:#6EE77A}
-.logo-sub{font-size:12px;color:#8FAB87}
-.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 53px)}
-.side{background:#172010;border-right:1px solid #2A3D22;padding:20px 16px;overflow-y:auto}
-.main{padding:0;overflow-y:auto;display:flex;flex-direction:column}
-#map{height:300px;width:100%;flex-shrink:0}
-.results{padding:20px;flex:1}
-.sec{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#4A6642;margin:20px 0 8px}
+body{font-family:'Inter',sans-serif;background:#F7F5F0;color:#1A1A18;font-size:14px;min-height:100vh}
+.header{border-bottom:1px solid #E0DDD6;padding:16px 24px;display:flex;align-items:baseline;gap:10px;background:#fff}
+.logo{font-size:18px;font-weight:700;color:#1E3D2F}
+.logo span{color:#C8A84B}
+.logo-sub{font-size:12px;color:#6B6B63}
+.layout{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 53px)}
+.side{background:#fff;border-right:1px solid #E0DDD6;padding:20px 18px;overflow-y:auto}
+.main{display:flex;flex-direction:column;overflow:hidden}
+#map{height:320px;width:100%;flex-shrink:0;border-bottom:1px solid #E0DDD6}
+.results{padding:20px;flex:1;overflow-y:auto;background:#F7F5F0}
+.sec{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#9CA3AF;margin:18px 0 8px}
 .sec:first-child{margin-top:0}
-label{font-size:11px;color:#8FAB87;display:block;margin-bottom:4px}
-select{width:100%;font-size:12px;padding:7px 9px;border-radius:6px;border:1px solid #2A3D22;background:#1D2A18;color:#E8F0E4;font-family:'Inter',sans-serif;cursor:pointer;margin-bottom:10px}
+label{font-size:11px;color:#6B6B63;display:block;margin-bottom:4px;font-weight:500}
+select{width:100%;font-size:13px;padding:8px 10px;border-radius:7px;border:1px solid #E0DDD6;background:#fff;color:#1A1A18;font-family:'Inter',sans-serif;cursor:pointer;margin-bottom:10px}
+select:focus{outline:2px solid #C8A84B;outline-offset:1px}
 .sl-row{display:flex;justify-content:space-between;margin-bottom:3px}
-.sl-val{font-size:12px;font-weight:600;color:#6EE77A}
-input[type=range]{width:100%;accent-color:#6EE77A;cursor:pointer;margin-bottom:10px}
+.sl-val{font-size:12px;font-weight:600;color:#C8A84B}
+input[type=range]{width:100%;accent-color:#C8A84B;cursor:pointer;margin-bottom:10px}
 .rb-row{display:flex;gap:6px;margin-bottom:10px}
-.rb{flex:1;padding:7px 0;text-align:center;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid #2A3D22;background:#1D2A18;color:#8FAB87;transition:all .15s;user-select:none}
-.rb.on{border-color:#6EE77A;background:#1A3020;color:#6EE77A}
-.dinfo{font-size:11px;color:#8FAB87;line-height:1.7;margin-bottom:4px}
-.dist-badge{display:inline-block;font-size:11px;background:#1A3020;color:#6EE77A;padding:2px 8px;border-radius:4px;margin-top:4px}
-.legend{font-size:11px;color:#8FAB87;padding:8px 16px;background:#172010;border-bottom:1px solid #2A3D22;display:flex;gap:16px}
-.legend span{display:flex;align-items:center;gap:5px}
-.empty{text-align:center;padding:40px 20px;color:#4A6642;font-size:13px}
-.verdict{border-radius:8px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
-.v-ok{background:linear-gradient(135deg,#1A3020,#1D3822);border:1px solid #6EE77A}
-.v-no{background:linear-gradient(135deg,#2A1818,#301A1A);border:1px solid #F07070}
+.rb{flex:1;padding:7px 0;text-align:center;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid #E0DDD6;background:#F7F5F0;color:#6B6B63;transition:all .15s;user-select:none}
+.rb.on{border-color:#C8A84B;background:#FBF5E6;color:#7A5F1A}
+.dinfo{font-size:11px;color:#6B6B63;line-height:1.8;margin-bottom:4px}
+.dist-badge{display:inline-block;font-size:11px;background:#EFF9F2;color:#166534;padding:2px 8px;border-radius:4px;margin-top:4px;font-weight:500}
+.legend{font-size:11px;color:#6B6B63;padding:8px 16px;background:#fff;border-bottom:1px solid #E0DDD6;display:flex;gap:16px;align-items:center}
+.empty{text-align:center;padding:40px 20px;color:#9CA3AF;font-size:13px}
+.verdict{border-radius:8px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.v-ok{background:#EFF9F2;border:1px solid #86EFAC}
+.v-no{background:#FEF2F2;border:1px solid #FCA5A5}
 .v-title{font-size:15px;font-weight:600}
-.v-ok .v-title{color:#6EE77A}
-.v-no .v-title{color:#F07070}
-.v-sub{font-size:11px;color:#8FAB87;margin-top:3px}
+.v-ok .v-title{color:#166534}
+.v-no .v-title{color:#991B1B}
+.v-sub{font-size:11px;color:#6B6B63;margin-top:3px}
 .v-bracket{margin-left:auto;text-align:right;flex-shrink:0}
-.v-bracket-lbl{font-size:10px;color:#4A6642}
-.v-bracket-val{font-size:20px;font-weight:700;color:#6EE77A}
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.mc{background:#1D2A18;border:1px solid #2A3D22;border-radius:8px;padding:12px 14px}
-.ml{font-size:10px;color:#4A6642;margin-bottom:4px}
+.v-bracket-lbl{font-size:10px;color:#9CA3AF}
+.v-bracket-val{font-size:20px;font-weight:700;color:#C8A84B}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.mc{background:#fff;border:1px solid #E0DDD6;border-radius:8px;padding:12px 14px}
+.ml{font-size:10px;color:#9CA3AF;margin-bottom:4px;font-weight:500}
 .mv{font-size:20px;font-weight:700}
-.mv-ok{color:#6EE77A}
-.mv-no{color:#F07070}
-.mv-neu{color:#E8F0E4}
-.ann{background:#1A2E1C;border:1px solid #2A4A2C;border-radius:8px;padding:14px 16px;display:flex;align-items:center;gap:12px}
-.ann-text{font-size:12px;color:#8FAB87;flex:1}
-.ann-val{font-size:24px;font-weight:700;color:#6EE77A;flex-shrink:0}
-.disc{font-size:10px;color:#4A6642;margin-top:16px;border-top:1px solid #2A3D22;padding-top:12px;line-height:1.6}
+.mv-ok{color:#166534}
+.mv-no{color:#991B1B}
+.mv-neu{color:#1A1A18}
+.ann{background:#FBF5E6;border:1px solid #E8C97A;border-radius:8px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.ann-text{font-size:12px;color:#5C4A10;flex:1}
+.ann-val{font-size:24px;font-weight:700;color:#C8A84B;flex-shrink:0}
+.disc{font-size:10px;color:#9CA3AF;margin-top:14px;border-top:1px solid #E0DDD6;padding-top:12px;line-height:1.6}
+@media(max-width:640px){
+  .layout{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .side{border-right:none;border-bottom:1px solid #E0DDD6}
+  .metrics{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <span class="logo">WellFed</span>
+  <span class="logo">Well<span>Fed</span></span>
   <span class="logo-sub">Food Donation Tax Savings Simulator &middot; Upper West Side, NYC</span>
 </div>
 
@@ -70,7 +76,7 @@ input[type=range]{width:100%;accent-color:#6EE77A;cursor:pointer;margin-bottom:1
     <div class="dinfo" id="dInfo"></div>
 
     <div class="sec">Nonprofit</div>
-    <label>Select nonprofit or click a blue pin</label>
+    <label>Select or click a pin on the map</label>
     <select id="nSel"><option value="">— pick a nonprofit —</option></select>
     <div id="distBadge"></div>
 
@@ -102,13 +108,13 @@ input[type=range]{width:100%;accent-color:#6EE77A;cursor:pointer;margin-bottom:1
 
   <div class="main">
     <div class="legend">
-      <span><span style="display:inline-block;width:12px;height:12px;background:#f59e0b;border-radius:2px;border:2px solid white"></span> Your business</span>
-      <span><span style="display:inline-block;width:12px;height:12px;background:#3b82f6;border-radius:50%;border:2px solid white"></span> Nonprofits (click to select)</span>
-      <span id="selNPLabel" style="color:#6EE77A"></span>
+      <span><span style="display:inline-block;width:12px;height:12px;background:#f59e0b;border-radius:2px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> Your business</span>
+      <span><span style="display:inline-block;width:12px;height:12px;background:#3b82f6;border-radius:50%;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> Nonprofits (click to select)</span>
+      <span id="selLabel" style="color:#166534;font-weight:500"></span>
     </div>
     <div id="map"></div>
     <div class="results" id="results">
-      <div class="empty">Click a blue nonprofit pin on the map, or select one from the dropdown.</div>
+      <div class="empty">Click a blue nonprofit pin on the map, or use the dropdown on the left.</div>
     </div>
   </div>
 </div>
@@ -156,11 +162,10 @@ function hav(a,b,c,d){var R=3958.8,dA=(c-a)*Math.PI/180,dO=(d-b)*Math.PI/180,x=M
 function tc(dist,gas,mpg,wage,spd,cont){return dist*(gas/mpg+wage/spd)+cont}
 function gv(id){return parseFloat(document.getElementById(id).value)}
 
-var D=DONORS[0], N=null, transport='self';
-var map, donorMarker=null, npMarkers=[], routeLine=null;
+var D=DONORS[0],N=null,transport='self';
+var map,donorMarker=null,npMarkers=[],routeLine=null;
 
 function sl(el,vid,fmt){document.getElementById(vid).textContent=fmt(el.value);compute()}
-
 function setT(t){
   transport=t;
   document.getElementById('rbS').className='rb'+(t==='self'?' on':'');
@@ -170,55 +175,46 @@ function setT(t){
 }
 
 function makeDonorIcon(){
-  return L.divIcon({html:'<div style="width:14px;height:14px;background:#f59e0b;border:2px solid white;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,.5)"></div>',className:'',iconAnchor:[7,7]});
+  return L.divIcon({html:'<div style="width:14px;height:14px;background:#f59e0b;border:2px solid white;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>',className:'',iconAnchor:[7,7]});
 }
-
-function makeNPIcon(selected){
-  var size=selected?16:13;
-  var color=selected?'#6EE77A':'#3b82f6';
-  return L.divIcon({html:'<div style="width:'+size+'px;height:'+size+'px;background:'+color+';border:2px solid white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5)"></div>',className:'',iconAnchor:[size/2,size/2]});
+function makeNPIcon(sel){
+  var sz=sel?16:13,col=sel?'#1E3D2F':'#3b82f6';
+  return L.divIcon({html:'<div style="width:'+sz+'px;height:'+sz+'px;background:'+col+';border:2px solid white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>',className:'',iconAnchor:[sz/2,sz/2]});
 }
 
 function selectNP(np){
   N=np;
   document.getElementById('nSel').value=np.id;
-  document.getElementById('selNPLabel').textContent=np.name+' selected';
+  document.getElementById('selLabel').textContent=np.name+' selected';
   var dist=hav(D.lat,D.lon,np.lat,np.lon);
   document.getElementById('distBadge').innerHTML='<span class="dist-badge">'+dist.toFixed(2)+' mi away</span>';
-  updateMapMarkers();
+  updateMap();
   compute();
 }
 
-function updateMapMarkers(){
+function updateMap(){
   if(donorMarker)donorMarker.remove();
-  donorMarker=L.marker([D.lat,D.lon],{icon:makeDonorIcon()}).addTo(map).bindTooltip(D.name,{direction:'top'});
-
+  donorMarker=L.marker([D.lat,D.lon],{icon:makeDonorIcon()}).addTo(map).bindTooltip('<b>'+D.name+'</b>',{direction:'top'});
   npMarkers.forEach(function(m){m.remove()});
   npMarkers=[];
   NPS.forEach(function(np){
     var sel=N&&N.id===np.id;
-    var m=L.marker([np.lat,np.lon],{icon:makeNPIcon(sel)})
-      .addTo(map)
-      .bindTooltip(np.name,{direction:'top'})
+    var m=L.marker([np.lat,np.lon],{icon:makeNPIcon(sel)}).addTo(map)
+      .bindTooltip('<b>'+np.name+'</b>',{direction:'top'})
       .on('click',function(){selectNP(np)});
     npMarkers.push(m);
   });
-
-  if(routeLine)routeLine.remove();
-  routeLine=null;
+  if(routeLine){routeLine.remove();routeLine=null;}
   if(N){
-    routeLine=L.polyline([[D.lat,D.lon],[N.lat,N.lon]],{color:'#6EE77A',weight:2,dashArray:'6 4',opacity:.8}).addTo(map);
-    map.fitBounds([[D.lat,D.lon],[N.lat,N.lon]],{padding:[40,40]});
+    routeLine=L.polyline([[D.lat,D.lon],[N.lat,N.lon]],{color:'#1E3D2F',weight:2,dashArray:'6 4',opacity:.8}).addTo(map);
+    map.fitBounds([[D.lat,D.lon],[N.lat,N.lon]],{padding:[50,50]});
   } else {
     map.setView([D.lat,D.lon],15);
   }
 }
 
 function compute(){
-  if(!N){
-    document.getElementById('results').innerHTML='<div class="empty">Click a blue nonprofit pin on the map, or select one from the dropdown.</div>';
-    return;
-  }
+  if(!N){document.getElementById('results').innerHTML='<div class="empty">Click a blue nonprofit pin on the map, or use the dropdown on the left.</div>';return}
   var p=PR[D.cat],ed=edVal(p.a,p.C,p.s),t=mRate(gv('income')),n=D.units;
   var gas=gv('gas'),mpg=gv('mpg'),spd=gv('spd'),cont=gv('cont'),wage=transport==='driver'?gv('wage'):0;
   var dist=hav(D.lat,D.lon,N.lat,N.lon),trip=tc(dist,gas,mpg,wage,spd,cont);
@@ -226,12 +222,8 @@ function compute(){
   document.getElementById('results').innerHTML=
     '<div class="verdict '+(ok?'v-ok':'v-no')+'">'+
       '<div style="font-size:24px">'+(ok?'&#x2705;':'&#x274C;')+'</div>'+
-      '<div>'+
-        '<div class="v-title">'+(ok?'Viable trip':'Below threshold')+'</div>'+
-        '<div class="v-sub">'+(ok
-          ?'$'+Vg.toFixed(2)+' donation clears the $'+thr.toFixed(2)+' threshold &middot; '+dist.toFixed(2)+' mi to '+N.name
-          :'Need '+Math.ceil(be-n)+' more units to break even &middot; '+dist.toFixed(2)+' mi to '+N.name)+'</div>'+
-      '</div>'+
+      '<div><div class="v-title">'+(ok?'Viable trip':'Below threshold')+'</div>'+
+      '<div class="v-sub">'+(ok?'$'+Vg.toFixed(2)+' donation clears the $'+thr.toFixed(2)+' threshold &middot; '+dist.toFixed(2)+' mi to '+N.name:'Need '+Math.ceil(be-n)+' more units to break even &middot; '+dist.toFixed(2)+' mi to '+N.name)+'</div></div>'+
       '<div class="v-bracket"><div class="v-bracket-lbl">Tax bracket</div><div class="v-bracket-val">'+((t*100).toFixed(0))+'%</div></div>'+
     '</div>'+
     '<div class="metrics">'+
@@ -242,8 +234,7 @@ function compute(){
       '<div class="mc"><div class="ml">Viability threshold</div><div class="mv mv-neu">$'+thr.toFixed(2)+'</div></div>'+
       '<div class="mc"><div class="ml">Break-even units</div><div class="mv mv-neu">'+be.toFixed(1)+'</div></div>'+
     '</div>'+
-    '<div class="ann">'+
-      '<div style="font-size:20px">&#x1F4C5;</div>'+
+    '<div class="ann"><div style="font-size:20px">&#x1F4C5;</div>'+
       '<div class="ann-text">Donating 5 nights a week, 50 weeks a year, your estimated annual net tax benefit is</div>'+
       '<div class="ann-val">'+(ann>=0?'$'+Math.round(ann).toLocaleString():'-$'+Math.round(Math.abs(ann)).toLocaleString())+'</div>'+
     '</div>'+
@@ -251,34 +242,27 @@ function compute(){
 }
 
 window.addEventListener('load',function(){
-  // Map
   map=L.map('map',{zoomControl:true,scrollWheelZoom:false});
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19}).addTo(map);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19}).addTo(map);
   map.setView([40.7831,-73.9712],14);
-  updateMapMarkers();
+  updateMap();
 
-  // Donor dropdown
   var ds=document.getElementById('dSel');
   DONORS.forEach(function(d){var o=document.createElement('option');o.value=d.id;o.textContent=d.name;ds.appendChild(o)});
   ds.addEventListener('change',function(){
     D=DONORS.find(function(x){return x.id===ds.value});
     document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Units/shift: '+D.units+'<br>Cost/unit: $'+PR[D.cat].C.toFixed(2);
-    N=null;
-    document.getElementById('nSel').value='';
-    document.getElementById('distBadge').innerHTML='';
-    document.getElementById('selNPLabel').textContent='';
-    updateMapMarkers();
-    compute();
+    N=null;document.getElementById('nSel').value='';document.getElementById('distBadge').innerHTML='';document.getElementById('selLabel').textContent='';
+    updateMap();compute();
   });
   document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Units/shift: '+D.units+'<br>Cost/unit: $'+PR[D.cat].C.toFixed(2);
 
-  // Nonprofit dropdown
   var ns=document.getElementById('nSel');
   NPS.forEach(function(np){var o=document.createElement('option');o.value=np.id;o.textContent=np.name;ns.appendChild(o)});
   ns.addEventListener('change',function(){
     var found=NPS.find(function(x){return x.id===ns.value});
     if(found)selectNP(found);
-    else{N=null;document.getElementById('distBadge').innerHTML='';document.getElementById('selNPLabel').textContent='';updateMapMarkers();compute();}
+    else{N=null;document.getElementById('distBadge').innerHTML='';document.getElementById('selLabel').textContent='';updateMap();compute();}
   });
 });
 </script>

@@ -5,15 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>WellFed · Tax Savings Simulator</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:#0F1A14;color:#E8F0E4;font-size:14px;min-height:100vh}
 .header{border-bottom:1px solid #2A3D22;padding:16px 24px;display:flex;align-items:baseline;gap:10px}
 .logo{font-size:18px;font-weight:700;color:#6EE77A}
 .logo-sub{font-size:12px;color:#8FAB87}
-.wrap{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 53px)}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 53px)}
 .side{background:#172010;border-right:1px solid #2A3D22;padding:20px 16px;overflow-y:auto}
-.main{padding:24px;overflow-y:auto}
+.main{padding:0;overflow-y:auto;display:flex;flex-direction:column}
+#map{height:300px;width:100%;flex-shrink:0}
+.results{padding:20px;flex:1}
 .sec{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#4A6642;margin:20px 0 8px}
 .sec:first-child{margin-top:0}
 label{font-size:11px;color:#8FAB87;display:block;margin-bottom:4px}
@@ -26,7 +29,9 @@ input[type=range]{width:100%;accent-color:#6EE77A;cursor:pointer;margin-bottom:1
 .rb.on{border-color:#6EE77A;background:#1A3020;color:#6EE77A}
 .dinfo{font-size:11px;color:#8FAB87;line-height:1.7;margin-bottom:4px}
 .dist-badge{display:inline-block;font-size:11px;background:#1A3020;color:#6EE77A;padding:2px 8px;border-radius:4px;margin-top:4px}
-.empty{text-align:center;padding:60px 20px;color:#4A6642;font-size:13px}
+.legend{font-size:11px;color:#8FAB87;padding:8px 16px;background:#172010;border-bottom:1px solid #2A3D22;display:flex;gap:16px}
+.legend span{display:flex;align-items:center;gap:5px}
+.empty{text-align:center;padding:40px 20px;color:#4A6642;font-size:13px}
 .verdict{border-radius:8px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
 .v-ok{background:linear-gradient(135deg,#1A3020,#1D3822);border:1px solid #6EE77A}
 .v-no{background:linear-gradient(135deg,#2A1818,#301A1A);border:1px solid #F07070}
@@ -48,28 +53,27 @@ input[type=range]{width:100%;accent-color:#6EE77A;cursor:pointer;margin-bottom:1
 .ann-text{font-size:12px;color:#8FAB87;flex:1}
 .ann-val{font-size:24px;font-weight:700;color:#6EE77A;flex-shrink:0}
 .disc{font-size:10px;color:#4A6642;margin-top:16px;border-top:1px solid #2A3D22;padding-top:12px;line-height:1.6}
-@media(max-width:640px){
-  .wrap{grid-template-columns:1fr;grid-template-rows:auto 1fr}
-  .side{border-right:none;border-bottom:1px solid #2A3D22}
-  .metrics{grid-template-columns:1fr 1fr}
-}
 </style>
 </head>
 <body>
+
 <div class="header">
   <span class="logo">WellFed</span>
-  <span class="logo-sub">Food Donation Tax Savings Simulator · Upper West Side, NYC</span>
+  <span class="logo-sub">Food Donation Tax Savings Simulator &middot; Upper West Side, NYC</span>
 </div>
-<div class="wrap">
+
+<div class="layout">
   <div class="side">
     <div class="sec">Donor Business</div>
     <label>Select your business</label>
     <select id="dSel"></select>
     <div class="dinfo" id="dInfo"></div>
+
     <div class="sec">Nonprofit</div>
-    <label>Select nonprofit</label>
+    <label>Select nonprofit or click a blue pin</label>
     <select id="nSel"><option value="">— pick a nonprofit —</option></select>
     <div id="distBadge"></div>
+
     <div class="sec">Transportation</div>
     <label>Who makes the delivery?</label>
     <div class="rb-row">
@@ -78,27 +82,40 @@ input[type=range]{width:100%;accent-color:#6EE77A;cursor:pointer;margin-bottom:1
     </div>
     <div id="wageRow" style="display:none">
       <div class="sl-row"><label>Driver wage</label><span class="sl-val" id="wVal">$18/hr</span></div>
-      <input type="range" id="wage" min="10" max="40" step="0.5" value="18" oninput="sl(this,'wVal',v=>`$${parseFloat(v).toFixed(0)}/hr`)">
+      <input type="range" id="wage" min="10" max="40" step="0.5" value="18" oninput="sl(this,'wVal',function(v){return '$'+parseFloat(v).toFixed(0)+'/hr'})">
     </div>
+
     <div class="sec">Income</div>
     <div class="sl-row"><label>Annual taxable income</label><span class="sl-val" id="iVal">$120,000</span></div>
-    <input type="range" id="income" min="10000" max="700000" step="5000" value="120000" oninput="sl(this,'iVal',v=>`$${Math.round(v).toLocaleString()}`)">
+    <input type="range" id="income" min="10000" max="700000" step="5000" value="120000" oninput="sl(this,'iVal',function(v){return '$'+Math.round(v).toLocaleString()})">
+
     <div class="sec">Trip Costs</div>
     <div class="sl-row"><label>Gas price</label><span class="sl-val" id="gVal">$3.80/gal</span></div>
-    <input type="range" id="gas" min="2" max="8" step="0.1" value="3.8" oninput="sl(this,'gVal',v=>`$${parseFloat(v).toFixed(2)}/gal`)">
+    <input type="range" id="gas" min="2" max="8" step="0.1" value="3.8" oninput="sl(this,'gVal',function(v){return '$'+parseFloat(v).toFixed(2)+'/gal'})">
     <div class="sl-row"><label>Vehicle MPG</label><span class="sl-val" id="mVal">25 mpg</span></div>
-    <input type="range" id="mpg" min="10" max="60" step="1" value="25" oninput="sl(this,'mVal',v=>`${v} mpg`)">
+    <input type="range" id="mpg" min="10" max="60" step="1" value="25" oninput="sl(this,'mVal',function(v){return v+' mpg'})">
     <div class="sl-row"><label>Avg speed</label><span class="sl-val" id="sVal">15 mph</span></div>
-    <input type="range" id="spd" min="5" max="40" step="1" value="15" oninput="sl(this,'sVal',v=>`${v} mph`)">
+    <input type="range" id="spd" min="5" max="40" step="1" value="15" oninput="sl(this,'sVal',function(v){return v+' mph'})">
     <div class="sl-row"><label>Container cost</label><span class="sl-val" id="cVal">$5.00</span></div>
-    <input type="range" id="cont" min="0" max="20" step="0.5" value="5" oninput="sl(this,'cVal',v=>`$${parseFloat(v).toFixed(2)}`)">
+    <input type="range" id="cont" min="0" max="20" step="0.5" value="5" oninput="sl(this,'cVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
   </div>
-  <div class="main" id="main">
-    <div class="empty">📍 Select a nonprofit from the dropdown to see your tax savings estimate.</div>
+
+  <div class="main">
+    <div class="legend">
+      <span><span style="display:inline-block;width:12px;height:12px;background:#f59e0b;border-radius:2px;border:2px solid white"></span> Your business</span>
+      <span><span style="display:inline-block;width:12px;height:12px;background:#3b82f6;border-radius:50%;border:2px solid white"></span> Nonprofits (click to select)</span>
+      <span id="selNPLabel" style="color:#6EE77A"></span>
+    </div>
+    <div id="map"></div>
+    <div class="results" id="results">
+      <div class="empty">Click a blue nonprofit pin on the map, or select one from the dropdown.</div>
+    </div>
   </div>
 </div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const NPS=[
+var NPS=[
   {id:"wscah",name:"West Side Campaign Against Hunger",lat:40.7889,lon:-73.9750},
   {id:"ncjw",name:"National Council of Jewish Women",lat:40.7754,lon:-73.9800},
   {id:"stmike",name:"St. Michael's Church",lat:40.7804,lon:-73.9812},
@@ -106,7 +123,7 @@ const NPS=[
   {id:"parkav",name:"Park Avenue Synagogue",lat:40.7757,lon:-73.9583},
   {id:"stluke",name:"St. Luke's Food Pantry",lat:40.7978,lon:-73.9680},
 ];
-const DONORS=[
+var DONORS=[
   {id:"gin",name:"The Speakeasy at The Gin Mill",lat:40.7868,lon:-73.9807,cat:"Prepared Meals",units:22},
   {id:"blonde",name:"Blondies Sports",lat:40.7851,lon:-73.9793,cat:"Prepared Meals",units:20},
   {id:"buceo",name:"Buceo 95",lat:40.7924,lon:-73.9742,cat:"Prepared Meals",units:18},
@@ -123,23 +140,27 @@ const DONORS=[
   {id:"joe",name:"Joe Coffee UWS",lat:40.7843,lon:-73.9796,cat:"Beverages",units:18},
   {id:"ouest",name:"Ouest Restaurant",lat:40.7880,lon:-73.9832,cat:"Prepared Meals",units:23},
 ];
-const PR={
+var PR={
   "Prepared Meals":{a:2.50,s:.60,C:4.50},
   "Baked Goods":{a:1.80,s:.50,C:1.80},
   "Fresh Produce":{a:.60,s:.40,C:1.20},
   "Dairy":{a:.90,s:.30,C:2.00},
   "Beverages":{a:3.50,s:.70,C:.80},
 };
-const BR=[[11600,.10],[47150,.12],[100525,.22],[191950,.24],[243725,.32],[609350,.35],[Infinity,.37]];
-function mRate(v){for(const[c,r]of BR)if(v<=c)return r;return .37}
+var BR=[[11600,.10],[47150,.12],[100525,.22],[191950,.24],[243725,.32],[609350,.35],[Infinity,.37]];
+function mRate(v){for(var i=0;i<BR.length;i++)if(v<=BR[i][0])return BR[i][1];return .37}
 function npdf(x){return Math.exp(-.5*x*x)/Math.sqrt(2*Math.PI)}
-function ncdf(x){const t=1/(1+.2316419*Math.abs(x));const p=t*(.31938+t*(-.35656+t*(1.78148+t*(-1.82126+t*1.33027))));return x>=0?1-npdf(x)*p:npdf(x)*p}
-function edVal(a,C,sC){const s=Math.max(sC*C,1e-9),z=(2-a)*C/s,ph=npdf(z),Ph=ncdf(z),Et=Ph>1e-10?a*C+s*ph/Ph:a*C;return Math.min((C+.5*Et)*Ph+2*C*(1-Ph),2*C)}
-function hav(a,b,c,d){const R=3958.8,dA=(c-a)*Math.PI/180,dO=(d-b)*Math.PI/180,x=Math.sin(dA/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dO/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
+function ncdf(x){var t=1/(1+.2316419*Math.abs(x));var p=t*(.31938+t*(-.35656+t*(1.78148+t*(-1.82126+t*1.33027))));return x>=0?1-npdf(x)*p:npdf(x)*p}
+function edVal(a,C,sC){var s=Math.max(sC*C,1e-9),z=(2-a)*C/s,ph=npdf(z),Ph=ncdf(z),Et=Ph>1e-10?a*C+s*ph/Ph:a*C;return Math.min((C+.5*Et)*Ph+2*C*(1-Ph),2*C)}
+function hav(a,b,c,d){var R=3958.8,dA=(c-a)*Math.PI/180,dO=(d-b)*Math.PI/180,x=Math.sin(dA/2)*Math.sin(dA/2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dO/2)*Math.sin(dO/2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
 function tc(dist,gas,mpg,wage,spd,cont){return dist*(gas/mpg+wage/spd)+cont}
 function gv(id){return parseFloat(document.getElementById(id).value)}
-let D=DONORS[0],N=null,transport='self';
+
+var D=DONORS[0], N=null, transport='self';
+var map, donorMarker=null, npMarkers=[], routeLine=null;
+
 function sl(el,vid,fmt){document.getElementById(vid).textContent=fmt(el.value);compute()}
+
 function setT(t){
   transport=t;
   document.getElementById('rbS').className='rb'+(t==='self'?' on':'');
@@ -147,57 +168,117 @@ function setT(t){
   document.getElementById('wageRow').style.display=t==='driver'?'block':'none';
   compute();
 }
-function compute(){
-  if(!N){document.getElementById('main').innerHTML='<div class="empty">Select a nonprofit from the dropdown to see your tax savings estimate.</div>';return}
-  const p=PR[D.cat],ed=edVal(p.a,p.C,p.s),t=mRate(gv('income')),n=D.units;
-  const gas=gv('gas'),mpg=gv('mpg'),spd=gv('spd'),cont=gv('cont'),wage=transport==='driver'?gv('wage'):0;
-  const dist=hav(D.lat,D.lon,N.lat,N.lon),trip=tc(dist,gas,mpg,wage,spd,cont);
-  const sav=t*ed*n,net=sav-trip,Vg=n*p.C,thr=p.C*trip/(t*ed),ok=Vg>=thr,ann=net*5*50,be=trip/(t*ed);
-  document.getElementById('main').innerHTML=`
-    <div class="verdict ${ok?'v-ok':'v-no'}">
-      <div style="font-size:24px">${ok?'&#x2705;':'&#x274C;'}</div>
-      <div>
-        <div class="v-title">${ok?'Viable trip':'Below threshold'}</div>
-        <div class="v-sub">${ok
-          ?'$'+Vg.toFixed(2)+' donation clears the $'+thr.toFixed(2)+' threshold &nbsp;&middot;&nbsp; '+dist.toFixed(2)+' mi to '+N.name
-          :'Need '+Math.ceil(be-n)+' more units to break even &nbsp;&middot;&nbsp; '+dist.toFixed(2)+' mi to '+N.name}</div>
-      </div>
-      <div class="v-bracket">
-        <div class="v-bracket-lbl">Tax bracket</div>
-        <div class="v-bracket-val">${(t*100).toFixed(0)}%</div>
-      </div>
-    </div>
-    <div class="metrics">
-      <div class="mc"><div class="ml">Tax savings / trip</div><div class="mv mv-ok">$${sav.toFixed(2)}</div></div>
-      <div class="mc"><div class="ml">Net benefit / trip</div><div class="mv ${net>=0?'mv-ok':'mv-no'}">$${net.toFixed(2)}</div></div>
-      <div class="mc"><div class="ml">Trip cost</div><div class="mv mv-neu">$${trip.toFixed(2)}</div></div>
-      <div class="mc"><div class="ml">Donation value</div><div class="mv mv-neu">$${Vg.toFixed(2)}</div></div>
-      <div class="mc"><div class="ml">Viability threshold</div><div class="mv mv-neu">$${thr.toFixed(2)}</div></div>
-      <div class="mc"><div class="ml">Break-even units</div><div class="mv mv-neu">${be.toFixed(1)}</div></div>
-    </div>
-    <div class="ann">
-      <div style="font-size:20px">&#x1F4C5;</div>
-      <div class="ann-text">Donating 5 nights a week, 50 weeks a year, your estimated annual net tax benefit is</div>
-      <div class="ann-val">${ann>=0?'$'+Math.round(ann).toLocaleString():'-$'+Math.round(Math.abs(ann)).toLocaleString()}</div>
-    </div>
-    <div class="disc">Tax savings realized only with positive taxable income and donation to a qualified 501(c)(3) under the PATH Act of 2015. Distances are straight-line haversine; urban routing distances are 20-40% longer.</div>`;
+
+function makeDonorIcon(){
+  return L.divIcon({html:'<div style="width:14px;height:14px;background:#f59e0b;border:2px solid white;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,.5)"></div>',className:'',iconAnchor:[7,7]});
 }
-window.addEventListener('DOMContentLoaded',function(){
+
+function makeNPIcon(selected){
+  var size=selected?16:13;
+  var color=selected?'#6EE77A':'#3b82f6';
+  return L.divIcon({html:'<div style="width:'+size+'px;height:'+size+'px;background:'+color+';border:2px solid white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5)"></div>',className:'',iconAnchor:[size/2,size/2]});
+}
+
+function selectNP(np){
+  N=np;
+  document.getElementById('nSel').value=np.id;
+  document.getElementById('selNPLabel').textContent=np.name+' selected';
+  var dist=hav(D.lat,D.lon,np.lat,np.lon);
+  document.getElementById('distBadge').innerHTML='<span class="dist-badge">'+dist.toFixed(2)+' mi away</span>';
+  updateMapMarkers();
+  compute();
+}
+
+function updateMapMarkers(){
+  if(donorMarker)donorMarker.remove();
+  donorMarker=L.marker([D.lat,D.lon],{icon:makeDonorIcon()}).addTo(map).bindTooltip(D.name,{direction:'top'});
+
+  npMarkers.forEach(function(m){m.remove()});
+  npMarkers=[];
+  NPS.forEach(function(np){
+    var sel=N&&N.id===np.id;
+    var m=L.marker([np.lat,np.lon],{icon:makeNPIcon(sel)})
+      .addTo(map)
+      .bindTooltip(np.name,{direction:'top'})
+      .on('click',function(){selectNP(np)});
+    npMarkers.push(m);
+  });
+
+  if(routeLine)routeLine.remove();
+  routeLine=null;
+  if(N){
+    routeLine=L.polyline([[D.lat,D.lon],[N.lat,N.lon]],{color:'#6EE77A',weight:2,dashArray:'6 4',opacity:.8}).addTo(map);
+    map.fitBounds([[D.lat,D.lon],[N.lat,N.lon]],{padding:[40,40]});
+  } else {
+    map.setView([D.lat,D.lon],15);
+  }
+}
+
+function compute(){
+  if(!N){
+    document.getElementById('results').innerHTML='<div class="empty">Click a blue nonprofit pin on the map, or select one from the dropdown.</div>';
+    return;
+  }
+  var p=PR[D.cat],ed=edVal(p.a,p.C,p.s),t=mRate(gv('income')),n=D.units;
+  var gas=gv('gas'),mpg=gv('mpg'),spd=gv('spd'),cont=gv('cont'),wage=transport==='driver'?gv('wage'):0;
+  var dist=hav(D.lat,D.lon,N.lat,N.lon),trip=tc(dist,gas,mpg,wage,spd,cont);
+  var sav=t*ed*n,net=sav-trip,Vg=n*p.C,thr=p.C*trip/(t*ed),ok=Vg>=thr,ann=net*5*50,be=trip/(t*ed);
+  document.getElementById('results').innerHTML=
+    '<div class="verdict '+(ok?'v-ok':'v-no')+'">'+
+      '<div style="font-size:24px">'+(ok?'&#x2705;':'&#x274C;')+'</div>'+
+      '<div>'+
+        '<div class="v-title">'+(ok?'Viable trip':'Below threshold')+'</div>'+
+        '<div class="v-sub">'+(ok
+          ?'$'+Vg.toFixed(2)+' donation clears the $'+thr.toFixed(2)+' threshold &middot; '+dist.toFixed(2)+' mi to '+N.name
+          :'Need '+Math.ceil(be-n)+' more units to break even &middot; '+dist.toFixed(2)+' mi to '+N.name)+'</div>'+
+      '</div>'+
+      '<div class="v-bracket"><div class="v-bracket-lbl">Tax bracket</div><div class="v-bracket-val">'+((t*100).toFixed(0))+'%</div></div>'+
+    '</div>'+
+    '<div class="metrics">'+
+      '<div class="mc"><div class="ml">Tax savings / trip</div><div class="mv mv-ok">$'+sav.toFixed(2)+'</div></div>'+
+      '<div class="mc"><div class="ml">Net benefit / trip</div><div class="mv '+(net>=0?'mv-ok':'mv-no')+'">$'+net.toFixed(2)+'</div></div>'+
+      '<div class="mc"><div class="ml">Trip cost</div><div class="mv mv-neu">$'+trip.toFixed(2)+'</div></div>'+
+      '<div class="mc"><div class="ml">Donation value</div><div class="mv mv-neu">$'+Vg.toFixed(2)+'</div></div>'+
+      '<div class="mc"><div class="ml">Viability threshold</div><div class="mv mv-neu">$'+thr.toFixed(2)+'</div></div>'+
+      '<div class="mc"><div class="ml">Break-even units</div><div class="mv mv-neu">'+be.toFixed(1)+'</div></div>'+
+    '</div>'+
+    '<div class="ann">'+
+      '<div style="font-size:20px">&#x1F4C5;</div>'+
+      '<div class="ann-text">Donating 5 nights a week, 50 weeks a year, your estimated annual net tax benefit is</div>'+
+      '<div class="ann-val">'+(ann>=0?'$'+Math.round(ann).toLocaleString():'-$'+Math.round(Math.abs(ann)).toLocaleString())+'</div>'+
+    '</div>'+
+    '<div class="disc">Tax savings realized only with positive taxable income and donation to a qualified 501(c)(3) under the PATH Act of 2015. Distances are straight-line haversine; urban routing distances are 20-40% longer.</div>';
+}
+
+window.addEventListener('load',function(){
+  // Map
+  map=L.map('map',{zoomControl:true,scrollWheelZoom:false});
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19}).addTo(map);
+  map.setView([40.7831,-73.9712],14);
+  updateMapMarkers();
+
+  // Donor dropdown
   var ds=document.getElementById('dSel');
   DONORS.forEach(function(d){var o=document.createElement('option');o.value=d.id;o.textContent=d.name;ds.appendChild(o)});
   ds.addEventListener('change',function(){
     D=DONORS.find(function(x){return x.id===ds.value});
     document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Units/shift: '+D.units+'<br>Cost/unit: $'+PR[D.cat].C.toFixed(2);
-    N=null;document.getElementById('nSel').value='';document.getElementById('distBadge').innerHTML='';
+    N=null;
+    document.getElementById('nSel').value='';
+    document.getElementById('distBadge').innerHTML='';
+    document.getElementById('selNPLabel').textContent='';
+    updateMapMarkers();
     compute();
   });
   document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Units/shift: '+D.units+'<br>Cost/unit: $'+PR[D.cat].C.toFixed(2);
+
+  // Nonprofit dropdown
   var ns=document.getElementById('nSel');
-  NPS.forEach(function(n){var o=document.createElement('option');o.value=n.id;o.textContent=n.name;ns.appendChild(o)});
+  NPS.forEach(function(np){var o=document.createElement('option');o.value=np.id;o.textContent=np.name;ns.appendChild(o)});
   ns.addEventListener('change',function(){
-    N=NPS.find(function(x){return x.id===ns.value})||null;
-    document.getElementById('distBadge').innerHTML=N&&D?'<span class="dist-badge">'+hav(D.lat,D.lon,N.lat,N.lon).toFixed(2)+' mi away</span>':'';
-    compute();
+    var found=NPS.find(function(x){return x.id===ns.value});
+    if(found)selectNP(found);
+    else{N=null;document.getElementById('distBadge').innerHTML='';document.getElementById('selNPLabel').textContent='';updateMapMarkers();compute();}
   });
 });
 </script>

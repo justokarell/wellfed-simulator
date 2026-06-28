@@ -129,14 +129,22 @@ input[type=range]{width:100%;accent-color:#C8A84B;cursor:pointer;margin-bottom:1
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 var NPS=[
+  // UWS
   {id:"wscah",name:"West Side Campaign Against Hunger",lat:40.7889,lon:-73.9750},
   {id:"ncjw",name:"National Council of Jewish Women",lat:40.7754,lon:-73.9800},
   {id:"stmike",name:"St. Michael's Church",lat:40.7804,lon:-73.9812},
   {id:"unitar",name:"Unitarian Church of All Souls",lat:40.7733,lon:-73.9579},
   {id:"parkav",name:"Park Avenue Synagogue",lat:40.7757,lon:-73.9583},
   {id:"stluke",name:"St. Luke's Food Pantry",lat:40.7978,lon:-73.9680},
+  // UES
+  {id:"uoc",name:"Urban Outreach Center",lat:40.7796,lon:-73.9458},
+  {id:"hunter",name:"Hunter College Purple Apron Food Pantry",lat:40.7685,lon:-73.9647},
+  {id:"stjames",name:"St. James' Church Food Pantry",lat:40.7689,lon:-73.9592},
+  {id:"nycp",name:"NY Common Pantry (E 109th St)",lat:40.7940,lon:-73.9448},
+  {id:"trinites",name:"Trinity St. Paul's Food Pantry",lat:40.7741,lon:-73.9548},
 ];
 var DONORS=[
+  // UWS
   {id:"gin",name:"The Speakeasy at The Gin Mill",lat:40.7868,lon:-73.9807,cat:"Prepared Meals",units:22},
   {id:"blonde",name:"Blondies Sports",lat:40.7851,lon:-73.9793,cat:"Prepared Meals",units:20},
   {id:"buceo",name:"Buceo 95",lat:40.7924,lon:-73.9742,cat:"Prepared Meals",units:18},
@@ -152,6 +160,17 @@ var DONORS=[
   {id:"wave",name:"Wave Hill Bread",lat:40.7830,lon:-73.9820,cat:"Baked Goods",units:40},
   {id:"joe",name:"Joe Coffee UWS",lat:40.7843,lon:-73.9796,cat:"Beverages",units:18},
   {id:"ouest",name:"Ouest Restaurant",lat:40.7880,lon:-73.9832,cat:"Prepared Meals",units:23},
+  // UES
+  {id:"madamebonte",name:"Madame Bonte",lat:40.7762,lon:-73.9554,cat:"Baked Goods",units:35},
+  {id:"lexington",name:"Lexington Brass",lat:40.7749,lon:-73.9643,cat:"Prepared Meals",units:20},
+  {id:"caravaggio",name:"Caravaggio",lat:40.7706,lon:-73.9626,cat:"Prepared Meals",units:18},
+  {id:"elaines",name:"JG Melon",lat:40.7741,lon:-73.9582,cat:"Prepared Meals",units:22},
+  {id:"sushi",name:"Sushi of Gari",lat:40.7735,lon:-73.9572,cat:"Prepared Meals",units:16},
+  {id:"viand",name:"Viand Coffee Shop",lat:40.7724,lon:-73.9586,cat:"Prepared Meals",units:24},
+  {id:"bagelworks",name:"Bagelworks",lat:40.7698,lon:-73.9620,cat:"Baked Goods",units:45},
+  {id:"orwashers",name:"Orwashers Bakery UES",lat:40.7750,lon:-73.9559,cat:"Baked Goods",units:50},
+  {id:"graciemansion",name:"The Mark Restaurant",lat:40.7739,lon:-73.9632,cat:"Prepared Meals",units:25},
+  {id:"dainobu",name:"Dainobu Market",lat:40.7745,lon:-73.9565,cat:"Fresh Produce",units:40},
 ];
 var PR={
   "Prepared Meals":{a:2.50,s:.60,C:4.50,unit:"meals"},
@@ -258,7 +277,7 @@ function compute(){
 window.addEventListener('load',function(){
   map=L.map('map',{zoomControl:true,scrollWheelZoom:false});
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19}).addTo(map);
-  map.setView([40.7831,-73.9712],14);
+  map.setView([40.7790,-73.9650],14);
   updateMap();
 
   document.getElementById('units').value=D.units;

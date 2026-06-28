@@ -16,7 +16,7 @@ body{font-family:'Inter',sans-serif;background:#F7F5F0;color:#1A1A18;font-size:1
 .layout{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 53px)}
 .side{background:#fff;border-right:1px solid #E0DDD6;padding:20px 18px;overflow-y:auto}
 .main{display:flex;flex-direction:column;overflow:hidden}
-#map{height:320px;width:100%;flex-shrink:0;border-bottom:1px solid #E0DDD6}
+#map{height:480px;width:100%;flex-shrink:0;border-bottom:1px solid #E0DDD6}
 .results{padding:20px;flex:1;overflow-y:auto;background:#F7F5F0}
 .sec{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#9CA3AF;margin:18px 0 8px}
 .sec:first-child{margin-top:0}
@@ -79,6 +79,12 @@ input[type=range]{width:100%;accent-color:#C8A84B;cursor:pointer;margin-bottom:1
     <label>Select or click a pin on the map</label>
     <select id="nSel"><option value="">— pick a nonprofit —</option></select>
     <div id="distBadge"></div>
+
+    <div class="sec">Donation Volume</div>
+    <div class="sl-row"><label>Units donated per shift</label><span class="sl-val" id="uVal">20</span></div>
+    <input type="range" id="units" min="1" max="100" step="1" value="20" oninput="sl(this,'uVal',function(v){return v})">
+    <div class="sl-row"><label>Shifts per week</label><span class="sl-val" id="shVal">5</span></div>
+    <input type="range" id="shifts" min="1" max="7" step="1" value="5" oninput="sl(this,'shVal',function(v){return v})">
 
     <div class="sec">Transportation</div>
     <label>Who makes the delivery?</label>
@@ -215,10 +221,10 @@ function updateMap(){
 
 function compute(){
   if(!N){document.getElementById('results').innerHTML='<div class="empty">Click a blue nonprofit pin on the map, or use the dropdown on the left.</div>';return}
-  var p=PR[D.cat],ed=edVal(p.a,p.C,p.s),t=mRate(gv('income')),n=D.units;
+  var p=PR[D.cat],ed=edVal(p.a,p.C,p.s),t=mRate(gv('income')),n=gv('units'),shifts=gv('shifts');
   var gas=gv('gas'),mpg=gv('mpg'),spd=gv('spd'),cont=gv('cont'),wage=transport==='driver'?gv('wage'):0;
   var dist=hav(D.lat,D.lon,N.lat,N.lon),trip=tc(dist,gas,mpg,wage,spd,cont);
-  var sav=t*ed*n,net=sav-trip,Vg=n*p.C,thr=p.C*trip/(t*ed),ok=Vg>=thr,ann=net*5*50,be=trip/(t*ed);
+  var sav=t*ed*n,net=sav-trip,Vg=n*p.C,thr=p.C*trip/(t*ed),ok=Vg>=thr,ann=net*shifts*50,be=trip/(t*ed);
   document.getElementById('results').innerHTML=
     '<div class="verdict '+(ok?'v-ok':'v-no')+'">'+
       '<div style="font-size:24px">'+(ok?'&#x2705;':'&#x274C;')+'</div>'+
@@ -235,7 +241,7 @@ function compute(){
       '<div class="mc"><div class="ml">Break-even units</div><div class="mv mv-neu">'+be.toFixed(1)+'</div></div>'+
     '</div>'+
     '<div class="ann"><div style="font-size:20px">&#x1F4C5;</div>'+
-      '<div class="ann-text">Donating 5 nights a week, 50 weeks a year, your estimated annual net tax benefit is</div>'+
+      '<div class="ann-text">Donating '+Math.round(shifts)+' shifts a week, 50 weeks a year, your estimated annual net tax benefit is</div>'+
       '<div class="ann-val">'+(ann>=0?'$'+Math.round(ann).toLocaleString():'-$'+Math.round(Math.abs(ann)).toLocaleString())+'</div>'+
     '</div>'+
     '<div class="disc">Tax savings realized only with positive taxable income and donation to a qualified 501(c)(3) under the PATH Act of 2015. Distances are straight-line haversine; urban routing distances are 20-40% longer.</div>';
@@ -247,10 +253,14 @@ window.addEventListener('load',function(){
   map.setView([40.7831,-73.9712],14);
   updateMap();
 
+  document.getElementById('units').value=D.units;
+  document.getElementById('uVal').textContent=D.units;
   var ds=document.getElementById('dSel');
   DONORS.forEach(function(d){var o=document.createElement('option');o.value=d.id;o.textContent=d.name;ds.appendChild(o)});
   ds.addEventListener('change',function(){
     D=DONORS.find(function(x){return x.id===ds.value});
+    document.getElementById('units').value=D.units;
+    document.getElementById('uVal').textContent=D.units;
     document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Units/shift: '+D.units+'<br>Cost/unit: $'+PR[D.cat].C.toFixed(2);
     N=null;document.getElementById('nSel').value='';document.getElementById('distBadge').innerHTML='';document.getElementById('selLabel').textContent='';
     updateMap();compute();

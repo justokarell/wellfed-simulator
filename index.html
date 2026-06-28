@@ -81,10 +81,11 @@ input[type=range]{width:100%;accent-color:#C8A84B;cursor:pointer;margin-bottom:1
     <div id="distBadge"></div>
 
     <div class="sec">Donation Volume</div>
-    <div class="sl-row"><label>Units donated per shift</label><span class="sl-val" id="uVal">20</span></div>
+    <div class="sl-row"><label id="unitsLabel">Items donated per trip</label><span class="sl-val" id="uVal">20</span></div>
     <input type="range" id="units" min="1" max="100" step="1" value="20" oninput="sl(this,'uVal',function(v){return v})">
-    <div class="sl-row"><label>Shifts per week</label><span class="sl-val" id="shVal">5</span></div>
+    <div class="sl-row"><label>Trips per week</label><span class="sl-val" id="shVal">5</span></div>
     <input type="range" id="shifts" min="1" max="7" step="1" value="5" oninput="sl(this,'shVal',function(v){return v})">
+    <div id="produceNote" style="display:none;font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px;line-height:1.5">Fresh produce cost basis assumed at $1.00/lb (USDA ERS benchmark). Adjust if your actual cost differs.</div>
 
     <div class="sec">Transportation</div>
     <label>Who makes the delivery?</label>
@@ -153,11 +154,11 @@ var DONORS=[
   {id:"ouest",name:"Ouest Restaurant",lat:40.7880,lon:-73.9832,cat:"Prepared Meals",units:23},
 ];
 var PR={
-  "Prepared Meals":{a:2.50,s:.60,C:4.50},
-  "Baked Goods":{a:1.80,s:.50,C:1.80},
-  "Fresh Produce":{a:.60,s:.40,C:1.20},
-  "Dairy":{a:.90,s:.30,C:2.00},
-  "Beverages":{a:3.50,s:.70,C:.80},
+  "Prepared Meals":{a:2.50,s:.60,C:4.50,unit:"meals"},
+  "Baked Goods":{a:1.80,s:.50,C:1.80,unit:"items"},
+  "Fresh Produce":{a:.60,s:.40,C:1.00,unit:"lbs"},
+  "Dairy":{a:.90,s:.30,C:2.00,unit:"items"},
+  "Beverages":{a:3.50,s:.70,C:.80,unit:"bottles"},
 };
 var BR=[[11600,.10],[47150,.12],[100525,.22],[191950,.24],[243725,.32],[609350,.35],[Infinity,.37]];
 function mRate(v){for(var i=0;i<BR.length;i++)if(v<=BR[i][0])return BR[i][1];return .37}
@@ -170,6 +171,13 @@ function gv(id){return parseFloat(document.getElementById(id).value)}
 
 var D=DONORS[0],N=null,transport='self';
 var map,donorMarker=null,npMarkers=[],routeLine=null;
+
+function updateUnitLabel(){
+  var unit=PR[D.cat].unit;
+  var labels={"meals":"Meals donated per trip","lbs":"Pounds donated per trip","bottles":"Bottles donated per trip","items":"Items donated per trip"};
+  document.getElementById('unitsLabel').textContent=labels[unit]||"Items donated per trip";
+  document.getElementById('produceNote').style.display=unit==='lbs'?'block':'none';
+}
 
 function sl(el,vid,fmt){document.getElementById(vid).textContent=fmt(el.value);compute()}
 function setT(t){
@@ -241,7 +249,7 @@ function compute(){
       '<div class="mc"><div class="ml">Break-even units</div><div class="mv mv-neu">'+be.toFixed(1)+'</div></div>'+
     '</div>'+
     '<div class="ann"><div style="font-size:20px">&#x1F4C5;</div>'+
-      '<div class="ann-text">Donating '+Math.round(shifts)+' shifts a week, 50 weeks a year, your estimated annual net tax benefit is</div>'+
+      '<div class="ann-text">Donating '+Math.round(shifts)+' trips a week, 50 weeks a year, your estimated annual net tax benefit is</div>'+
       '<div class="ann-val">'+(ann>=0?'$'+Math.round(ann).toLocaleString():'-$'+Math.round(Math.abs(ann)).toLocaleString())+'</div>'+
     '</div>'+
     '<div class="disc">Tax savings realized only with positive taxable income and donation to a qualified 501(c)(3) under the PATH Act of 2015. Distances are straight-line haversine; urban routing distances are 20-40% longer.</div>';
@@ -255,18 +263,21 @@ window.addEventListener('load',function(){
 
   document.getElementById('units').value=D.units;
   document.getElementById('uVal').textContent=D.units;
+  updateUnitLabel();
   var ds=document.getElementById('dSel');
   DONORS.forEach(function(d){var o=document.createElement('option');o.value=d.id;o.textContent=d.name;ds.appendChild(o)});
   ds.addEventListener('change',function(){
     D=DONORS.find(function(x){return x.id===ds.value});
     document.getElementById('units').value=D.units;
     document.getElementById('uVal').textContent=D.units;
-    document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Units/shift: '+D.units+'<br>Cost/unit: $'+PR[D.cat].C.toFixed(2);
+    updateUnitLabel();
+    document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Cost/'+PR[D.cat].unit+': $'+PR[D.cat].C.toFixed(2)+'<br>Default: '+D.units+' '+PR[D.cat].unit+'/trip';
     N=null;document.getElementById('nSel').value='';document.getElementById('distBadge').innerHTML='';document.getElementById('selLabel').textContent='';
     updateMap();compute();
   });
   document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Units/shift: '+D.units+'<br>Cost/unit: $'+PR[D.cat].C.toFixed(2);
 
+  document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Cost/'+PR[D.cat].unit+': $'+PR[D.cat].C.toFixed(2)+'<br>Default: '+D.units+' '+PR[D.cat].unit+'/trip';
   var ns=document.getElementById('nSel');
   NPS.forEach(function(np){var o=document.createElement('option');o.value=np.id;o.textContent=np.name;ns.appendChild(o)});
   ns.addEventListener('change',function(){

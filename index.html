@@ -8,55 +8,55 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:#F7F5F0;color:#1A1A18;font-size:14px;min-height:100vh}
-.header{border-bottom:1px solid #E0DDD6;padding:16px 24px;display:flex;align-items:baseline;gap:10px;background:#fff}
-.logo{font-size:18px;font-weight:700;color:#1E3D2F}
-.logo span{color:#C8A84B}
-.logo-sub{font-size:12px;color:#6B6B63}
+body{font-family:'Inter',sans-serif;background:#FFFFFF;color:#111111;font-size:14px;min-height:100vh}
+.header{border-bottom:1px solid #E5E7EB;padding:16px 24px;display:flex;align-items:baseline;gap:10px;background:#fff}
+.logo{font-size:18px;font-weight:700;color:#111111}
+.logo span{color:#16A34A}
+.logo-sub{font-size:12px;color:#6B7280}
 .layout{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 53px)}
-.side{background:#fff;border-right:1px solid #E0DDD6;padding:20px 18px;overflow-y:auto}
+.side{background:#FAFAFA;border-right:1px solid #E5E7EB;padding:20px 18px;overflow-y:auto}
 .main{display:flex;flex-direction:column;overflow:hidden}
-#map{height:480px;width:100%;flex-shrink:0;border-bottom:1px solid #E0DDD6}
-.results{padding:20px;flex:1;overflow-y:auto;background:#F7F5F0}
+#map{height:480px;width:100%;flex-shrink:0;border-bottom:1px solid #E5E7EB}
+.results{padding:20px;flex:1;overflow-y:auto;background:#F9FAFB}
 .sec{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#9CA3AF;margin:18px 0 8px}
 .sec:first-child{margin-top:0}
-label{font-size:11px;color:#6B6B63;display:block;margin-bottom:4px;font-weight:500}
-select{width:100%;font-size:13px;padding:8px 10px;border-radius:7px;border:1px solid #E0DDD6;background:#fff;color:#1A1A18;font-family:'Inter',sans-serif;cursor:pointer;margin-bottom:10px}
-select:focus{outline:2px solid #C8A84B;outline-offset:1px}
+label{font-size:11px;color:#6B7280;display:block;margin-bottom:4px;font-weight:500}
+select{width:100%;font-size:13px;padding:8px 10px;border-radius:7px;border:1px solid #E5E7EB;background:#fff;color:#111111;font-family:'Inter',sans-serif;cursor:pointer;margin-bottom:10px}
+select:focus{outline:2px solid #16A34A;outline-offset:1px}
 .sl-row{display:flex;justify-content:space-between;margin-bottom:3px}
-.sl-val{font-size:12px;font-weight:600;color:#C8A84B}
-input[type=range]{width:100%;accent-color:#C8A84B;cursor:pointer;margin-bottom:10px}
+.sl-val{font-size:12px;font-weight:600;color:#16A34A}
+input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:10px}
 .rb-row{display:flex;gap:6px;margin-bottom:10px}
-.rb{flex:1;padding:7px 0;text-align:center;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid #E0DDD6;background:#F7F5F0;color:#6B6B63;transition:all .15s;user-select:none}
-.rb.on{border-color:#C8A84B;background:#FBF5E6;color:#7A5F1A}
-.dinfo{font-size:11px;color:#6B6B63;line-height:1.8;margin-bottom:4px}
-.dist-badge{display:inline-block;font-size:11px;background:#EFF9F2;color:#166534;padding:2px 8px;border-radius:4px;margin-top:4px;font-weight:500}
-.legend{font-size:11px;color:#6B6B63;padding:8px 16px;background:#fff;border-bottom:1px solid #E0DDD6;display:flex;gap:16px;align-items:center}
+.rb{flex:1;padding:7px 0;text-align:center;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid #E5E7EB;background:#FFFFFF;color:#6B7280;transition:all .15s;user-select:none}
+.rb.on{border-color:#16A34A;background:#F0FDF4;color:#15803D}
+.dinfo{font-size:11px;color:#6B7280;line-height:1.8;margin-bottom:4px}
+.dist-badge{display:inline-block;font-size:11px;background:#F0FDF4;color:#15803D;padding:2px 8px;border-radius:4px;margin-top:4px;font-weight:500;border:1px solid #BBF7D0}
+.legend{font-size:11px;color:#6B7280;padding:8px 16px;background:#fff;border-bottom:1px solid #E5E7EB;display:flex;gap:16px;align-items:center}
 .empty{text-align:center;padding:40px 20px;color:#9CA3AF;font-size:13px}
 .verdict{border-radius:8px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
-.v-ok{background:#EFF9F2;border:1px solid #86EFAC}
+.v-ok{background:#F0FDF4;border:1px solid #86EFAC}
 .v-no{background:#FEF2F2;border:1px solid #FCA5A5}
 .v-title{font-size:15px;font-weight:600}
-.v-ok .v-title{color:#166534}
+.v-ok .v-title{color:#15803D}
 .v-no .v-title{color:#991B1B}
-.v-sub{font-size:11px;color:#6B6B63;margin-top:3px}
+.v-sub{font-size:11px;color:#6B7280;margin-top:3px}
 .v-bracket{margin-left:auto;text-align:right;flex-shrink:0}
 .v-bracket-lbl{font-size:10px;color:#9CA3AF}
-.v-bracket-val{font-size:20px;font-weight:700;color:#C8A84B}
+.v-bracket-val{font-size:20px;font-weight:700;color:#16A34A}
 .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-.mc{background:#fff;border:1px solid #E0DDD6;border-radius:8px;padding:12px 14px}
+.mc{background:#fff;border:1px solid #E5E7EB;border-radius:8px;padding:12px 14px}
 .ml{font-size:10px;color:#9CA3AF;margin-bottom:4px;font-weight:500}
 .mv{font-size:20px;font-weight:700}
-.mv-ok{color:#166534}
+.mv-ok{color:#15803D}
 .mv-no{color:#991B1B}
-.mv-neu{color:#1A1A18}
-.ann{background:#FBF5E6;border:1px solid #E8C97A;border-radius:8px;padding:14px 16px;display:flex;align-items:center;gap:12px}
-.ann-text{font-size:12px;color:#5C4A10;flex:1}
-.ann-val{font-size:24px;font-weight:700;color:#C8A84B;flex-shrink:0}
-.disc{font-size:10px;color:#9CA3AF;margin-top:14px;border-top:1px solid #E0DDD6;padding-top:12px;line-height:1.6}
+.mv-neu{color:#111111}
+.ann{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.ann-text{font-size:12px;color:#15803D;flex:1}
+.ann-val{font-size:24px;font-weight:700;color:#16A34A;flex-shrink:0}
+.disc{font-size:10px;color:#9CA3AF;margin-top:14px;border-top:1px solid #E5E7EB;padding-top:12px;line-height:1.6}
 @media(max-width:640px){
   .layout{grid-template-columns:1fr;grid-template-rows:auto 1fr}
-  .side{border-right:none;border-bottom:1px solid #E0DDD6}
+  .side{border-right:none;border-bottom:1px solid #E5E7EB}
   .metrics{grid-template-columns:1fr 1fr}
 }
 </style>
@@ -64,7 +64,7 @@ input[type=range]{width:100%;accent-color:#C8A84B;cursor:pointer;margin-bottom:1
 <body>
 
 <div class="header">
-  <span class="logo">Well<span>Fed</span></span>
+  <span class="logo">Well<span style="color:#16A34A">Fed</span></span>
   <span class="logo-sub">Food Donation Tax Savings Simulator &middot; Upper West Side, NYC</span>
 </div>
 
@@ -77,17 +77,21 @@ input[type=range]{width:100%;accent-color:#C8A84B;cursor:pointer;margin-bottom:1
 
     <div class="sec">Nonprofit</div>
     <label>Select or click a pin on the map</label>
-    <select id="nSel"><option value="">— pick a nonprofit —</option></select>
+    <select id="nSel"><option value="">&#8212; pick a nonprofit &#8212;</option></select>
     <div id="distBadge"></div>
 
-    <div class="sec">Donation Volume</div>
-    <div class="sl-row"><label id="unitsLabel">Items donated per trip</label><span class="sl-val" id="uVal">20</span></div>
+    <div class="sec">Donation</div>
+    <div class="sl-row"><label id="unitsLabel">Meals donated per trip</label><span class="sl-val" id="uVal">20</span></div>
     <input type="range" id="units" min="1" max="100" step="1" value="20" oninput="sl(this,'uVal',function(v){return v})">
+    <div id="produceNote" style="display:none;font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px;line-height:1.5">Fresh produce cost basis assumed at $1.00/lb (USDA ERS benchmark).</div>
     <div class="sl-row"><label>Trips per week</label><span class="sl-val" id="shVal">5</span></div>
     <input type="range" id="shifts" min="1" max="7" step="1" value="5" oninput="sl(this,'shVal',function(v){return v})">
-    <div id="produceNote" style="display:none;font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px;line-height:1.5">Fresh produce cost basis assumed at $1.00/lb (USDA ERS benchmark). Adjust if your actual cost differs.</div>
 
-    <div class="sec">Transportation</div>
+    <div class="sec">Income</div>
+    <div class="sl-row"><label>Annual taxable income</label><span class="sl-val" id="iVal">$120,000</span></div>
+    <input type="range" id="income" min="10000" max="700000" step="5000" value="120000" oninput="sl(this,'iVal',function(v){return '$'+Math.round(v).toLocaleString()})">
+
+    <div class="sec">Delivery</div>
     <label>Who makes the delivery?</label>
     <div class="rb-row">
       <div class="rb on" id="rbS" onclick="setT('self')">I deliver</div>
@@ -98,26 +102,39 @@ input[type=range]{width:100%;accent-color:#C8A84B;cursor:pointer;margin-bottom:1
       <input type="range" id="wage" min="10" max="40" step="0.5" value="18" oninput="sl(this,'wVal',function(v){return '$'+parseFloat(v).toFixed(0)+'/hr'})">
     </div>
 
-    <div class="sec">Income</div>
-    <div class="sl-row"><label>Annual taxable income</label><span class="sl-val" id="iVal">$120,000</span></div>
-    <input type="range" id="income" min="10000" max="700000" step="5000" value="120000" oninput="sl(this,'iVal',function(v){return '$'+Math.round(v).toLocaleString()})">
-
-    <div class="sec">Trip Costs</div>
-    <div class="sl-row"><label>Gas price</label><span class="sl-val" id="gVal">$3.80/gal</span></div>
-    <input type="range" id="gas" min="2" max="8" step="0.1" value="3.8" oninput="sl(this,'gVal',function(v){return '$'+parseFloat(v).toFixed(2)+'/gal'})">
-    <div class="sl-row"><label>Vehicle MPG</label><span class="sl-val" id="mVal">25 mpg</span></div>
-    <input type="range" id="mpg" min="10" max="60" step="1" value="25" oninput="sl(this,'mVal',function(v){return v+' mpg'})">
-    <div class="sl-row"><label>Avg speed</label><span class="sl-val" id="sVal">15 mph</span></div>
-    <input type="range" id="spd" min="5" max="40" step="1" value="15" oninput="sl(this,'sVal',function(v){return v+' mph'})">
-    <div class="sl-row"><label>Container cost</label><span class="sl-val" id="cVal">$5.00</span></div>
-    <input type="range" id="cont" min="0" max="20" step="0.5" value="5" oninput="sl(this,'cVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
+    <div style="margin-top:20px;border-top:1px solid #E5E7EB;padding-top:14px">
+      <div onclick="toggleAdv()" style="cursor:pointer;user-select:none;font-size:11px;font-weight:600;color:#6B7280;display:flex;align-items:center;gap:6px">
+        <span id="advArrow" style="display:inline-block;font-size:9px;transition:transform .2s">&#9654;</span>
+        Advanced settings
+      </div>
+      <div id="advPanel" style="display:none;margin-top:12px">
+        <label style="font-size:11px;color:#6B7280;margin-bottom:6px;display:block">Trip costs</label>
+        <div class="rb-row" style="margin-bottom:12px">
+          <div class="rb on" id="rbTripOn" onclick="setTrip(true)">Include</div>
+          <div class="rb" id="rbTripOff" onclick="setTrip(false)">Exclude</div>
+        </div>
+        <div id="tripCostPanel">
+          <div class="sl-row"><label>Gas price</label><span class="sl-val" id="gVal">$3.80/gal</span></div>
+          <input type="range" id="gas" min="2" max="8" step="0.1" value="3.8" oninput="sl(this,'gVal',function(v){return '$'+parseFloat(v).toFixed(2)+'/gal'})">
+          <div class="sl-row"><label>Vehicle MPG</label><span class="sl-val" id="mVal">25 mpg</span></div>
+          <input type="range" id="mpg" min="10" max="60" step="1" value="25" oninput="sl(this,'mVal',function(v){return v+' mpg'})">
+          <div class="sl-row"><label>Avg speed</label><span class="sl-val" id="sVal">15 mph</span></div>
+          <input type="range" id="spd" min="5" max="40" step="1" value="15" oninput="sl(this,'sVal',function(v){return v+' mph'})">
+          <div class="sl-row"><label>Container cost</label><span class="sl-val" id="cVal">$5.00</span></div>
+          <input type="range" id="cont" min="0" max="20" step="0.5" value="5" oninput="sl(this,'cVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
+        </div>
+        <div class="sl-row" style="margin-top:8px"><label>Labor and handling cost per trip</label><span class="sl-val" id="laborVal">$0.00</span></div>
+        <input type="range" id="labor" min="0" max="100" step="1" value="0" oninput="sl(this,'laborVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
+        <div style="font-size:10px;color:#9CA3AF;margin-top:-4px;margin-bottom:4px;line-height:1.5">Staff time, packaging, or other non-transport costs per trip.</div>
+      </div>
+    </div>
   </div>
 
   <div class="main">
     <div class="legend">
       <span><span style="display:inline-block;width:12px;height:12px;background:#f59e0b;border-radius:2px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> Your business</span>
       <span><span style="display:inline-block;width:12px;height:12px;background:#3b82f6;border-radius:50%;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> Nonprofits (click to select)</span>
-      <span id="selLabel" style="color:#166534;font-weight:500"></span>
+      <span id="selLabel" style="color:#15803D;font-weight:500"></span>
     </div>
     <div id="map"></div>
     <div class="results" id="results">
@@ -130,18 +147,22 @@ input[type=range]{width:100%;accent-color:#C8A84B;cursor:pointer;margin-bottom:1
 <script>
 var NPS=[
   // UWS
-  {id:"wscah",name:"West Side Campaign Against Hunger",lat:40.7889,lon:-73.9750},
-  {id:"ncjw",name:"National Council of Jewish Women",lat:40.7754,lon:-73.9800},
-  {id:"stmike",name:"St. Michael's Church",lat:40.7804,lon:-73.9812},
-  {id:"unitar",name:"Unitarian Church of All Souls",lat:40.7733,lon:-73.9579},
-  {id:"parkav",name:"Park Avenue Synagogue",lat:40.7757,lon:-73.9583},
-  {id:"stluke",name:"St. Luke's Food Pantry",lat:40.7978,lon:-73.9680},
+  {id:"wscah",name:"West Side Campaign Against Hunger",lat:40.7890,lon:-73.9773},
+  {id:"allangels",name:"All Angels Church Soup Kitchen",lat:40.7850,lon:-73.9800},
+  {id:"broadway",name:"Broadway Community",lat:40.8070,lon:-73.9651},
+  {id:"westend",name:"West End Collegiate Church Food Pantry",lat:40.7832,lon:-73.9818},
+  {id:"ascension",name:"The Ascension Food Pantry",lat:40.8019,lon:-73.9663},
   // UES
-  {id:"uoc",name:"Urban Outreach Center",lat:40.7796,lon:-73.9458},
-  {id:"hunter",name:"Hunter College Purple Apron Food Pantry",lat:40.7685,lon:-73.9647},
-  {id:"stjames",name:"St. James' Church Food Pantry",lat:40.7689,lon:-73.9592},
-  {id:"nycp",name:"NY Common Pantry (E 109th St)",lat:40.7940,lon:-73.9448},
-  {id:"trinites",name:"Trinity St. Paul's Food Pantry",lat:40.7741,lon:-73.9548},
+  {id:"uoc",name:"Urban Outreach Center",lat:40.7798,lon:-73.9476},
+  {id:"allsouls",name:"All Souls Unitarian Church Food Pantry",lat:40.7754,lon:-73.9582},
+  {id:"allsaints",name:"All Saints Episcopal Church",lat:40.7614,lon:-73.9650},
+  {id:"nycp",name:"NY Common Pantry",lat:40.7958,lon:-73.9492},
+  {id:"crossroads",name:"Crossroads at St. Bartholomew's",lat:40.7573,lon:-73.9728},
+  // Stamford
+  {id:"newcov",name:"New Covenant Center",lat:41.0477,lon:-73.5512},
+  {id:"foodbank",name:"Food Bank of Lower Fairfield County",lat:41.0690,lon:-73.5203},
+  {id:"salvationstam",name:"Salvation Army Stamford Food Pantry",lat:41.0408,lon:-73.5557},
+  {id:"faithtab",name:"Faith Tabernacle Church Food Pantry",lat:41.0550,lon:-73.5332},
 ];
 var DONORS=[
   // UWS
@@ -149,28 +170,39 @@ var DONORS=[
   {id:"blonde",name:"Blondies Sports",lat:40.7851,lon:-73.9793,cat:"Prepared Meals",units:20},
   {id:"buceo",name:"Buceo 95",lat:40.7924,lon:-73.9742,cat:"Prepared Meals",units:18},
   {id:"gebhard",name:"Gebhard's Beer Culture",lat:40.7907,lon:-73.9731,cat:"Beverages",units:25},
-  {id:"carlyle",name:"Cafe Carlyle",lat:40.7739,lon:-73.9632,cat:"Prepared Meals",units:19},
   {id:"gennaro",name:"Gennaro Restaurant",lat:40.7877,lon:-73.9820,cat:"Prepared Meals",units:21},
   {id:"barney",name:"Barney Greengrass",lat:40.7852,lon:-73.9798,cat:"Dairy",units:14},
   {id:"belle",name:"Hotel Belleclaire Kitchen",lat:40.7861,lon:-73.9810,cat:"Prepared Meals",units:17},
-  {id:"bellini",name:"Bellini",lat:40.7743,lon:-73.9820,cat:"Baked Goods",units:30},
   {id:"sabar",name:"Cafe Sabarsky",lat:40.7838,lon:-73.9589,cat:"Baked Goods",units:28},
   {id:"vbar",name:"V&T Restaurant",lat:40.8012,lon:-73.9660,cat:"Prepared Meals",units:16},
   {id:"amster",name:"Amsterdam Restaurant & Bar",lat:40.7905,lon:-73.9760,cat:"Fresh Produce",units:35},
-  {id:"wave",name:"Wave Hill Bread",lat:40.7830,lon:-73.9820,cat:"Baked Goods",units:40},
   {id:"joe",name:"Joe Coffee UWS",lat:40.7843,lon:-73.9796,cat:"Beverages",units:18},
-  {id:"ouest",name:"Ouest Restaurant",lat:40.7880,lon:-73.9832,cat:"Prepared Meals",units:23},
+  {id:"frenchroast",name:"French Roast",lat:40.7876,lon:-73.9766,cat:"Prepared Meals",units:24},
+  {id:"tessa",name:"TESSA",lat:40.7814,lon:-73.9792,cat:"Prepared Meals",units:20},
+  {id:"carmines",name:"Carmine's UWS",lat:40.7911,lon:-73.9740,cat:"Prepared Meals",units:30},
+  {id:"maison",name:"Maison Pickle",lat:40.7869,lon:-73.9780,cat:"Prepared Meals",units:22},
+  {id:"pigkhao",name:"Pig and Khao",lat:40.7842,lon:-73.9772,cat:"Prepared Meals",units:18},
+  {id:"jacobs",name:"Jacob's Pickles",lat:40.7912,lon:-73.9690,cat:"Prepared Meals",units:25},
+  {id:"cotta",name:"Osteria Cotta",lat:40.7855,lon:-73.9727,cat:"Prepared Meals",units:20},
+  {id:"florentin",name:"Florentin",lat:40.7859,lon:-73.9766,cat:"Prepared Meals",units:18},
   // UES
-  {id:"madamebonte",name:"Madame Bonte",lat:40.7762,lon:-73.9554,cat:"Baked Goods",units:35},
-  {id:"lexington",name:"Lexington Brass",lat:40.7749,lon:-73.9643,cat:"Prepared Meals",units:20},
-  {id:"caravaggio",name:"Caravaggio",lat:40.7706,lon:-73.9626,cat:"Prepared Meals",units:18},
-  {id:"elaines",name:"JG Melon",lat:40.7741,lon:-73.9582,cat:"Prepared Meals",units:22},
-  {id:"sushi",name:"Sushi of Gari",lat:40.7735,lon:-73.9572,cat:"Prepared Meals",units:16},
-  {id:"viand",name:"Viand Coffee Shop",lat:40.7724,lon:-73.9586,cat:"Prepared Meals",units:24},
-  {id:"bagelworks",name:"Bagelworks",lat:40.7698,lon:-73.9620,cat:"Baked Goods",units:45},
+  {id:"madamebonte",name:"Madame Bonte (E 84th St)",lat:40.7762,lon:-73.9546,cat:"Baked Goods",units:35},
+  {id:"lapecora",name:"La Pecora Bianca UES",lat:40.7747,lon:-73.9538,cat:"Prepared Meals",units:20},
+  {id:"upthai",name:"Up Thai",lat:40.7700,lon:-73.9579,cat:"Prepared Meals",units:18},
+  {id:"waterwheat",name:"Water & Wheat UES",lat:40.7739,lon:-73.9573,cat:"Prepared Meals",units:22},
+  {id:"zoi",name:"ZOI Mediterranean",lat:40.7721,lon:-73.9557,cat:"Prepared Meals",units:20},
+  {id:"cravefishbar",name:"Crave Fishbar UES",lat:40.7716,lon:-73.9560,cat:"Prepared Meals",units:16},
+  {id:"thepthai",name:"THEP Thai Restaurant",lat:40.7708,lon:-73.9572,cat:"Prepared Meals",units:18},
+  {id:"uvanext",name:"Uva Next Door",lat:40.7721,lon:-73.9556,cat:"Prepared Meals",units:17},
+  {id:"losteria",name:"L'Osteria",lat:40.7771,lon:-73.9571,cat:"Prepared Meals",units:19},
   {id:"orwashers",name:"Orwashers Bakery UES",lat:40.7750,lon:-73.9559,cat:"Baked Goods",units:50},
-  {id:"graciemansion",name:"The Mark Restaurant",lat:40.7739,lon:-73.9632,cat:"Prepared Meals",units:25},
-  {id:"dainobu",name:"Dainobu Market",lat:40.7745,lon:-73.9565,cat:"Fresh Produce",units:40},
+  // Stamford
+  {id:"patisserie",name:"Patisserie Salzburg Stamford",lat:41.0534,lon:-73.5404,cat:"Baked Goods",units:30},
+  {id:"cococafe",name:"Coco Cafe Stamford",lat:41.0556,lon:-73.5407,cat:"Baked Goods",units:25},
+  {id:"laesquinita",name:"La Esquinita",lat:41.0453,lon:-73.5402,cat:"Prepared Meals",units:20},
+  {id:"canard",name:"Canard Cafe Bar Stamford",lat:41.0520,lon:-73.5357,cat:"Baked Goods",units:22},
+  {id:"matthews",name:"Matthew's Bakery",lat:41.0408,lon:-73.5535,cat:"Baked Goods",units:40},
+  {id:"lorca",name:"Lorca Coffee Bar",lat:41.0561,lon:-73.5383,cat:"Beverages",units:20},
 ];
 var PR={
   "Prepared Meals":{a:2.50,s:.60,C:4.50,unit:"meals"},
@@ -199,6 +231,22 @@ function updateUnitLabel(){
 }
 
 function sl(el,vid,fmt){document.getElementById(vid).textContent=fmt(el.value);compute()}
+
+var advOpen=false;
+function toggleAdv(){
+  advOpen=!advOpen;
+  document.getElementById('advPanel').style.display=advOpen?'block':'none';
+  document.getElementById('advArrow').style.transform=advOpen?'rotate(90deg)':'rotate(0deg)';
+}
+
+var includeTrip=true;
+function setTrip(on){
+  includeTrip=on;
+  document.getElementById('rbTripOn').className='rb'+(on?' on':'');
+  document.getElementById('rbTripOff').className='rb'+(!on?' on':'');
+  document.getElementById('tripCostPanel').style.display=on?'block':'none';
+  compute();
+}
 function setT(t){
   transport=t;
   document.getElementById('rbS').className='rb'+(t==='self'?' on':'');
@@ -211,7 +259,7 @@ function makeDonorIcon(){
   return L.divIcon({html:'<div style="width:14px;height:14px;background:#f59e0b;border:2px solid white;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>',className:'',iconAnchor:[7,7]});
 }
 function makeNPIcon(sel){
-  var sz=sel?16:13,col=sel?'#1E3D2F':'#3b82f6';
+  var sz=sel?16:13,col=sel?'#16A34A':'#3b82f6';
   return L.divIcon({html:'<div style="width:'+sz+'px;height:'+sz+'px;background:'+col+';border:2px solid white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>',className:'',iconAnchor:[sz/2,sz/2]});
 }
 
@@ -239,7 +287,7 @@ function updateMap(){
   });
   if(routeLine){routeLine.remove();routeLine=null;}
   if(N){
-    routeLine=L.polyline([[D.lat,D.lon],[N.lat,N.lon]],{color:'#1E3D2F',weight:2,dashArray:'6 4',opacity:.8}).addTo(map);
+    routeLine=L.polyline([[D.lat,D.lon],[N.lat,N.lon]],{color:'#16A34A',weight:2,dashArray:'6 4',opacity:.8}).addTo(map);
     map.fitBounds([[D.lat,D.lon],[N.lat,N.lon]],{padding:[50,50]});
   } else {
     map.setView([D.lat,D.lon],15);
@@ -250,7 +298,10 @@ function compute(){
   if(!N){document.getElementById('results').innerHTML='<div class="empty">Click a blue nonprofit pin on the map, or use the dropdown on the left.</div>';return}
   var p=PR[D.cat],ed=edVal(p.a,p.C,p.s),t=mRate(gv('income')),n=gv('units'),shifts=gv('shifts');
   var gas=gv('gas'),mpg=gv('mpg'),spd=gv('spd'),cont=gv('cont'),wage=transport==='driver'?gv('wage'):0;
-  var dist=hav(D.lat,D.lon,N.lat,N.lon),trip=tc(dist,gas,mpg,wage,spd,cont);
+  var dist=hav(D.lat,D.lon,N.lat,N.lon);
+  var labor=gv('labor');
+  var tripBase=includeTrip?tc(dist,gas,mpg,wage,spd,cont):0;
+  var trip=tripBase+labor;
   var sav=t*ed*n,net=sav-trip,Vg=n*p.C,thr=p.C*trip/(t*ed),ok=Vg>=thr,ann=net*shifts*50,be=trip/(t*ed);
   document.getElementById('results').innerHTML=
     '<div class="verdict '+(ok?'v-ok':'v-no')+'">'+

@@ -9,12 +9,12 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:#FFFFFF;color:#111111;font-size:14px;min-height:100vh}
-.header{border-bottom:1px solid #E5E7EB;padding:16px 24px;display:flex;align-items:baseline;gap:10px;background:#fff}
+.header{border-bottom:1px solid #E5E7EB;padding:16px 24px;display:flex;align-items:center;gap:10px;background:#fff}
 .logo{font-size:18px;font-weight:700;color:#111111}
 .logo span{color:#16A34A}
 .logo-sub{font-size:12px;color:#6B7280}
 .layout{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 53px)}
-.side{background:#FAFAFA;border-right:1px solid #E5E7EB;padding:20px 18px;overflow-y:auto}
+.side{background:#FAFAFA;border-right:1px solid #E5E7EB;padding:20px 18px;overflow-y:auto;position:relative}
 .main{display:flex;flex-direction:column;overflow:hidden}
 #map{height:480px;width:100%;flex-shrink:0;border-bottom:1px solid #E5E7EB}
 .results{padding:20px;flex:1;overflow-y:auto;background:#F9FAFB}
@@ -53,6 +53,9 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
 .ann{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:14px 16px;display:flex;align-items:center;gap:12px}
 .ann-text{font-size:12px;color:#15803D;flex:1}
 .ann-val{font-size:24px;font-weight:700;color:#16A34A;flex-shrink:0}
+.dd-item{padding:8px 12px;font-size:12px;color:#111111;cursor:pointer;border-radius:4px}
+.dd-item:hover{background:#F0FDF4;color:#15803D}
+.dd-cat{padding:6px 12px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#9CA3AF;pointer-events:none}
 .disc{font-size:10px;color:#9CA3AF;margin-top:14px;border-top:1px solid #E5E7EB;padding-top:12px;line-height:1.6}
 .savings-hero{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:16px 20px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
 .savings-hero-label{font-size:12px;color:#166534;font-weight:500}
@@ -72,19 +75,27 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
 
 <div class="header">
   <span class="logo">Well<span style="color:#16A34A">Fed</span></span>
-  <span class="logo-sub">Food Donation Tax Savings Simulator &middot; Upper West Side, NYC</span>
+  <span class="logo-sub">Food Donation Tax Savings Simulator</span>
 </div>
 
 <div class="layout">
   <div class="side">
     <div class="sec">Donor Business</div>
     <label>Select your business</label>
-    <select id="dSel"></select>
+    <input type="text" id="dSearch" placeholder="Type to search..." autocomplete="off"
+      style="width:100%;font-size:13px;padding:8px 10px;border-radius:7px;border:1px solid #E5E7EB;color:#111111;font-family:'Inter',sans-serif;margin-bottom:4px"
+      oninput="filterDonors(this.value)" onfocus="showDonorList()" onblur="setTimeout(hideDonorList,200)">
+    <div id="dList" style="display:none;position:absolute;z-index:1000;background:#fff;border:1px solid #E5E7EB;border-radius:7px;width:248px;max-height:200px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,.1)"></div>
+    <select id="dSel" style="display:none"></select>
     <div class="dinfo" id="dInfo"></div>
 
     <div class="sec">Nonprofit</div>
     <label>Select or click a pin on the map</label>
-    <select id="nSel"><option value="">&#8212; pick a nonprofit &#8212;</option></select>
+    <input type="text" id="nSearch" placeholder="Type to search..." autocomplete="off"
+      style="width:100%;font-size:13px;padding:8px 10px;border-radius:7px;border:1px solid #E5E7EB;color:#111111;font-family:'Inter',sans-serif;margin-bottom:4px"
+      oninput="filterNPs(this.value)" onfocus="showNPList()" onblur="setTimeout(hideNPList,200)">
+    <div id="nList" style="display:none;position:absolute;z-index:1000;background:#fff;border:1px solid #E5E7EB;border-radius:7px;width:248px;max-height:200px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,.1)"></div>
+    <select id="nSel" style="display:none"><option value="">— pick a nonprofit —</option></select>
     <div id="distBadge"></div>
 
     <div class="sec">Donation</div>
@@ -154,62 +165,62 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
 <script>
 var NPS=[
   // UWS
-  {id:"wscah",name:"West Side Campaign Against Hunger",lat:40.7890,lon:-73.9773},
-  {id:"allangels",name:"All Angels Church Soup Kitchen",lat:40.7850,lon:-73.9800},
-  {id:"broadway",name:"Broadway Community",lat:40.8070,lon:-73.9651},
-  {id:"westend",name:"West End Collegiate Church Food Pantry",lat:40.7832,lon:-73.9818},
-  {id:"ascension",name:"The Ascension Food Pantry",lat:40.8019,lon:-73.9663},
+  {id:"wscah",area:"Upper West Side",name:"West Side Campaign Against Hunger",lat:40.7890,lon:-73.9773},
+  {id:"allangels",area:"Upper West Side",name:"All Angels Church Soup Kitchen",lat:40.7850,lon:-73.9800},
+  {id:"broadway",area:"Upper West Side",name:"Broadway Community",lat:40.8070,lon:-73.9651},
+  {id:"westend",area:"Upper West Side",name:"West End Collegiate Church Food Pantry",lat:40.7832,lon:-73.9818},
+  {id:"ascension",area:"Upper West Side",name:"The Ascension Food Pantry",lat:40.8019,lon:-73.9663},
   // UES
-  {id:"uoc",name:"Urban Outreach Center",lat:40.7798,lon:-73.9476},
-  {id:"allsouls",name:"All Souls Unitarian Church Food Pantry",lat:40.7754,lon:-73.9582},
-  {id:"allsaints",name:"All Saints Episcopal Church",lat:40.7614,lon:-73.9650},
-  {id:"nycp",name:"NY Common Pantry",lat:40.7958,lon:-73.9492},
-  {id:"crossroads",name:"Crossroads at St. Bartholomew's",lat:40.7573,lon:-73.9728},
+  {id:"uoc",area:"Upper East Side",name:"Urban Outreach Center",lat:40.7798,lon:-73.9476},
+  {id:"allsouls",area:"Upper East Side",name:"All Souls Unitarian Church Food Pantry",lat:40.7754,lon:-73.9582},
+  {id:"allsaints",area:"Upper East Side",name:"All Saints Episcopal Church",lat:40.7614,lon:-73.9650},
+  {id:"nycp",area:"Upper East Side",name:"NY Common Pantry",lat:40.7958,lon:-73.9492},
+  {id:"crossroads",area:"Upper East Side",name:"Crossroads at St. Bartholomew's",lat:40.7573,lon:-73.9728},
   // Stamford
-  {id:"newcov",name:"New Covenant Center",lat:41.0477,lon:-73.5512},
-  {id:"foodbank",name:"Food Bank of Lower Fairfield County",lat:41.0690,lon:-73.5203},
-  {id:"salvationstam",name:"Salvation Army Stamford Food Pantry",lat:41.0408,lon:-73.5557},
-  {id:"faithtab",name:"Faith Tabernacle Church Food Pantry",lat:41.0550,lon:-73.5332},
+  {id:"newcov",area:"Stamford, CT",name:"New Covenant Center",lat:41.0477,lon:-73.5512},
+  {id:"foodbank",area:"Stamford, CT",name:"Food Bank of Lower Fairfield County",lat:41.0690,lon:-73.5203},
+  {id:"salvationstam",area:"Stamford, CT",name:"Salvation Army Stamford Food Pantry",lat:41.0408,lon:-73.5557},
+  {id:"faithtab",area:"Stamford, CT",name:"Faith Tabernacle Church Food Pantry",lat:41.0550,lon:-73.5332},
 ];
 var DONORS=[
   // UWS
-  {id:"gin",name:"The Speakeasy at The Gin Mill",lat:40.7868,lon:-73.9807,cat:"Prepared Meals",units:22},
-  {id:"blonde",name:"Blondies Sports",lat:40.7851,lon:-73.9793,cat:"Prepared Meals",units:20},
-  {id:"buceo",name:"Buceo 95",lat:40.7924,lon:-73.9742,cat:"Prepared Meals",units:18},
-  {id:"gebhard",name:"Gebhard's Beer Culture",lat:40.7907,lon:-73.9731,cat:"Beverages",units:25},
-  {id:"gennaro",name:"Gennaro Restaurant",lat:40.7877,lon:-73.9820,cat:"Prepared Meals",units:21},
-  {id:"barney",name:"Barney Greengrass",lat:40.7852,lon:-73.9798,cat:"Dairy",units:14},
-  {id:"belle",name:"Hotel Belleclaire Kitchen",lat:40.7861,lon:-73.9810,cat:"Prepared Meals",units:17},
-  {id:"sabar",name:"Cafe Sabarsky",lat:40.7838,lon:-73.9589,cat:"Baked Goods",units:28},
-  {id:"vbar",name:"V&T Restaurant",lat:40.8012,lon:-73.9660,cat:"Prepared Meals",units:16},
-  {id:"amster",name:"Amsterdam Restaurant & Bar",lat:40.7905,lon:-73.9760,cat:"Fresh Produce",units:35},
-  {id:"joe",name:"Joe Coffee UWS",lat:40.7843,lon:-73.9796,cat:"Beverages",units:18},
-  {id:"frenchroast",name:"French Roast",lat:40.7876,lon:-73.9766,cat:"Prepared Meals",units:24},
-  {id:"tessa",name:"TESSA",lat:40.7814,lon:-73.9792,cat:"Prepared Meals",units:20},
-  {id:"carmines",name:"Carmine's UWS",lat:40.7911,lon:-73.9740,cat:"Prepared Meals",units:30},
-  {id:"maison",name:"Maison Pickle",lat:40.7869,lon:-73.9780,cat:"Prepared Meals",units:22},
-  {id:"pigkhao",name:"Pig and Khao",lat:40.7842,lon:-73.9772,cat:"Prepared Meals",units:18},
-  {id:"jacobs",name:"Jacob's Pickles",lat:40.7912,lon:-73.9690,cat:"Prepared Meals",units:25},
-  {id:"cotta",name:"Osteria Cotta",lat:40.7855,lon:-73.9727,cat:"Prepared Meals",units:20},
-  {id:"florentin",name:"Florentin",lat:40.7859,lon:-73.9766,cat:"Prepared Meals",units:18},
+  {id:"gin",area:"Upper West Side",name:"The Speakeasy at The Gin Mill",lat:40.7868,lon:-73.9807,cat:"Prepared Meals",units:22},
+  {id:"blonde",area:"Upper West Side",name:"Blondies Sports",lat:40.7851,lon:-73.9793,cat:"Prepared Meals",units:20},
+  {id:"buceo",area:"Upper West Side",name:"Buceo 95",lat:40.7924,lon:-73.9742,cat:"Prepared Meals",units:18},
+  {id:"gebhard",area:"Upper West Side",name:"Gebhard's Beer Culture",lat:40.7907,lon:-73.9731,cat:"Beverages",units:25},
+  {id:"gennaro",area:"Upper West Side",name:"Gennaro Restaurant",lat:40.7877,lon:-73.9820,cat:"Prepared Meals",units:21},
+  {id:"barney",area:"Upper West Side",name:"Barney Greengrass",lat:40.7852,lon:-73.9798,cat:"Dairy",units:14},
+  {id:"belle",area:"Upper West Side",name:"Hotel Belleclaire Kitchen",lat:40.7861,lon:-73.9810,cat:"Prepared Meals",units:17},
+  {id:"sabar",area:"Upper West Side",name:"Cafe Sabarsky",lat:40.7838,lon:-73.9589,cat:"Baked Goods",units:28},
+  {id:"vbar",area:"Upper West Side",name:"V&T Restaurant",lat:40.8012,lon:-73.9660,cat:"Prepared Meals",units:16},
+  {id:"amster",area:"Upper West Side",name:"Amsterdam Restaurant & Bar",lat:40.7905,lon:-73.9760,cat:"Fresh Produce",units:35},
+  {id:"joe",area:"Upper West Side",name:"Joe Coffee UWS",lat:40.7843,lon:-73.9796,cat:"Beverages",units:18},
+  {id:"frenchroast",area:"Upper West Side",name:"French Roast",lat:40.7876,lon:-73.9766,cat:"Prepared Meals",units:24},
+  {id:"tessa",area:"Upper West Side",name:"TESSA",lat:40.7814,lon:-73.9792,cat:"Prepared Meals",units:20},
+  {id:"carmines",area:"Upper West Side",name:"Carmine's UWS",lat:40.7911,lon:-73.9740,cat:"Prepared Meals",units:30},
+  {id:"maison",area:"Upper West Side",name:"Maison Pickle",lat:40.7869,lon:-73.9780,cat:"Prepared Meals",units:22},
+  {id:"pigkhao",area:"Upper West Side",name:"Pig and Khao",lat:40.7842,lon:-73.9772,cat:"Prepared Meals",units:18},
+  {id:"jacobs",area:"Upper West Side",name:"Jacob's Pickles",lat:40.7912,lon:-73.9690,cat:"Prepared Meals",units:25},
+  {id:"cotta",area:"Upper West Side",name:"Osteria Cotta",lat:40.7855,lon:-73.9727,cat:"Prepared Meals",units:20},
+  {id:"florentin",area:"Upper West Side",name:"Florentin",lat:40.7859,lon:-73.9766,cat:"Prepared Meals",units:18},
   // UES
-  {id:"madamebonte",name:"Madame Bonte (E 84th St)",lat:40.7762,lon:-73.9546,cat:"Baked Goods",units:35},
-  {id:"lapecora",name:"La Pecora Bianca UES",lat:40.7747,lon:-73.9538,cat:"Prepared Meals",units:20},
-  {id:"upthai",name:"Up Thai",lat:40.7700,lon:-73.9579,cat:"Prepared Meals",units:18},
-  {id:"waterwheat",name:"Water & Wheat UES",lat:40.7739,lon:-73.9573,cat:"Prepared Meals",units:22},
-  {id:"zoi",name:"ZOI Mediterranean",lat:40.7721,lon:-73.9557,cat:"Prepared Meals",units:20},
-  {id:"cravefishbar",name:"Crave Fishbar UES",lat:40.7716,lon:-73.9560,cat:"Prepared Meals",units:16},
-  {id:"thepthai",name:"THEP Thai Restaurant",lat:40.7708,lon:-73.9572,cat:"Prepared Meals",units:18},
-  {id:"uvanext",name:"Uva Next Door",lat:40.7721,lon:-73.9556,cat:"Prepared Meals",units:17},
-  {id:"losteria",name:"L'Osteria",lat:40.7771,lon:-73.9571,cat:"Prepared Meals",units:19},
-  {id:"orwashers",name:"Orwashers Bakery UES",lat:40.7750,lon:-73.9559,cat:"Baked Goods",units:50},
+  {id:"madamebonte",area:"Upper East Side",name:"Madame Bonte (E 84th St)",lat:40.7762,lon:-73.9546,cat:"Baked Goods",units:35},
+  {id:"lapecora",area:"Upper East Side",name:"La Pecora Bianca UES",lat:40.7747,lon:-73.9538,cat:"Prepared Meals",units:20},
+  {id:"upthai",area:"Upper East Side",name:"Up Thai",lat:40.7700,lon:-73.9579,cat:"Prepared Meals",units:18},
+  {id:"waterwheat",area:"Upper East Side",name:"Water & Wheat UES",lat:40.7739,lon:-73.9573,cat:"Prepared Meals",units:22},
+  {id:"zoi",area:"Upper East Side",name:"ZOI Mediterranean",lat:40.7721,lon:-73.9557,cat:"Prepared Meals",units:20},
+  {id:"cravefishbar",area:"Upper East Side",name:"Crave Fishbar UES",lat:40.7716,lon:-73.9560,cat:"Prepared Meals",units:16},
+  {id:"thepthai",area:"Upper East Side",name:"THEP Thai Restaurant",lat:40.7708,lon:-73.9572,cat:"Prepared Meals",units:18},
+  {id:"uvanext",area:"Upper East Side",name:"Uva Next Door",lat:40.7721,lon:-73.9556,cat:"Prepared Meals",units:17},
+  {id:"losteria",area:"Upper East Side",name:"L'Osteria",lat:40.7771,lon:-73.9571,cat:"Prepared Meals",units:19},
+  {id:"orwashers",area:"Upper East Side",name:"Orwashers Bakery UES",lat:40.7750,lon:-73.9559,cat:"Baked Goods",units:50},
   // Stamford
-  {id:"patisserie",name:"Patisserie Salzburg Stamford",lat:41.0534,lon:-73.5404,cat:"Baked Goods",units:30},
-  {id:"cococafe",name:"Coco Cafe Stamford",lat:41.0556,lon:-73.5407,cat:"Baked Goods",units:25},
-  {id:"laesquinita",name:"La Esquinita",lat:41.0453,lon:-73.5402,cat:"Prepared Meals",units:20},
-  {id:"canard",name:"Canard Cafe Bar Stamford",lat:41.0520,lon:-73.5357,cat:"Baked Goods",units:22},
-  {id:"matthews",name:"Matthew's Bakery",lat:41.0408,lon:-73.5535,cat:"Baked Goods",units:40},
-  {id:"lorca",name:"Lorca Coffee Bar",lat:41.0561,lon:-73.5383,cat:"Beverages",units:20},
+  {id:"patisserie",area:"Stamford, CT",name:"Patisserie Salzburg Stamford",lat:41.0534,lon:-73.5404,cat:"Baked Goods",units:30},
+  {id:"cococafe",area:"Stamford, CT",name:"Coco Cafe Stamford",lat:41.0556,lon:-73.5407,cat:"Baked Goods",units:25},
+  {id:"laesquinita",area:"Stamford, CT",name:"La Esquinita",lat:41.0453,lon:-73.5402,cat:"Prepared Meals",units:20},
+  {id:"canard",area:"Stamford, CT",name:"Canard Cafe Bar Stamford",lat:41.0520,lon:-73.5357,cat:"Baked Goods",units:22},
+  {id:"matthews",area:"Stamford, CT",name:"Matthew's Bakery",lat:41.0408,lon:-73.5535,cat:"Baked Goods",units:40},
+  {id:"lorca",area:"Stamford, CT",name:"Lorca Coffee Bar",lat:41.0561,lon:-73.5383,cat:"Beverages",units:20},
 ];
 var PR={
   "Prepared Meals":{a:2.50,s:.60,C:4.50,unit:"meals"},
@@ -273,6 +284,7 @@ function makeNPIcon(sel){
 function selectNP(np){
   N=np;
   document.getElementById('nSel').value=np.id;
+  document.getElementById('nSearch').value=np.name;
   document.getElementById('selLabel').textContent=np.name+' selected';
   var dist=hav(D.lat,D.lon,np.lat,np.lon);
   document.getElementById('distBadge').innerHTML='<span class="dist-badge">'+dist.toFixed(2)+' mi away</span>';
@@ -345,6 +357,55 @@ function compute(){
     '<div class="disc">Tax savings realized only with positive taxable income and donation to a qualified 501(c)(3) under the PATH Act of 2015. Distances are straight-line haversine; urban routing distances are 20-40% longer.</div>';
 }
 
+function renderDList(items){
+  var el=document.getElementById('dList');
+  el.innerHTML='';
+  var last='';
+  items.forEach(function(d){
+    if(d.area!==last){
+      var cat=document.createElement('div');cat.className='dd-cat';cat.textContent=d.area;el.appendChild(cat);last=d.area;
+    }
+    var item=document.createElement('div');item.className='dd-item';item.textContent=d.name;
+    item.onclick=function(){selectDonor(d);};
+    el.appendChild(item);
+  });
+}
+function renderNList(items){
+  var el=document.getElementById('nList');
+  el.innerHTML='';
+  var last='';
+  items.forEach(function(n){
+    if(n.area!==last){
+      var cat=document.createElement('div');cat.className='dd-cat';cat.textContent=n.area;el.appendChild(cat);last=n.area;
+    }
+    var item=document.createElement('div');item.className='dd-item';item.textContent=n.name;
+    item.onclick=function(){selectNP(n);document.getElementById('nSearch').value=n.name;hideNPList();};
+    el.appendChild(item);
+  });
+}
+function filterDonors(q){
+  var filtered=DONORS.filter(function(d){return d.name.toLowerCase().indexOf(q.toLowerCase())>=0});
+  renderDList(filtered);showDonorList();
+}
+function filterNPs(q){
+  var filtered=NPS.filter(function(n){return n.name.toLowerCase().indexOf(q.toLowerCase())>=0});
+  renderNList(filtered);showNPList();
+}
+function showDonorList(){var el=document.getElementById('dList');renderDList(DONORS);el.style.display='block'}
+function hideDonorList(){document.getElementById('dList').style.display='none'}
+function showNPList(){var el=document.getElementById('nList');renderNList(NPS);el.style.display='block'}
+function hideNPList(){document.getElementById('nList').style.display='none'}
+function selectDonor(d){
+  D=d;
+  document.getElementById('dSearch').value=d.name;
+  document.getElementById('units').value=d.units;
+  document.getElementById('uVal').textContent=d.units;
+  document.getElementById('dInfo').innerHTML='Category: '+d.cat+'<br>Cost/'+PR[d.cat].unit+': $'+PR[d.cat].C.toFixed(2)+'<br>Default: '+d.units+' '+PR[d.cat].unit+'/trip';
+  updateUnitLabel();
+  N=null;document.getElementById('nSearch').value='';document.getElementById('distBadge').innerHTML='';document.getElementById('selLabel').textContent='';
+  hideDonorList();updateMap();compute();
+}
+
 window.addEventListener('load',function(){
   map=L.map('map',{zoomControl:true,scrollWheelZoom:false});
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19}).addTo(map);
@@ -354,27 +415,12 @@ window.addEventListener('load',function(){
   document.getElementById('units').value=D.units;
   document.getElementById('uVal').textContent=D.units;
   updateUnitLabel();
-  var ds=document.getElementById('dSel');
-  DONORS.forEach(function(d){var o=document.createElement('option');o.value=d.id;o.textContent=d.name;ds.appendChild(o)});
-  ds.addEventListener('change',function(){
-    D=DONORS.find(function(x){return x.id===ds.value});
-    document.getElementById('units').value=D.units;
-    document.getElementById('uVal').textContent=D.units;
-    updateUnitLabel();
-    document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Cost/'+PR[D.cat].unit+': $'+PR[D.cat].C.toFixed(2)+'<br>Default: '+D.units+' '+PR[D.cat].unit+'/trip';
-    N=null;document.getElementById('nSel').value='';document.getElementById('distBadge').innerHTML='';document.getElementById('selLabel').textContent='';
-    updateMap();compute();
-  });
+  // donor list init
+  document.getElementById('dSearch').value=D.name;
   document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Units/shift: '+D.units+'<br>Cost/unit: $'+PR[D.cat].C.toFixed(2);
 
   document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Cost/'+PR[D.cat].unit+': $'+PR[D.cat].C.toFixed(2)+'<br>Default: '+D.units+' '+PR[D.cat].unit+'/trip';
-  var ns=document.getElementById('nSel');
-  NPS.forEach(function(np){var o=document.createElement('option');o.value=np.id;o.textContent=np.name;ns.appendChild(o)});
-  ns.addEventListener('change',function(){
-    var found=NPS.find(function(x){return x.id===ns.value});
-    if(found)selectNP(found);
-    else{N=null;document.getElementById('distBadge').innerHTML='';document.getElementById('selLabel').textContent='';updateMap();compute();}
-  });
+  // np list init — populated on focus
 });
 </script>
 </body>

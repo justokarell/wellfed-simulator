@@ -293,23 +293,22 @@ function selectNP(np){
 }
 
 function updateMap(){
+  // update selected donor marker
   if(donorMarker)donorMarker.remove();
-  donorMarker=L.marker([D.lat,D.lon],{icon:makeDonorIcon()}).addTo(map).bindTooltip('<b>'+D.name+'</b>',{direction:'top'});
-  npMarkers.forEach(function(m){m.remove()});
-  npMarkers=[];
-  NPS.forEach(function(np){
-    var sel=N&&N.id===np.id;
-    var m=L.marker([np.lat,np.lon],{icon:makeNPIcon(sel)}).addTo(map)
-      .bindTooltip('<b>'+np.name+'</b>',{direction:'top'})
-      .on('click',function(){selectNP(np)});
-    npMarkers.push(m);
+  if(D){
+    donorMarker=L.marker([D.lat,D.lon],{icon:makeDonorIcon()}).addTo(map)
+      .bindTooltip('<b>'+D.name+'</b>',{direction:'top'});
+  }
+  // update NP pin highlights
+  npMarkers.forEach(function(m,i){
+    var np=NPS[i];
+    if(np)m.setIcon(makeNPIcon(N&&N.id===np.id));
   });
+  // draw route line
   if(routeLine){routeLine.remove();routeLine=null;}
-  if(N){
+  if(D&&N){
     routeLine=L.polyline([[D.lat,D.lon],[N.lat,N.lon]],{color:'#16A34A',weight:2,dashArray:'6 4',opacity:.8}).addTo(map);
     map.fitBounds([[D.lat,D.lon],[N.lat,N.lon]],{padding:[50,50]});
-  } else {
-    map.setView([D.lat,D.lon],15);
   }
 }
 
@@ -406,11 +405,35 @@ function selectDonor(d){
   hideDonorList();updateMap();compute();
 }
 
+function initAllPins(){
+  // All nonprofit pins
+  NPS.forEach(function(np){
+    var m=L.marker([np.lat,np.lon],{icon:makeNPIcon(false)}).addTo(map)
+      .bindTooltip('<b>'+np.name+'</b><br><span style="font-size:10px;color:#666">'+np.area+'</span>',{direction:'top'})
+      .on('click',function(){
+        selectNP(np);
+        document.getElementById('nSearch').value=np.name;
+        hideNPList();
+      });
+    npMarkers.push(m);
+  });
+  // All donor pins
+  DONORS.forEach(function(d){
+    var icon=L.divIcon({html:'<div style="width:10px;height:10px;background:#f59e0b;border:2px solid white;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div>',className:'',iconAnchor:[5,5]});
+    L.marker([d.lat,d.lon],{icon:icon}).addTo(map)
+      .bindTooltip('<b>'+d.name+'</b><br><span style="font-size:10px;color:#666">'+d.cat+' &middot; '+d.area+'</span>',{direction:'top'})
+      .on('click',function(){selectDonor(d);});
+  });
+}
+
 window.addEventListener('load',function(){
   map=L.map('map',{zoomControl:true,scrollWheelZoom:false});
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19}).addTo(map);
-  map.setView([40.7790,-73.9650],14);
-  updateMap();
+  var allPts=DONORS.concat(NPS);
+  var avgLat=allPts.reduce(function(s,p){return s+p.lat},0)/allPts.length;
+  var avgLon=allPts.reduce(function(s,p){return s+p.lon},0)/allPts.length;
+  map.setView([avgLat,avgLon],12);
+  initAllPins();
 
   document.getElementById('units').value=D.units;
   document.getElementById('uVal').textContent=D.units;

@@ -57,13 +57,15 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
 .dd-item:hover{background:#F0FDF4;color:#15803D}
 .dd-cat{padding:6px 12px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#9CA3AF;pointer-events:none}
 .disc{font-size:10px;color:#9CA3AF;margin-top:14px;border-top:1px solid #E5E7EB;padding-top:12px;line-height:1.6}
-.savings-hero{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:16px 20px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-.savings-hero-label{font-size:12px;color:#166534;font-weight:500}
-.savings-hero-amount{font-size:36px;font-weight:700;color:#16A34A;letter-spacing:-1px;line-height:1}
-.savings-hero-sub{font-size:11px;color:#6B7280;margin-top:3px}
+.savings-hero{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:18px 22px;margin-bottom:14px}
+.savings-hero-top{display:flex;align-items:flex-end;gap:16px;margin-bottom:6px}
+.savings-hero-amount{font-size:40px;font-weight:700;color:#16A34A;letter-spacing:-1px;line-height:1}
+.savings-hero-per{font-size:14px;color:#6B7280;margin-bottom:6px}
+.savings-hero-per strong{color:#15803D;font-size:18px}
+.savings-hero-sub{font-size:12px;color:#6B7280}
 .savings-hero-negative{background:#FEF2F2;border-color:#FCA5A5}
-.savings-hero-negative .savings-hero-label{color:#991B1B}
 .savings-hero-negative .savings-hero-amount{color:#DC2626}
+.savings-hero-negative .savings-hero-per strong{color:#DC2626}
 @media(max-width:640px){
   .layout{grid-template-columns:1fr;grid-template-rows:auto 1fr}
   .side{border-right:none;border-bottom:1px solid #E5E7EB}
@@ -442,17 +444,14 @@ function compute(){
   var sav=t*ed*n,net=sav-trip,Vg=n*p.C,thr=p.C*trip/(t*ed),ok=Vg>=thr,ann=net*shifts*50,be=trip/(t*ed);
   var heroClass=ann>=0?'savings-hero':'savings-hero savings-hero-negative';
   var heroAmt=ann>=0?'$'+Math.round(ann).toLocaleString():'-$'+Math.round(Math.abs(ann)).toLocaleString();
+  var netAmt=(net>=0?'$':'−$')+Math.abs(net).toFixed(2);
   document.getElementById('results').innerHTML=
     '<div class="'+heroClass+'">'+
-      '<div>'+
-        '<div class="savings-hero-label">Estimated annual tax savings</div>'+
+      '<div class="savings-hero-top">'+
         '<div class="savings-hero-amount">'+heroAmt+'</div>'+
-        '<div class="savings-hero-sub">'+Math.round(shifts)+' trips/week &times; 50 weeks &middot; '+Math.round(gv('units'))+' '+PR[D.cat].unit+'/trip</div>'+
+        '<div class="savings-hero-per">/ year &nbsp;&nbsp; <strong>'+netAmt+'</strong> / trip</div>'+
       '</div>'+
-      '<div style="text-align:right">'+
-        '<div class="savings-hero-label">Per trip</div>'+
-        '<div style="font-size:22px;font-weight:700;color:'+(net>=0?'#16A34A':'#DC2626')+'">$'+net.toFixed(2)+'</div>'+
-      '</div>'+
+      '<div class="savings-hero-sub">'+Math.round(shifts)+' trips/week &times; 50 weeks &middot; '+Math.round(gv('units'))+' '+PR[D.cat].unit+'/trip &middot; '+((t*100).toFixed(0))+'% tax bracket</div>'+
     '</div>'+
     '<div class="verdict '+(ok?'v-ok':'v-no')+'">'+
       '<div style="font-size:24px">'+(ok?'&#x2705;':'&#x274C;')+'</div>'+

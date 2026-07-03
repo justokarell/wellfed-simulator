@@ -13,9 +13,9 @@ body{font-family:'Inter',sans-serif;background:#FFFFFF;color:#111111;font-size:1
 .logo{font-size:18px;font-weight:700;color:#111111}
 .logo span{color:#16A34A}
 .logo-sub{font-size:12px;color:#6B7280}
-.layout{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 53px)}
-.side{background:#FAFAFA;border-right:1px solid #E5E7EB;padding:20px 18px;overflow-y:auto;position:relative}
-.main{display:flex;flex-direction:column;overflow:hidden}
+.layout{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 53px);align-items:start}
+.side{background:#FAFAFA;border-right:1px solid #E5E7EB;padding:20px 18px;overflow-y:auto;position:relative;height:calc(100vh - 53px);align-self:stretch}
+.main{display:flex;flex-direction:column;overflow:hidden;height:calc(100vh - 53px)}
 #map{height:480px;width:100%;flex-shrink:0;border-bottom:1px solid #E5E7EB}
 .results{padding:20px;flex:1;overflow-y:auto;background:#F9FAFB}
 .sec{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#9CA3AF;margin:18px 0 8px}
@@ -143,6 +143,7 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
         <div class="sl-row" style="margin-top:8px"><label>Pack &amp; hand-off time</label><span class="sl-val" id="packVal">15 min</span></div>
         <input type="range" id="pack" min="0" max="60" step="5" value="15" oninput="sl(this,'packVal',function(v){return v+' min'})">
         <div style="font-size:10px;color:#9CA3AF;margin-top:-4px;margin-bottom:4px;line-height:1.5">Time to sort, pack, and hand off food. Costs calculated at your delivery wage rate.</div>
+      </div>
     </div>
   </div>
 

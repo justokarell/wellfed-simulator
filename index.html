@@ -127,7 +127,7 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
           <div class="rb on" id="rbTripOn" onclick="setTrip(true)">Include</div>
           <div class="rb" id="rbTripOff" onclick="setTrip(false)">Exclude</div>
         </div>
-        <div id="tripCostPanel">
+        <div id="tripCostPanel" style="display:none">
           <div class="sl-row"><label>Gas price</label><span class="sl-val" id="gVal">$3.80/gal</span></div>
           <input type="range" id="gas" min="2" max="8" step="0.1" value="3.8" oninput="sl(this,'gVal',function(v){return '$'+parseFloat(v).toFixed(2)+'/gal'})">
           <div class="sl-row"><label>Vehicle MPG</label><span class="sl-val" id="mVal">25 mpg</span></div>
@@ -330,6 +330,8 @@ function setT(t){
   transport=t;
   document.getElementById('rbWalk').className='rb'+(t==='walk'?' on':'');
   document.getElementById('rbS').className='rb'+(t==='drive'?' on':'');
+  // show/hide drive-only settings
+  document.getElementById('tripCostPanel').style.display=t==='walk'?'none':'block';
   if(D&&N)fetchRoute();else compute();
 }
 function setLabor(on){
@@ -559,6 +561,22 @@ window.addEventListener('load',function(){
   var avgLon=allPts.reduce(function(s,p){return s+p.lon},0)/allPts.length;
   map.setView([avgLat,avgLon],12);
   initAllPins();
+  // try to get user location
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var ulat=pos.coords.latitude,ulon=pos.coords.longitude;
+      map.setView([ulat,ulon],15);
+      // find nearest donor
+      var best=null,bestDist=Infinity;
+      DONORS.forEach(function(d){
+        var dist=hav(ulat,ulon,d.lat,d.lon);
+        if(dist<bestDist){bestDist=dist;best=d;}
+      });
+      if(best)selectDonor(best);
+    },function(){
+      // denied - stay on centroid
+    });
+  }
 
   document.getElementById('units').value=D.units;
   document.getElementById('uVal').textContent=D.units;

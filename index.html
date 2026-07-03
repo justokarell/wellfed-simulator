@@ -566,6 +566,7 @@ window.addEventListener('load',function(){
   },{np:NPS[0],d:Infinity}).np;
   selectNP(nearestNP);
   document.getElementById('nSearch').value=nearestNP.name;
+  compute(); // show results immediately with fallback distance
   // try to get user location
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(function(pos){

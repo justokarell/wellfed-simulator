@@ -113,16 +113,10 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <input type="range" id="income" min="10000" max="700000" step="5000" value="120000" oninput="sl(this,'iVal',function(v){return '$'+Math.round(v).toLocaleString()})">
 
     <div class="sec">Delivery</div>
-    <label>Delivery method</label>
+    <label>How do they get there?</label>
     <div class="rb-row">
-      <div class="rb on" id="rbWalk" onclick="setT('walk')">I walk</div>
-      <div class="rb" id="rbS" onclick="setT('self')">I drive</div>
-      <div class="rb" id="rbD" onclick="setT('driver')">Hire driver</div>
-    </div>
-    <div id="wageRow" style="display:none">
-      <div class="sl-row"><label>Driver wage</label><span class="sl-val" id="wVal">$17/hr</span></div>
-      <input type="range" id="wage" min="7.25" max="50" step="0.25" value="17" oninput="sl(this,'wVal',function(v){return '$'+parseFloat(v).toFixed(2)+'/hr'})">
-      <div style="font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px">NY minimum wage: $17/hr</div>
+      <div class="rb on" id="rbWalk" onclick="setT('walk')">Walk</div>
+      <div class="rb" id="rbS" onclick="setT('drive')">Drive</div>
     </div>
 
     <div style="margin-top:20px;border-top:1px solid #E5E7EB;padding-top:14px">
@@ -152,7 +146,6 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
         <div class="sl-row" style="margin-top:8px"><label>Pack &amp; hand-off time</label><span class="sl-val" id="packVal">15 min</span></div>
         <input type="range" id="pack" min="0" max="60" step="5" value="15" oninput="sl(this,'packVal',function(v){return v+' min'})">
         <div style="font-size:10px;color:#9CA3AF;margin-top:-4px;margin-bottom:4px;line-height:1.5">Time to sort, pack, and hand off food. Costs calculated at your delivery wage rate.</div>
-      </div>
     </div>
   </div>
 
@@ -334,13 +327,19 @@ function toggleAllDonors(){
     allDonorMarkers.forEach(function(m){m.remove()});
   }
 }
+var includeLabor=false;
 function setT(t){
   transport=t;
   document.getElementById('rbWalk').className='rb'+(t==='walk'?' on':'');
-  document.getElementById('rbS').className='rb'+(t==='self'?' on':'');
-  document.getElementById('rbD').className='rb'+(t==='driver'?' on':'');
-  document.getElementById('wageRow').style.display=t==='driver'?'block':'none';
+  document.getElementById('rbS').className='rb'+(t==='drive'?' on':'');
   if(D&&N)fetchRoute();else compute();
+}
+function setLabor(on){
+  includeLabor=on;
+  document.getElementById('rbNoLabor').className='rb'+(!on?' on':'');
+  document.getElementById('rbLabor').className='rb'+(on?' on':'');
+  document.getElementById('wageRow').style.display=on?'block':'none';
+  compute();
 }
 
 function makeDonorIcon(){
@@ -432,7 +431,7 @@ function compute(){
   if(!N){document.getElementById('results').innerHTML='<div class="empty">Click a blue nonprofit pin on the map, or use the dropdown on the left.</div>';return}
   var p=PR[D.cat],ed=edVal(p.a,p.C,p.s),t=mRate(gv('income')),n=gv('units'),shifts=gv('shifts');
   var gas=gv('gas'),mpg=gv('mpg'),spd=gv('spd'),cont=gv('cont');
-  var wage=transport==='driver'?gv('wage'):(transport==='walk'?17:0);
+  var wage=includeLabor?gv('wage'):0;
   var dist=routeDistMiles!==null?routeDistMiles:hav(D.lat,D.lon,N.lat,N.lon);
   var labor=gv('labor');
   packMins=parseFloat(document.getElementById('pack').value)||15;
@@ -442,9 +441,12 @@ function compute(){
   var tripBase=0;
   if(includeTrip){
     if(transport==='walk'){
-      tripBase=dist*(wage/3)+packCost+cont;
+      // walking: no fuel, just time cost if labor enabled
+      tripBase=(includeLabor?dist*(wage/3):0)+packCost+cont;
     } else {
-      tripBase=tc(dist,gas,mpg,wage,spd,cont)+packCost;
+      // driving: fuel always, labor only if enabled
+      var drivingWage=includeLabor?wage:0;
+      tripBase=tc(dist,gas,mpg,drivingWage,spd,cont)+packCost;
     }
   }
   var trip=tripBase+labor;

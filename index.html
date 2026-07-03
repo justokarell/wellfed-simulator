@@ -363,16 +363,20 @@ function selectNP(np){
 function fetchRoute(){
   if(!D||!N)return;
   var profile=transport==='walk'?'foot-walking':'driving-car';
-  var url='https://api.openrouteservice.org/v2/directions/'+profile+'?api_key=https://api.openrouteservice.org/v2/directions/driving-car?api_key=eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjYyNzcxZTg0ZGNiZDQzZDBhZmYxZTEwY2RiYzE3YjI3IiwiaCI6Im11cm11cjY0In0=&start=8.681495,49.41461&end=8.687872,49.420318&start='+D.lon+','+D.lat+'&end='+N.lon+','+N.lat;
-  fetch(url)
+  var url='https://api.openrouteservice.org/v2/directions/'+profile+'/geojson';
+  var body=JSON.stringify({coordinates:[[D.lon,D.lat],[N.lon,N.lat]]});
+  fetch(url,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjYyNzcxZTg0ZGNiZDQzZDBhZmYxZTEwY2RiYzE3YjI3IiwiaCI6Im11cm11cjY0In0='},
+    body:body
+  })
     .then(function(r){return r.json()})
     .then(function(data){
       if(data.features&&data.features[0]){
         var coords=data.features[0].geometry.coordinates;
         var latlngs=coords.map(function(c){return[c[1],c[0]]});
-        var summary=data.features[0].properties.segments[0];
+        var summary=data.features[0].properties.summary;
         routeDistMiles=summary.distance*0.000621371;
-        var dist=hav(D.lat,D.lon,N.lat,N.lon);
         document.getElementById('distBadge').innerHTML='<span class="dist-badge">'+routeDistMiles.toFixed(2)+' mi route</span>';
         if(routeLine){routeLine.remove();routeLine=null;}
         routeLine=L.polyline(latlngs,{color:'#16A34A',weight:3,opacity:.8}).addTo(map);
@@ -380,13 +384,23 @@ function fetchRoute(){
         compute();
       } else {
         routeDistMiles=null;
+        drawFallbackLine();
         compute();
       }
     })
     .catch(function(){
       routeDistMiles=null;
+      drawFallbackLine();
       compute();
     });
+}
+
+function drawFallbackLine(){
+  if(routeLine){routeLine.remove();routeLine=null;}
+  if(D&&N){
+    routeLine=L.polyline([[D.lat,D.lon],[N.lat,N.lon]],{color:'#16A34A',weight:2,dashArray:'6 4',opacity:.7}).addTo(map);
+    map.fitBounds([[D.lat,D.lon],[N.lat,N.lon]],{padding:[50,50]});
+  }
 }
 
 function updateMap(){
@@ -405,15 +419,25 @@ function updateMap(){
   // clear route line - fetchRoute will redraw it
   if(routeLine){routeLine.remove();routeLine=null;}
   routeDistMiles=null;
+  // draw fallback line immediately while route loads
+  if(D&&N)drawFallbackLine();
 }
 
 function compute(){
   if(!N){document.getElementById('results').innerHTML='<div class="empty">Click a blue nonprofit pin on the map, or use the dropdown on the left.</div>';return}
   var p=PR[D.cat],ed=edVal(p.a,p.C,p.s),t=mRate(gv('income')),n=gv('units'),shifts=gv('shifts');
-  var gas=gv('gas'),mpg=gv('mpg'),spd=gv('spd'),cont=gv('cont'),wage=transport==='driver'?gv('wage'):0;
-  var dist=hav(D.lat,D.lon,N.lat,N.lon);
+  var gas=gv('gas'),mpg=gv('mpg'),spd=gv('spd'),cont=gv('cont');
+  var wage=transport==='driver'?gv('wage'):(transport==='walk'?17:0);
+  var dist=routeDistMiles!==null?routeDistMiles:hav(D.lat,D.lon,N.lat,N.lon);
   var labor=gv('labor');
-  var tripBase=includeTrip?tc(dist,gas,mpg,wage,spd,cont):0;
+  var tripBase=0;
+  if(includeTrip){
+    if(transport==='walk'){
+      tripBase=dist*(wage/3)+cont;
+    } else {
+      tripBase=tc(dist,gas,mpg,wage,spd,cont);
+    }
+  }
   var trip=tripBase+labor;
   var sav=t*ed*n,net=sav-trip,Vg=n*p.C,thr=p.C*trip/(t*ed),ok=Vg>=thr,ann=net*shifts*50,be=trip/(t*ed);
   var heroClass=ann>=0?'savings-hero':'savings-hero savings-hero-negative';

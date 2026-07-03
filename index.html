@@ -310,6 +310,7 @@ function setTrip(on){
 }
 
 var showAllDonors=false;
+var userInteracted=false;
 var allDonorMarkers=[];
 function toggleAllDonors(){
   showAllDonors=!showAllDonors;
@@ -353,7 +354,7 @@ function makeNPIcon(sel){
 
 var routeDistMiles=null;
 
-function selectNP(np){
+function selectNP(np){userInteracted=true;
   N=np;
   document.getElementById('nSel').value=np.id;
   document.getElementById('nSearch').value=np.name;
@@ -384,7 +385,7 @@ function fetchRoute(){
         document.getElementById('distBadge').innerHTML='<span class="dist-badge">'+routeDistMiles.toFixed(2)+' mi route</span>';
         if(routeLine){routeLine.remove();routeLine=null;}
         routeLine=L.polyline(latlngs,{color:'#16A34A',weight:3,opacity:.8}).addTo(map);
-        map.fitBounds(routeLine.getBounds(),{padding:[40,40]});
+        if(userInteracted)map.fitBounds(routeLine.getBounds(),{padding:[40,40]});
         compute();
       } else {
         routeDistMiles=null;
@@ -403,7 +404,7 @@ function drawFallbackLine(){
   if(routeLine){routeLine.remove();routeLine=null;}
   if(D&&N){
     routeLine=L.polyline([[D.lat,D.lon],[N.lat,N.lon]],{color:'#16A34A',weight:2,dashArray:'6 4',opacity:.7}).addTo(map);
-    map.fitBounds([[D.lat,D.lon],[N.lat,N.lon]],{padding:[50,50]});
+    if(userInteracted)map.fitBounds([[D.lat,D.lon],[N.lat,N.lon]],{padding:[50,50]});
   }
 }
 
@@ -515,7 +516,7 @@ function showDonorList(){var el=document.getElementById('dList');renderDList(DON
 function hideDonorList(){document.getElementById('dList').style.display='none'}
 function showNPList(){var el=document.getElementById('nList');renderNList(NPS);el.style.display='block'}
 function hideNPList(){document.getElementById('nList').style.display='none'}
-function selectDonor(d){
+function selectDonor(d){userInteracted=true;
   D=d;
   document.getElementById('dSearch').value=d.name;
   document.getElementById('units').value=d.units;
@@ -564,6 +565,7 @@ window.addEventListener('load',function(){
     var d=hav(DONORS[0].lat,DONORS[0].lon,np.lat,np.lon);
     return d<best.d?{np:np,d:d}:best;
   },{np:NPS[0],d:Infinity}).np;
+  userInteracted=false;
   N=nearestNP;
   console.log('Auto-select: D=',D.name,'N=',N.name);
   document.getElementById('nSearch').value=nearestNP.name;

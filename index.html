@@ -124,12 +124,8 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <div style="margin-top:20px;border-top:1px solid #E5E7EB;padding-top:14px">
       <div style="font-size:11px;font-weight:600;color:#6B7280;margin-bottom:12px">Advanced settings</div>
       <div id="advPanel" style="display:block;margin-top:0">
-        <div class="sl-row"><label>Labor and handling cost per trip</label><span class="sl-val" id="laborVal">$0.00</span></div>
-        <input type="range" id="labor" min="0" max="100" step="1" value="0" oninput="sl(this,'laborVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
-        <div style="font-size:10px;color:#9CA3AF;margin-top:-4px;margin-bottom:10px;line-height:1.5">Staff time, packaging, or other non-transport costs per trip.</div>
-        <div class="sl-row"><label>Pack &amp; hand-off time</label><span class="sl-val" id="packVal">15 min</span></div>
-        <input type="range" id="pack" min="0" max="60" step="5" value="15" oninput="sl(this,'packVal',function(v){return v+' min'})">
-        <div style="font-size:10px;color:#9CA3AF;margin-top:-4px;margin-bottom:10px;line-height:1.5">Time to sort, pack, and hand off food. Costs calculated at your delivery wage rate.</div>
+
+
         <div id="tripCostPanel" style="display:none">
           <div style="font-size:11px;font-weight:600;color:#6B7280;margin-bottom:8px;border-top:1px solid #E5E7EB;padding-top:10px">Drive settings</div>
           <div class="sl-row"><label>Gas price</label><span class="sl-val" id="gVal">$3.80/gal</span></div>
@@ -435,8 +431,8 @@ function compute(){
   var gas=gv('gas'),mpg=gv('mpg'),spd=gv('spd'),cont=gv('cont');
   var wage=includeLabor?gv('wage'):0;
   var dist=routeDistMiles!==null?routeDistMiles:hav(D.lat,D.lon,N.lat,N.lon);
-  var labor=gv('labor');
-  packMins=parseFloat(document.getElementById('pack').value)||15;
+  var labor=0;
+  packMins=0;
   var packCost=wage*(packMins/60);
   travelMins=transport==='walk'?(dist/3)*60:(dist/Math.max(spd,1))*60;
   totalMins=travelMins+packMins;

@@ -149,6 +149,9 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
         <div class="sl-row" style="margin-top:8px"><label>Labor and handling cost per trip</label><span class="sl-val" id="laborVal">$0.00</span></div>
         <input type="range" id="labor" min="0" max="100" step="1" value="0" oninput="sl(this,'laborVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
         <div style="font-size:10px;color:#9CA3AF;margin-top:-4px;margin-bottom:4px;line-height:1.5">Staff time, packaging, or other non-transport costs per trip.</div>
+        <div class="sl-row" style="margin-top:8px"><label>Pack &amp; hand-off time</label><span class="sl-val" id="packVal">15 min</span></div>
+        <input type="range" id="pack" min="0" max="60" step="5" value="15" oninput="sl(this,'packVal',function(v){return v+' min'})">
+        <div style="font-size:10px;color:#9CA3AF;margin-top:-4px;margin-bottom:4px;line-height:1.5">Time to sort, pack, and hand off food. Costs calculated at your delivery wage rate.</div>
       </div>
     </div>
   </div>
@@ -462,7 +465,7 @@ function compute(){
       '<div class="mc"><div class="ml">Tax savings / trip</div><div class="mv mv-ok">$'+sav.toFixed(2)+'</div><div class="mn">Reduction in your tax bill per donation trip (PATH Act deduction &times; your tax rate)</div></div>'+
       '<div class="mc"><div class="ml">Profit / trip</div><div class="mv '+(net>=0?'mv-ok':'mv-no')+'">$'+net.toFixed(2)+'</div><div class="mn">Tax savings minus transportation and labor costs</div></div>'+
       '<div class="mc"><div class="ml">Trip cost</div><div class="mv mv-neu">$'+trip.toFixed(2)+'</div><div class="mn">Fuel, labor, and container costs for one donation trip</div></div>'+
-      '<div class="mc"><div class="ml">Annual profit</div><div class="mv '+(ann>=0?'mv-ok':'mv-no')+'">'+(ann>=0?'$'+Math.round(ann).toLocaleString():'-$'+Math.round(Math.abs(ann)).toLocaleString())+'</div><div class="mn">Profit per trip &times; '+Math.round(shifts)+' trips/week &times; 50 weeks</div></div>'+
+      '<div class="mc"><div class="ml">Total trip time</div><div class="mv mv-neu">'+Math.round(totalMins)+' min</div><div class="mn">'+Math.round(travelMins)+' min travel + '+Math.round(packMins)+' min pack &amp; hand-off</div></div>'+
       '<div class="mc"><div class="ml">Min. items to donate</div><div class="mv mv-neu">'+Math.ceil(be)+'</div><div class="mn">Fewest '+PR[D.cat].unit+' per trip needed for tax savings to cover trip cost</div></div>'+
       '<div class="mc"><div class="ml">Route distance</div><div class="mv mv-neu">'+(routeDistMiles!==null?routeDistMiles.toFixed(2):hav(D.lat,D.lon,N.lat,N.lon).toFixed(2))+' mi</div><div class="mn">'+( transport==='walk'?'Walking':'Driving')+' distance to '+N.name+'</div></div>'+
     '</div>'+

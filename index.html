@@ -110,14 +110,16 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <input type="range" id="income" min="10000" max="700000" step="5000" value="120000" oninput="sl(this,'iVal',function(v){return '$'+Math.round(v).toLocaleString()})">
 
     <div class="sec">Delivery</div>
-    <label>Who makes the delivery?</label>
+    <label>Delivery method</label>
     <div class="rb-row">
-      <div class="rb on" id="rbS" onclick="setT('self')">I deliver</div>
+      <div class="rb on" id="rbWalk" onclick="setT('walk')">I walk</div>
+      <div class="rb" id="rbS" onclick="setT('self')">I drive</div>
       <div class="rb" id="rbD" onclick="setT('driver')">Hire driver</div>
     </div>
     <div id="wageRow" style="display:none">
-      <div class="sl-row"><label>Driver wage</label><span class="sl-val" id="wVal">$18/hr</span></div>
-      <input type="range" id="wage" min="10" max="40" step="0.5" value="18" oninput="sl(this,'wVal',function(v){return '$'+parseFloat(v).toFixed(0)+'/hr'})">
+      <div class="sl-row"><label>Driver wage</label><span class="sl-val" id="wVal">$17/hr</span></div>
+      <input type="range" id="wage" min="7.25" max="50" step="0.25" value="17" oninput="sl(this,'wVal',function(v){return '$'+parseFloat(v).toFixed(2)+'/hr'})">
+      <div style="font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px">NY minimum wage: $17/hr</div>
     </div>
 
     <div style="margin-top:20px;border-top:1px solid #E5E7EB;padding-top:14px">
@@ -153,6 +155,12 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
       <span><span style="display:inline-block;width:12px;height:12px;background:#f59e0b;border-radius:2px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> Your business</span>
       <span><span style="display:inline-block;width:12px;height:12px;background:#3b82f6;border-radius:50%;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> Nonprofits (click to select)</span>
       <span id="selLabel" style="color:#15803D;font-weight:500"></span>
+      <span style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:#6B7280;cursor:pointer" onclick="toggleAllDonors()">
+        <span id="allDonorsToggle" style="display:inline-block;width:28px;height:16px;background:#E5E7EB;border-radius:8px;position:relative;transition:background .2s">
+          <span id="allDonorsThumb" style="display:inline-block;width:12px;height:12px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)"></span>
+        </span>
+        Show all businesses
+      </span>
     </div>
     <div id="map"></div>
     <div class="results" id="results">
@@ -248,6 +256,21 @@ var DONORS=[
   {id:"canard",area:"Stamford, CT",name:"Canard Cafe Bar Stamford",lat:41.0520,lon:-73.5357,cat:"Baked Goods",units:22},
   {id:"matthews",area:"Stamford, CT",name:"Matthew's Bakery",lat:41.0408,lon:-73.5535,cat:"Baked Goods",units:40},
   {id:"lorca",area:"Stamford, CT",name:"Lorca Coffee Bar",lat:41.0561,lon:-73.5383,cat:"Beverages",units:20},
+  // Midtown / Midtown East
+  {id:"lebern",area:"Midtown",name:"Le Bernardin",lat:40.7614,lon:-73.9818,cat:"Prepared Meals",units:25},
+  {id:"capgrille51",area:"Midtown",name:"The Capital Grille (W 51st St)",lat:40.7609,lon:-73.9811,cat:"Prepared Meals",units:28},
+  {id:"capgrillePark",area:"Midtown East",name:"The Capital Grille (Park Ave)",lat:40.7539,lon:-73.9763,cat:"Prepared Meals",units:28},
+  {id:"pret7th",area:"Midtown",name:"Pret A Manger (7th Ave)",lat:40.7549,lon:-73.9876,cat:"Baked Goods",units:40},
+  {id:"pretlex",area:"Midtown East",name:"Paris Baguette (Lexington Ave)",lat:40.7576,lon:-73.9714,cat:"Baked Goods",units:35},
+  {id:"baccarat",area:"Midtown",name:"Baccarat Hotel Kitchen",lat:40.7609,lon:-73.9774,cat:"Prepared Meals",units:20},
+  {id:"fourseasons",area:"Midtown East",name:"Four Seasons Hotel New York",lat:40.7623,lon:-73.9713,cat:"Prepared Meals",units:22},
+  {id:"nycedition",area:"Flatiron",name:"The New York EDITION Hotel",lat:40.7413,lon:-73.9874,cat:"Prepared Meals",units:20},
+  {id:"blackseed",area:"Nolita",name:"Black Seed Bagels (Nolita)",lat:40.7209,lon:-73.9947,cat:"Baked Goods",units:30},
+  {id:"blackseedmid",area:"Midtown East",name:"Black Seed Bagels (Midtown East)",lat:40.7533,lon:-73.9767,cat:"Baked Goods",units:25},
+  {id:"dunkinues",area:"Upper East Side",name:"Dunkin (Lexington Ave UES)",lat:40.7786,lon:-73.9565,cat:"Baked Goods",units:20},
+  {id:"dunkinuws",area:"Upper West Side",name:"Dunkin (Broadway UWS)",lat:40.7899,lon:-73.9749,cat:"Baked Goods",units:20},
+  {id:"bestbagel",area:"Midtown",name:"Best Bagel & Coffee",lat:40.7522,lon:-73.9911,cat:"Baked Goods",units:45},
+  {id:"capgrillefidi",area:"Financial District",name:"The Capital Grille (Broadway FiDi)",lat:40.7078,lon:-74.0102,cat:"Prepared Meals",units:28},
 ];
 var PR={
   "Prepared Meals":{a:2.50,s:.60,C:4.50,unit:"meals"},
@@ -292,12 +315,28 @@ function setTrip(on){
   document.getElementById('tripCostPanel').style.display=on?'block':'none';
   compute();
 }
+
+var showAllDonors=false;
+var allDonorMarkers=[];
+function toggleAllDonors(){
+  showAllDonors=!showAllDonors;
+  var tog=document.getElementById('allDonorsToggle');
+  var thumb=document.getElementById('allDonorsThumb');
+  tog.style.background=showAllDonors?'#16A34A':'#E5E7EB';
+  thumb.style.left=showAllDonors?'14px':'2px';
+  if(showAllDonors){
+    allDonorMarkers.forEach(function(m){m.addTo(map)});
+  } else {
+    allDonorMarkers.forEach(function(m){m.remove()});
+  }
+}
 function setT(t){
   transport=t;
+  document.getElementById('rbWalk').className='rb'+(t==='walk'?' on':'');
   document.getElementById('rbS').className='rb'+(t==='self'?' on':'');
   document.getElementById('rbD').className='rb'+(t==='driver'?' on':'');
   document.getElementById('wageRow').style.display=t==='driver'?'block':'none';
-  compute();
+  if(D&&N)fetchRoute();else compute();
 }
 
 function makeDonorIcon(){
@@ -308,6 +347,8 @@ function makeNPIcon(sel){
   return L.divIcon({html:'<div style="width:'+sz+'px;height:'+sz+'px;background:'+col+';border:2px solid white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>',className:'',iconAnchor:[sz/2,sz/2]});
 }
 
+var routeDistMiles=null;
+
 function selectNP(np){
   N=np;
   document.getElementById('nSel').value=np.id;
@@ -316,12 +357,42 @@ function selectNP(np){
   var dist=hav(D.lat,D.lon,np.lat,np.lon);
   document.getElementById('distBadge').innerHTML='<span class="dist-badge">'+dist.toFixed(2)+' mi away</span>';
   updateMap();
-  compute();
+  fetchRoute();
+}
+
+function fetchRoute(){
+  if(!D||!N)return;
+  var profile=transport==='walk'?'foot-walking':'driving-car';
+  var url='https://api.openrouteservice.org/v2/directions/'+profile+'?api_key=https://api.openrouteservice.org/v2/directions/driving-car?api_key=eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjYyNzcxZTg0ZGNiZDQzZDBhZmYxZTEwY2RiYzE3YjI3IiwiaCI6Im11cm11cjY0In0=&start=8.681495,49.41461&end=8.687872,49.420318&start='+D.lon+','+D.lat+'&end='+N.lon+','+N.lat;
+  fetch(url)
+    .then(function(r){return r.json()})
+    .then(function(data){
+      if(data.features&&data.features[0]){
+        var coords=data.features[0].geometry.coordinates;
+        var latlngs=coords.map(function(c){return[c[1],c[0]]});
+        var summary=data.features[0].properties.segments[0];
+        routeDistMiles=summary.distance*0.000621371;
+        var dist=hav(D.lat,D.lon,N.lat,N.lon);
+        document.getElementById('distBadge').innerHTML='<span class="dist-badge">'+routeDistMiles.toFixed(2)+' mi route</span>';
+        if(routeLine){routeLine.remove();routeLine=null;}
+        routeLine=L.polyline(latlngs,{color:'#16A34A',weight:3,opacity:.8}).addTo(map);
+        map.fitBounds(routeLine.getBounds(),{padding:[40,40]});
+        compute();
+      } else {
+        routeDistMiles=null;
+        compute();
+      }
+    })
+    .catch(function(){
+      routeDistMiles=null;
+      compute();
+    });
 }
 
 function updateMap(){
   // update selected donor marker
   if(donorMarker)donorMarker.remove();
+  donorMarker=null;
   if(D){
     donorMarker=L.marker([D.lat,D.lon],{icon:makeDonorIcon()}).addTo(map)
       .bindTooltip('<b>'+D.name+'</b>',{direction:'top'});
@@ -331,12 +402,9 @@ function updateMap(){
     var np=NPS[i];
     if(np)m.setIcon(makeNPIcon(N&&N.id===np.id));
   });
-  // draw route line
+  // clear route line - fetchRoute will redraw it
   if(routeLine){routeLine.remove();routeLine=null;}
-  if(D&&N){
-    routeLine=L.polyline([[D.lat,D.lon],[N.lat,N.lon]],{color:'#16A34A',weight:2,dashArray:'6 4',opacity:.8}).addTo(map);
-    map.fitBounds([[D.lat,D.lon],[N.lat,N.lon]],{padding:[50,50]});
-  }
+  routeDistMiles=null;
 }
 
 function compute(){
@@ -380,7 +448,7 @@ function compute(){
       '<div class="ann-text">Donating '+Math.round(shifts)+' trips a week, 50 weeks a year, your estimated annual net tax benefit is</div>'+
       '<div class="ann-val">'+(ann>=0?'$'+Math.round(ann).toLocaleString():'-$'+Math.round(Math.abs(ann)).toLocaleString())+'</div>'+
     '</div>'+
-    '<div class="disc">Tax savings realized only with positive taxable income and donation to a qualified 501(c)(3) under the PATH Act of 2015. Distances are straight-line haversine; urban routing distances are 20-40% longer.</div>';
+    '<div class="disc">Tax savings realized only with positive taxable income and donation to a qualified 501(c)(3) under the PATH Act of 2015. Walking routes via OpenRouteService. Trip cost uses actual route distance.</div>';
 }
 
 function renderDList(items){
@@ -428,12 +496,13 @@ function selectDonor(d){
   document.getElementById('uVal').textContent=d.units;
   document.getElementById('dInfo').innerHTML='Category: '+d.cat+'<br>Cost/'+PR[d.cat].unit+': $'+PR[d.cat].C.toFixed(2)+'<br>Default: '+d.units+' '+PR[d.cat].unit+'/trip';
   updateUnitLabel();
-  N=null;document.getElementById('nSearch').value='';document.getElementById('distBadge').innerHTML='';document.getElementById('selLabel').textContent='';
+  N=null;routeDistMiles=null;
+  document.getElementById('nSearch').value='';document.getElementById('distBadge').innerHTML='';document.getElementById('selLabel').textContent='';
   hideDonorList();updateMap();compute();
 }
 
 function initAllPins(){
-  // All nonprofit pins
+  // All nonprofit pins - always visible
   NPS.forEach(function(np){
     var m=L.marker([np.lat,np.lon],{icon:makeNPIcon(false)}).addTo(map)
       .bindTooltip('<b>'+np.name+'</b><br><span style="font-size:10px;color:#666">'+np.area+'</span>',{direction:'top'})
@@ -444,12 +513,14 @@ function initAllPins(){
       });
     npMarkers.push(m);
   });
-  // All donor pins
+  // All donor pins - hidden by default, stored in allDonorMarkers
   DONORS.forEach(function(d){
     var icon=L.divIcon({html:'<div style="width:10px;height:10px;background:#f59e0b;border:2px solid white;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div>',className:'',iconAnchor:[5,5]});
-    L.marker([d.lat,d.lon],{icon:icon}).addTo(map)
+    var m=L.marker([d.lat,d.lon],{icon:icon})
       .bindTooltip('<b>'+d.name+'</b><br><span style="font-size:10px;color:#666">'+d.cat+' &middot; '+d.area+'</span>',{direction:'top'})
       .on('click',function(){selectDonor(d);});
+    allDonorMarkers.push(m);
+    // not added to map by default
   });
 }
 

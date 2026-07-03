@@ -435,12 +435,16 @@ function compute(){
   var wage=transport==='driver'?gv('wage'):(transport==='walk'?17:0);
   var dist=routeDistMiles!==null?routeDistMiles:hav(D.lat,D.lon,N.lat,N.lon);
   var labor=gv('labor');
+  packMins=parseFloat(document.getElementById('pack').value)||15;
+  var packCost=wage*(packMins/60);
+  travelMins=transport==='walk'?(dist/3)*60:(dist/Math.max(spd,1))*60;
+  totalMins=travelMins+packMins;
   var tripBase=0;
   if(includeTrip){
     if(transport==='walk'){
-      tripBase=dist*(wage/3)+cont;
+      tripBase=dist*(wage/3)+packCost+cont;
     } else {
-      tripBase=tc(dist,gas,mpg,wage,spd,cont);
+      tripBase=tc(dist,gas,mpg,wage,spd,cont)+packCost;
     }
   }
   var trip=tripBase+labor;
@@ -467,7 +471,7 @@ function compute(){
       '<div class="mc"><div class="ml">Profit / trip</div><div class="mv '+(net>=0?'mv-ok':'mv-no')+'">$'+net.toFixed(2)+'</div><div class="mn">Tax savings minus transportation and labor costs</div></div>'+
       '<div class="mc"><div class="ml">Trip cost</div><div class="mv mv-neu">$'+trip.toFixed(2)+'</div><div class="mn">Fuel, labor, and container costs for one donation trip</div></div>'+
       '<div class="mc"><div class="ml">Total trip time</div><div class="mv mv-neu">'+Math.round(totalMins)+' min</div><div class="mn">'+Math.round(travelMins)+' min travel + '+Math.round(packMins)+' min pack &amp; hand-off</div></div>'+
-      '<div class="mc"><div class="ml">Min. items to donate</div><div class="mv mv-neu">'+Math.ceil(be)+'</div><div class="mn">Fewest '+PR[D.cat].unit+' per trip needed for tax savings to cover trip cost</div></div>'+
+      '<div class="mc"><div class="ml">Min. lbs to donate</div><div class="mv mv-neu">'+Math.ceil(be)+' lbs</div><div class="mn">Fewest pounds per trip needed for tax savings to cover trip cost</div></div>'+
       '<div class="mc"><div class="ml">Route distance</div><div class="mv mv-neu">'+(routeDistMiles!==null?routeDistMiles.toFixed(2):hav(D.lat,D.lon,N.lat,N.lon).toFixed(2))+' mi</div><div class="mn">'+( transport==='walk'?'Walking':'Driving')+' distance to '+N.name+'</div></div>'+
     '</div>'+
 

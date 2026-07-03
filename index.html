@@ -497,7 +497,7 @@ function compute(){
   var totalWage=hourlyWage*headcount;
   packMins=deliveryCost==='self'?(parseFloat(document.getElementById('pack').value)||15):0;
   var packCost=totalWage*(packMins/60);
-  travelMins=transport==='walk'?(dist/3)*60:(dist/Math.max(spd,1))*60;
+  travelMins=(transport==='walk'?(dist/3)*60:(dist/Math.max(spd,1))*60)*2; // round trip
   totalMins=travelMins+packMins;
   var tripBase=0;
   if(deliveryCost==='none'){
@@ -507,9 +507,9 @@ function compute(){
   } else {
     // self: fuel (if driving) + labor time + pack time
     if(transport==='walk'){
-      tripBase=dist*(totalWage/3)+packCost+cont;
+      tripBase=(dist*2)*(totalWage/3)+packCost+cont;
     } else {
-      tripBase=tc(dist,gas,mpg,totalWage,spd,cont)+packCost;
+      tripBase=tc(dist*2,gas,mpg,totalWage,spd,cont)+packCost;
     }
   }
   var trip=tripBase;
@@ -523,7 +523,7 @@ function compute(){
         '<div class="card-row"><div class="card-row-label">Distance</div><div class="card-row-val">'+distVal+' mi</div></div>'+
         '<div class="card-row"><div class="card-row-label">Travel time</div><div class="card-row-val">'+Math.round(travelMins)+' min</div></div>'+
         '<div class="card-row"><div class="card-row-label">Pack &amp; hand-off</div><div class="card-row-val">'+Math.round(packMins)+' min</div></div>'+
-        '<div class="card-row"><div class="card-row-label">Total trip time</div><div class="card-row-val">'+Math.round(totalMins)+' min</div></div>'+
+        '<div class="card-row"><div><div class="card-row-label">Total trip time</div><div class="card-row-note">Round trip</div></div><div class="card-row-val">'+Math.round(totalMins)+' min</div></div>'+
         '<div class="card-row"><div><div class="card-row-label">Trip cost</div><div class="card-row-note">Fuel, labor &amp; containers</div></div><div class="card-row-val">$'+trip.toFixed(2)+'</div></div>'+
       '</div>'+
       '<div class="card">'+
@@ -532,7 +532,7 @@ function compute(){
         '<div class="card-sub">Tax savings of $'+sav.toFixed(2)+' minus trip cost of $'+trip.toFixed(2)+'</div>'+
         '<div class="card-row"><div><div class="card-row-label">Tax savings / trip</div><div class="card-row-note">Your tax bill goes down by this amount</div></div><div class="card-row-val card-row-val-green">$'+sav.toFixed(2)+'</div></div>'+
         '<div class="card-row"><div><div class="card-row-label">Annual savings</div><div class="card-row-note">'+Math.round(shifts)+' trips/week &times; 50 weeks</div></div><div class="card-row-val card-row-val-green">'+annAmt+'</div></div>'+
-        '<div class="card-row"><div><div class="card-row-label">Min. lbs to break even</div><div class="card-row-note">Below this, trip cost exceeds tax savings</div></div><div class="card-row-val">'+Math.ceil(be)+' lbs</div></div>'+
+        '<div class="card-row"><div><div class="card-row-label">Minimum lbs per trip to break even</div><div class="card-row-note">Below this, trip cost exceeds tax savings</div></div><div class="card-row-val">'+Math.ceil(be)+' lbs</div></div>'+
       '</div>'+
     '</div>'+
 

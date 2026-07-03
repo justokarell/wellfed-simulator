@@ -128,14 +128,16 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <div class="sec">Delivery</div>
     <label>Delivery costs</label>
     <div class="rb-row">
-      <div class="rb" id="rbCostNone" onclick="setCost('none')">None</div>
-      <div class="rb on" id="rbCostTransport" onclick="setCost('transport')">Transport</div>
-      <div class="rb" id="rbCostFull" onclick="setCost('full')">Transport + labor</div>
+      <div class="rb on" id="rbCostNone" onclick="setCost('none')">Free</div>
+      <div class="rb" id="rbCostSelf" onclick="setCost('self')">I deliver</div>
+      <div class="rb" id="rbCostHire" onclick="setCost('hire')">Hire delivery</div>
     </div>
+    <div id="modeRow">
     <label style="margin-top:10px">Mode</label>
     <div class="rb-row">
       <div class="rb on" id="rbWalk" onclick="setT('walk')">Walk</div>
       <div class="rb" id="rbS" onclick="setT('drive')">Drive</div>
+    </div>
     </div>
     <div id="wageRow" style="display:none">
       <div class="sl-row"><label>Hourly wage</label><span class="sl-val" id="wVal">$17/hr</span></div>
@@ -150,14 +152,19 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
       <input type="range" id="pack" min="0" max="60" step="5" value="15" oninput="sl(this,'packVal',function(v){return v+' min'})">
       <div style="font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px">Time spent packing and handing off food.</div>
     </div>
+    <div id="hireRow" style="display:none">
+      <div class="sl-row"><label>Total delivery cost per trip</label><span class="sl-val" id="hireVal">$20.00</span></div>
+      <input type="range" id="hireCost" min="0" max="200" step="1" value="20" oninput="sl(this,'hireVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
+      <div style="font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px">Flat cost paid to a delivery person or service per trip.</div>
+    </div>
 
     <div style="margin-top:20px;border-top:1px solid #E5E7EB;padding-top:14px">
-      <div style="font-size:11px;font-weight:600;color:#6B7280;margin-bottom:12px">Advanced settings</div>
+      
       <div id="advPanel" style="display:block;margin-top:0">
 
 
         <div id="tripCostPanel" style="display:none">
-          <div style="font-size:11px;font-weight:600;color:#6B7280;margin-bottom:8px;border-top:1px solid #E5E7EB;padding-top:10px">Drive settings</div>
+          
           <div class="sl-row"><label>Gas price</label><span class="sl-val" id="gVal">$3.80/gal</span></div>
           <input type="range" id="gas" min="2" max="8" step="0.1" value="3.8" oninput="sl(this,'gVal',function(v){return '$'+parseFloat(v).toFixed(2)+'/gal'})">
           <div class="sl-row"><label>Vehicle MPG</label><span class="sl-val" id="mVal">25 mpg</span></div>
@@ -363,14 +370,17 @@ function setCat(cat){
   updateUnitLabel();
   compute();
 }
-var deliveryCost='transport'; // none, transport, full
+var deliveryCost='none'; // none, transport, full
 function setCost(mode){
   deliveryCost=mode;
   document.getElementById('rbCostNone').className='rb'+(mode==='none'?' on':'');
-  document.getElementById('rbCostTransport').className='rb'+(mode==='transport'?' on':'');
-  document.getElementById('rbCostFull').className='rb'+(mode==='full'?' on':'');
-  document.getElementById('wageRow').style.display=mode==='full'?'block':'none';
-  document.getElementById('packRow').style.display=mode==='full'?'block':'none';
+  document.getElementById('rbCostSelf').className='rb'+(mode==='self'?' on':'');
+  document.getElementById('rbCostHire').className='rb'+(mode==='hire'?' on':'');
+  document.getElementById('wageRow').style.display=mode==='self'?'block':'none';
+  document.getElementById('packRow').style.display=mode==='self'?'block':'none';
+  document.getElementById('hireRow').style.display=mode==='hire'?'block':'none';
+  document.getElementById('modeRow').style.display=mode==='self'?'block':'none';
+  document.getElementById('tripCostPanel').style.display=mode==='self'&&transport==='drive'?'block':'none';
   compute();
 }
 function setT(t){
@@ -378,7 +388,7 @@ function setT(t){
   document.getElementById('rbWalk').className='rb'+(t==='walk'?' on':'');
   document.getElementById('rbS').className='rb'+(t==='drive'?' on':'');
   // show/hide drive-only settings
-  document.getElementById('tripCostPanel').style.display=t==='walk'?'none':'block';
+  document.getElementById('tripCostPanel').style.display=(t==='drive'&&deliveryCost==='self')?'block':'none';
   if(D&&N)fetchRoute();else compute();
 }
 function setLabor(on){
@@ -482,24 +492,20 @@ function compute(){
   var p=PR[currentCat],ed=edVal(p.a,p.C,p.s),t=mRate(gv('income')),n=gv('units'),shifts=gv('shifts');
   var gas=gv('gas'),mpg=gv('mpg'),spd=gv('spd'),cont=gv('cont');
   var dist=routeDistMiles!==null?routeDistMiles:hav(D.lat,D.lon,N.lat,N.lon);
-  var headcount=deliveryCost==='full'?(parseFloat(document.getElementById('headcount').value)||1):1;
-  var hourlyWage=deliveryCost==='full'?gv('wage'):0;
+  var headcount=deliveryCost==='self'?(parseFloat(document.getElementById('headcount').value)||1):1;
+  var hourlyWage=deliveryCost==='self'?gv('wage'):0;
   var totalWage=hourlyWage*headcount;
-  packMins=deliveryCost==='full'?(parseFloat(document.getElementById('pack').value)||15):0;
+  packMins=deliveryCost==='self'?(parseFloat(document.getElementById('pack').value)||15):0;
   var packCost=totalWage*(packMins/60);
   travelMins=transport==='walk'?(dist/3)*60:(dist/Math.max(spd,1))*60;
   totalMins=travelMins+packMins;
   var tripBase=0;
   if(deliveryCost==='none'){
     tripBase=0;
-  } else if(deliveryCost==='transport'){
-    if(transport==='walk'){
-      tripBase=cont;
-    } else {
-      tripBase=tc(dist,gas,mpg,0,spd,cont);
-    }
+  } else if(deliveryCost==='hire'){
+    tripBase=parseFloat(document.getElementById('hireCost').value)||20;
   } else {
-    // full: transport + labor
+    // self: fuel (if driving) + labor time + pack time
     if(transport==='walk'){
       tripBase=dist*(totalWage/3)+packCost+cont;
     } else {

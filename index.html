@@ -94,6 +94,7 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
 
     <div class="sec">Food Category</div>
     <select id="catSel" onchange="setCat(this.value)">
+      <option value="Mixed / General">Mixed / General</option>
       <option value="Prepared Meals">Prepared Meals</option>
       <option value="Baked Goods">Baked Goods</option>
       <option value="Fresh Produce">Fresh Produce</option>
@@ -297,6 +298,7 @@ var DONORS=[
   {id:"capgrillefidi",area:"Financial District",name:"The Capital Grille (Broadway FiDi)",lat:40.7078,lon:-74.0102,cat:"Prepared Meals",units:65},
 ];
 var PR={
+  "Mixed / General":{a:1.89,s:.50,C:2.20,unit:"lbs"},
   "Prepared Meals":{a:2.50,s:.60,C:3.00,unit:"lbs"},
   "Baked Goods":{a:1.80,s:.50,C:2.50,unit:"lbs"},
   "Fresh Produce":{a:.60,s:.40,C:1.00,unit:"lbs"},
@@ -319,8 +321,12 @@ function updateUnitLabel(){
   document.getElementById('unitsLabel').textContent='Pounds donated per trip';
   document.getElementById('produceNote').style.display='none';
   if(document.getElementById('catNote')){
-    var p=PR[currentCat||DONORS[0].cat];
-    document.getElementById('catNote').textContent='National estimate: $'+p.C.toFixed(2)+'/lb · '+Math.round(p.a*100)+'% avg markup (USDA ERS)';
+    var cat=currentCat||DONORS[0].cat;
+    var p=PR[cat];
+    var note=cat==='Mixed / General'
+      ? 'Blended estimate for mixed donations (40% prepared meals, 30% baked goods, 20% produce, 10% dairy).'
+      : 'National estimate: $'+p.C.toFixed(2)+'/lb cost · $'+(p.C*(1+p.a)).toFixed(2)+'/lb typical sale price (USDA ERS)';
+    document.getElementById('catNote').textContent=note;
   }
 }
 
@@ -362,7 +368,10 @@ var currentCat=DONORS[0].cat;
 function setCat(cat){
   currentCat=cat;
   var p=PR[cat];
-  document.getElementById('catNote').textContent='National estimate: $'+p.C.toFixed(2)+'/lb · '+Math.round(p.a*100)+'% avg markup (USDA ERS)';
+  var note=cat==='Mixed / General'
+    ? 'Blended estimate for mixed donations (40% prepared meals, 30% baked goods, 20% produce, 10% dairy). Select a specific category if your donation is mostly one type.'
+    : 'National estimate: $'+p.C.toFixed(2)+'/lb · $'+(p.C*(1+p.a)).toFixed(2)+'/lb typical sale price (USDA ERS)';
+  document.getElementById('catNote').textContent=note;
   updateUnitLabel();
   compute();
 }

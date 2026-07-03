@@ -565,11 +565,13 @@ window.addEventListener('load',function(){
     return d<best.d?{np:np,d:d}:best;
   },{np:NPS[0],d:Infinity}).np;
   N=nearestNP;
+  console.log('Auto-select: D=',D.name,'N=',N.name);
   document.getElementById('nSearch').value=nearestNP.name;
   document.getElementById('selLabel').textContent=nearestNP.name+' selected';
   var initDist=hav(D.lat,D.lon,nearestNP.lat,nearestNP.lon);
   document.getElementById('distBadge').innerHTML='<span class="dist-badge">'+initDist.toFixed(2)+' mi away</span>';
   updateMap();
+  console.log('Calling compute, D=',D,'N=',N);
   compute();
   fetchRoute();
   // try to get user location
@@ -583,9 +585,24 @@ window.addEventListener('load',function(){
         var dist=hav(ulat,ulon,d.lat,d.lon);
         if(dist<bestDist){bestDist=dist;best=d;}
       });
-      if(best)selectDonor(best);
+      if(best){
+        selectDonor(best);
+        // re-select nearest nonprofit to the new donor
+        var nearestToUser=NPS.reduce(function(b,np){
+          var d=hav(best.lat,best.lon,np.lat,np.lon);
+          return d<b.d?{np:np,d:d}:b;
+        },{np:NPS[0],d:Infinity}).np;
+        N=nearestToUser;
+        document.getElementById('nSearch').value=nearestToUser.name;
+        document.getElementById('selLabel').textContent=nearestToUser.name+' selected';
+        var d2=hav(best.lat,best.lon,nearestToUser.lat,nearestToUser.lon);
+        document.getElementById('distBadge').innerHTML='<span class="dist-badge">'+d2.toFixed(2)+' mi away</span>';
+        updateMap();
+        compute();
+        fetchRoute();
+      }
     },function(){
-      // denied - stay on centroid
+      // denied - stay on default selection
     });
   }
 

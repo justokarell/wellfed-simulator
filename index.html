@@ -564,9 +564,14 @@ window.addEventListener('load',function(){
     var d=hav(DONORS[0].lat,DONORS[0].lon,np.lat,np.lon);
     return d<best.d?{np:np,d:d}:best;
   },{np:NPS[0],d:Infinity}).np;
-  selectNP(nearestNP);
+  N=nearestNP;
   document.getElementById('nSearch').value=nearestNP.name;
-  compute(); // show results immediately with fallback distance
+  document.getElementById('selLabel').textContent=nearestNP.name+' selected';
+  var initDist=hav(D.lat,D.lon,nearestNP.lat,nearestNP.lon);
+  document.getElementById('distBadge').innerHTML='<span class="dist-badge">'+initDist.toFixed(2)+' mi away</span>';
+  updateMap();
+  compute();
+  fetchRoute();
   // try to get user location
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(function(pos){

@@ -103,7 +103,7 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
 
     <div class="sec">Donation</div>
     <div class="sl-row"><label id="unitsLabel">Meals donated per trip</label><span class="sl-val" id="uVal">20</span></div>
-    <input type="range" id="units" min="1" max="100" step="1" value="20" oninput="sl(this,'uVal',function(v){return v})">
+    <input type="range" id="units" min="1" max="500" step="5" value="50" oninput="sl(this,'uVal',function(v){return v})">
     <div id="produceNote" style="display:none;font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px;line-height:1.5">Fresh produce cost basis assumed at $1.00/lb (USDA ERS benchmark).</div>
     <div class="sl-row"><label>Trips per week</label><span class="sl-val" id="shVal">5</span></div>
     <input type="range" id="shifts" min="1" max="7" step="1" value="5" oninput="sl(this,'shVal',function(v){return v})">
@@ -222,65 +222,65 @@ var NPS=[
 ];
 var DONORS=[
   // UWS
-  {id:"gin",area:"Upper West Side",name:"The Speakeasy at The Gin Mill",lat:40.7868,lon:-73.9807,cat:"Prepared Meals",units:22},
-  {id:"blonde",area:"Upper West Side",name:"Blondies Sports",lat:40.7851,lon:-73.9793,cat:"Prepared Meals",units:20},
-  {id:"buceo",area:"Upper West Side",name:"Buceo 95",lat:40.7924,lon:-73.9742,cat:"Prepared Meals",units:18},
-  {id:"gebhard",area:"Upper West Side",name:"Gebhard's Beer Culture",lat:40.7907,lon:-73.9731,cat:"Beverages",units:25},
-  {id:"gennaro",area:"Upper West Side",name:"Gennaro Restaurant",lat:40.7877,lon:-73.9820,cat:"Prepared Meals",units:21},
-  {id:"barney",area:"Upper West Side",name:"Barney Greengrass",lat:40.7852,lon:-73.9798,cat:"Dairy",units:14},
-  {id:"belle",area:"Upper West Side",name:"Hotel Belleclaire Kitchen",lat:40.7861,lon:-73.9810,cat:"Prepared Meals",units:17},
-  {id:"sabar",area:"Upper West Side",name:"Cafe Sabarsky",lat:40.7838,lon:-73.9589,cat:"Baked Goods",units:28},
-  {id:"vbar",area:"Upper West Side",name:"V&T Restaurant",lat:40.8012,lon:-73.9660,cat:"Prepared Meals",units:16},
-  {id:"amster",area:"Upper West Side",name:"Amsterdam Restaurant & Bar",lat:40.7905,lon:-73.9760,cat:"Fresh Produce",units:35},
-  {id:"joe",area:"Upper West Side",name:"Joe Coffee UWS",lat:40.7843,lon:-73.9796,cat:"Beverages",units:18},
-  {id:"frenchroast",area:"Upper West Side",name:"French Roast",lat:40.7876,lon:-73.9766,cat:"Prepared Meals",units:24},
-  {id:"tessa",area:"Upper West Side",name:"TESSA",lat:40.7814,lon:-73.9792,cat:"Prepared Meals",units:20},
-  {id:"carmines",area:"Upper West Side",name:"Carmine's UWS",lat:40.7911,lon:-73.9740,cat:"Prepared Meals",units:30},
-  {id:"maison",area:"Upper West Side",name:"Maison Pickle",lat:40.7869,lon:-73.9780,cat:"Prepared Meals",units:22},
-  {id:"pigkhao",area:"Upper West Side",name:"Pig and Khao",lat:40.7842,lon:-73.9772,cat:"Prepared Meals",units:18},
-  {id:"jacobs",area:"Upper West Side",name:"Jacob's Pickles",lat:40.7912,lon:-73.9690,cat:"Prepared Meals",units:25},
-  {id:"cotta",area:"Upper West Side",name:"Osteria Cotta",lat:40.7855,lon:-73.9727,cat:"Prepared Meals",units:20},
-  {id:"florentin",area:"Upper West Side",name:"Florentin",lat:40.7859,lon:-73.9766,cat:"Prepared Meals",units:18},
+  {id:"gin",area:"Upper West Side",name:"The Speakeasy at The Gin Mill",lat:40.7868,lon:-73.9807,cat:"Prepared Meals",units:50},
+  {id:"blonde",area:"Upper West Side",name:"Blondies Sports",lat:40.7851,lon:-73.9793,cat:"Prepared Meals",units:45},
+  {id:"buceo",area:"Upper West Side",name:"Buceo 95",lat:40.7924,lon:-73.9742,cat:"Prepared Meals",units:40},
+  {id:"gebhard",area:"Upper West Side",name:"Gebhard's Beer Culture",lat:40.7907,lon:-73.9731,cat:"Beverages",units:20},
+  {id:"gennaro",area:"Upper West Side",name:"Gennaro Restaurant",lat:40.7877,lon:-73.9820,cat:"Prepared Meals",units:50},
+  {id:"barney",area:"Upper West Side",name:"Barney Greengrass",lat:40.7852,lon:-73.9798,cat:"Dairy",units:30},
+  {id:"belle",area:"Upper West Side",name:"Hotel Belleclaire Kitchen",lat:40.7861,lon:-73.9810,cat:"Prepared Meals",units:40},
+  {id:"sabar",area:"Upper West Side",name:"Cafe Sabarsky",lat:40.7838,lon:-73.9589,cat:"Baked Goods",units:35},
+  {id:"vbar",area:"Upper West Side",name:"V&T Restaurant",lat:40.8012,lon:-73.9660,cat:"Prepared Meals",units:40},
+  {id:"amster",area:"Upper West Side",name:"Amsterdam Restaurant & Bar",lat:40.7905,lon:-73.9760,cat:"Fresh Produce",units:60},
+  {id:"joe",area:"Upper West Side",name:"Joe Coffee UWS",lat:40.7843,lon:-73.9796,cat:"Beverages",units:15},
+  {id:"frenchroast",area:"Upper West Side",name:"French Roast",lat:40.7876,lon:-73.9766,cat:"Prepared Meals",units:50},
+  {id:"tessa",area:"Upper West Side",name:"TESSA",lat:40.7814,lon:-73.9792,cat:"Prepared Meals",units:40},
+  {id:"carmines",area:"Upper West Side",name:"Carmine's UWS",lat:40.7911,lon:-73.9740,cat:"Prepared Meals",units:65},
+  {id:"maison",area:"Upper West Side",name:"Maison Pickle",lat:40.7869,lon:-73.9780,cat:"Prepared Meals",units:50},
+  {id:"pigkhao",area:"Upper West Side",name:"Pig and Khao",lat:40.7842,lon:-73.9772,cat:"Prepared Meals",units:40},
+  {id:"jacobs",area:"Upper West Side",name:"Jacob's Pickles",lat:40.7912,lon:-73.9690,cat:"Prepared Meals",units:55},
+  {id:"cotta",area:"Upper West Side",name:"Osteria Cotta",lat:40.7855,lon:-73.9727,cat:"Prepared Meals",units:45},
+  {id:"florentin",area:"Upper West Side",name:"Florentin",lat:40.7859,lon:-73.9766,cat:"Prepared Meals",units:40},
   // UES
-  {id:"madamebonte",area:"Upper East Side",name:"Madame Bonte (E 84th St)",lat:40.7762,lon:-73.9546,cat:"Baked Goods",units:35},
-  {id:"lapecora",area:"Upper East Side",name:"La Pecora Bianca UES",lat:40.7747,lon:-73.9538,cat:"Prepared Meals",units:20},
-  {id:"upthai",area:"Upper East Side",name:"Up Thai",lat:40.7700,lon:-73.9579,cat:"Prepared Meals",units:18},
-  {id:"waterwheat",area:"Upper East Side",name:"Water & Wheat UES",lat:40.7739,lon:-73.9573,cat:"Prepared Meals",units:22},
-  {id:"zoi",area:"Upper East Side",name:"ZOI Mediterranean",lat:40.7721,lon:-73.9557,cat:"Prepared Meals",units:20},
-  {id:"cravefishbar",area:"Upper East Side",name:"Crave Fishbar UES",lat:40.7716,lon:-73.9560,cat:"Prepared Meals",units:16},
-  {id:"thepthai",area:"Upper East Side",name:"THEP Thai Restaurant",lat:40.7708,lon:-73.9572,cat:"Prepared Meals",units:18},
-  {id:"uvanext",area:"Upper East Side",name:"Uva Next Door",lat:40.7721,lon:-73.9556,cat:"Prepared Meals",units:17},
-  {id:"losteria",area:"Upper East Side",name:"L'Osteria",lat:40.7771,lon:-73.9571,cat:"Prepared Meals",units:19},
-  {id:"orwashers",area:"Upper East Side",name:"Orwashers Bakery UES",lat:40.7750,lon:-73.9559,cat:"Baked Goods",units:50},
+  {id:"madamebonte",area:"Upper East Side",name:"Madame Bonte (E 84th St)",lat:40.7762,lon:-73.9546,cat:"Baked Goods",units:50},
+  {id:"lapecora",area:"Upper East Side",name:"La Pecora Bianca UES",lat:40.7747,lon:-73.9538,cat:"Prepared Meals",units:45},
+  {id:"upthai",area:"Upper East Side",name:"Up Thai",lat:40.7700,lon:-73.9579,cat:"Prepared Meals",units:40},
+  {id:"waterwheat",area:"Upper East Side",name:"Water & Wheat UES",lat:40.7739,lon:-73.9573,cat:"Prepared Meals",units:45},
+  {id:"zoi",area:"Upper East Side",name:"ZOI Mediterranean",lat:40.7721,lon:-73.9557,cat:"Prepared Meals",units:40},
+  {id:"cravefishbar",area:"Upper East Side",name:"Crave Fishbar UES",lat:40.7716,lon:-73.9560,cat:"Prepared Meals",units:35},
+  {id:"thepthai",area:"Upper East Side",name:"THEP Thai Restaurant",lat:40.7708,lon:-73.9572,cat:"Prepared Meals",units:40},
+  {id:"uvanext",area:"Upper East Side",name:"Uva Next Door",lat:40.7721,lon:-73.9556,cat:"Prepared Meals",units:35},
+  {id:"losteria",area:"Upper East Side",name:"L'Osteria",lat:40.7771,lon:-73.9571,cat:"Prepared Meals",units:40},
+  {id:"orwashers",area:"Upper East Side",name:"Orwashers Bakery UES",lat:40.7750,lon:-73.9559,cat:"Baked Goods",units:60},
   // Stamford
-  {id:"patisserie",area:"Stamford, CT",name:"Patisserie Salzburg Stamford",lat:41.0534,lon:-73.5404,cat:"Baked Goods",units:30},
-  {id:"cococafe",area:"Stamford, CT",name:"Coco Cafe Stamford",lat:41.0556,lon:-73.5407,cat:"Baked Goods",units:25},
-  {id:"laesquinita",area:"Stamford, CT",name:"La Esquinita",lat:41.0453,lon:-73.5402,cat:"Prepared Meals",units:20},
-  {id:"canard",area:"Stamford, CT",name:"Canard Cafe Bar Stamford",lat:41.0520,lon:-73.5357,cat:"Baked Goods",units:22},
-  {id:"matthews",area:"Stamford, CT",name:"Matthew's Bakery",lat:41.0408,lon:-73.5535,cat:"Baked Goods",units:40},
-  {id:"lorca",area:"Stamford, CT",name:"Lorca Coffee Bar",lat:41.0561,lon:-73.5383,cat:"Beverages",units:20},
+  {id:"patisserie",area:"Stamford, CT",name:"Patisserie Salzburg Stamford",lat:41.0534,lon:-73.5404,cat:"Baked Goods",units:45},
+  {id:"cococafe",area:"Stamford, CT",name:"Coco Cafe Stamford",lat:41.0556,lon:-73.5407,cat:"Baked Goods",units:35},
+  {id:"laesquinita",area:"Stamford, CT",name:"La Esquinita",lat:41.0453,lon:-73.5402,cat:"Prepared Meals",units:40},
+  {id:"canard",area:"Stamford, CT",name:"Canard Cafe Bar Stamford",lat:41.0520,lon:-73.5357,cat:"Baked Goods",units:40},
+  {id:"matthews",area:"Stamford, CT",name:"Matthew's Bakery",lat:41.0408,lon:-73.5535,cat:"Baked Goods",units:65},
+  {id:"lorca",area:"Stamford, CT",name:"Lorca Coffee Bar",lat:41.0561,lon:-73.5383,cat:"Beverages",units:15},
   // Midtown / Midtown East
-  {id:"lebern",area:"Midtown",name:"Le Bernardin",lat:40.7614,lon:-73.9818,cat:"Prepared Meals",units:25},
-  {id:"capgrille51",area:"Midtown",name:"The Capital Grille (W 51st St)",lat:40.7609,lon:-73.9811,cat:"Prepared Meals",units:28},
-  {id:"capgrillePark",area:"Midtown East",name:"The Capital Grille (Park Ave)",lat:40.7539,lon:-73.9763,cat:"Prepared Meals",units:28},
-  {id:"pret7th",area:"Midtown",name:"Pret A Manger (7th Ave)",lat:40.7549,lon:-73.9876,cat:"Baked Goods",units:40},
-  {id:"pretlex",area:"Midtown East",name:"Paris Baguette (Lexington Ave)",lat:40.7576,lon:-73.9714,cat:"Baked Goods",units:35},
-  {id:"baccarat",area:"Midtown",name:"Baccarat Hotel Kitchen",lat:40.7609,lon:-73.9774,cat:"Prepared Meals",units:20},
-  {id:"fourseasons",area:"Midtown East",name:"Four Seasons Hotel New York",lat:40.7623,lon:-73.9713,cat:"Prepared Meals",units:22},
-  {id:"nycedition",area:"Flatiron",name:"The New York EDITION Hotel",lat:40.7413,lon:-73.9874,cat:"Prepared Meals",units:20},
-  {id:"blackseed",area:"Nolita",name:"Black Seed Bagels (Nolita)",lat:40.7209,lon:-73.9947,cat:"Baked Goods",units:30},
-  {id:"blackseedmid",area:"Midtown East",name:"Black Seed Bagels (Midtown East)",lat:40.7533,lon:-73.9767,cat:"Baked Goods",units:25},
-  {id:"dunkinues",area:"Upper East Side",name:"Dunkin (Lexington Ave UES)",lat:40.7786,lon:-73.9565,cat:"Baked Goods",units:20},
-  {id:"dunkinuws",area:"Upper West Side",name:"Dunkin (Broadway UWS)",lat:40.7899,lon:-73.9749,cat:"Baked Goods",units:20},
-  {id:"bestbagel",area:"Midtown",name:"Best Bagel & Coffee",lat:40.7522,lon:-73.9911,cat:"Baked Goods",units:45},
-  {id:"capgrillefidi",area:"Financial District",name:"The Capital Grille (Broadway FiDi)",lat:40.7078,lon:-74.0102,cat:"Prepared Meals",units:28},
+  {id:"lebern",area:"Midtown",name:"Le Bernardin",lat:40.7614,lon:-73.9818,cat:"Prepared Meals",units:60},
+  {id:"capgrille51",area:"Midtown",name:"The Capital Grille (W 51st St)",lat:40.7609,lon:-73.9811,cat:"Prepared Meals",units:65},
+  {id:"capgrillePark",area:"Midtown East",name:"The Capital Grille (Park Ave)",lat:40.7539,lon:-73.9763,cat:"Prepared Meals",units:65},
+  {id:"pret7th",area:"Midtown",name:"Pret A Manger (7th Ave)",lat:40.7549,lon:-73.9876,cat:"Baked Goods",units:50},
+  {id:"pretlex",area:"Midtown East",name:"Paris Baguette (Lexington Ave)",lat:40.7576,lon:-73.9714,cat:"Baked Goods",units:45},
+  {id:"baccarat",area:"Midtown",name:"Baccarat Hotel Kitchen",lat:40.7609,lon:-73.9774,cat:"Prepared Meals",units:50},
+  {id:"fourseasons",area:"Midtown East",name:"Four Seasons Hotel New York",lat:40.7623,lon:-73.9713,cat:"Prepared Meals",units:55},
+  {id:"nycedition",area:"Flatiron",name:"The New York EDITION Hotel",lat:40.7413,lon:-73.9874,cat:"Prepared Meals",units:50},
+  {id:"blackseed",area:"Nolita",name:"Black Seed Bagels (Nolita)",lat:40.7209,lon:-73.9947,cat:"Baked Goods",units:55},
+  {id:"blackseedmid",area:"Midtown East",name:"Black Seed Bagels (Midtown East)",lat:40.7533,lon:-73.9767,cat:"Baked Goods",units:45},
+  {id:"dunkinues",area:"Upper East Side",name:"Dunkin (Lexington Ave UES)",lat:40.7786,lon:-73.9565,cat:"Baked Goods",units:30},
+  {id:"dunkinuws",area:"Upper West Side",name:"Dunkin (Broadway UWS)",lat:40.7899,lon:-73.9749,cat:"Baked Goods",units:30},
+  {id:"bestbagel",area:"Midtown",name:"Best Bagel & Coffee",lat:40.7522,lon:-73.9911,cat:"Baked Goods",units:60},
+  {id:"capgrillefidi",area:"Financial District",name:"The Capital Grille (Broadway FiDi)",lat:40.7078,lon:-74.0102,cat:"Prepared Meals",units:65},
 ];
 var PR={
-  "Prepared Meals":{a:2.50,s:.60,C:4.50,unit:"meals"},
-  "Baked Goods":{a:1.80,s:.50,C:1.80,unit:"items"},
+  "Prepared Meals":{a:2.50,s:.60,C:3.00,unit:"lbs"},
+  "Baked Goods":{a:1.80,s:.50,C:2.50,unit:"lbs"},
   "Fresh Produce":{a:.60,s:.40,C:1.00,unit:"lbs"},
-  "Dairy":{a:.90,s:.30,C:2.00,unit:"items"},
-  "Beverages":{a:3.50,s:.70,C:.80,unit:"bottles"},
+  "Dairy":{a:.90,s:.30,C:1.50,unit:"lbs"},
+  "Beverages":{a:3.50,s:.70,C:.80,unit:"lbs"},
 };
 var BR=[[11600,.10],[47150,.12],[100525,.22],[191950,.24],[243725,.32],[609350,.35],[Infinity,.37]];
 function mRate(v){for(var i=0;i<BR.length;i++)if(v<=BR[i][0])return BR[i][1];return .37}
@@ -295,10 +295,8 @@ var D=DONORS[0],N=null,transport='self';
 var map,donorMarker=null,npMarkers=[],routeLine=null;
 
 function updateUnitLabel(){
-  var unit=PR[D.cat].unit;
-  var labels={"meals":"Meals donated per trip","lbs":"Pounds donated per trip","bottles":"Bottles donated per trip","items":"Items donated per trip"};
-  document.getElementById('unitsLabel').textContent=labels[unit]||"Items donated per trip";
-  document.getElementById('produceNote').style.display=unit==='lbs'?'block':'none';
+  document.getElementById('unitsLabel').textContent='Pounds donated per trip';
+  document.getElementById('produceNote').style.display='none';
 }
 
 function sl(el,vid,fmt){document.getElementById(vid).textContent=fmt(el.value);compute()}

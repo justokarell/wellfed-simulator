@@ -94,6 +94,17 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <select id="dSel" style="display:none"></select>
     <div class="dinfo" id="dInfo"></div>
 
+    <div class="sec">Food Category</div>
+    <label>What type of food do you donate?</label>
+    <select id="catSel" onchange="setCat(this.value)">
+      <option value="Prepared Meals">Prepared Meals</option>
+      <option value="Baked Goods">Baked Goods</option>
+      <option value="Fresh Produce">Fresh Produce</option>
+      <option value="Dairy">Dairy</option>
+      <option value="Beverages">Beverages</option>
+    </select>
+    <div style="font-size:10px;color:#9CA3AF;margin-bottom:10px;line-height:1.5" id="catNote"></div>
+
     <div class="sec">Nonprofit</div>
     <label>Select or click a pin on the map</label>
     <input type="text" id="nSearch" placeholder="Type to search..." autocomplete="off"
@@ -115,16 +126,16 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <input type="range" id="income" min="10000" max="700000" step="5000" value="120000" oninput="sl(this,'iVal',function(v){return '$'+Math.round(v).toLocaleString()})">
 
     <div class="sec">Delivery</div>
-    <label>How do they get there?</label>
-    <div class="rb-row">
-      <div class="rb on" id="rbWalk" onclick="setT('walk')">Walk</div>
-      <div class="rb" id="rbS" onclick="setT('drive')">Drive</div>
-    </div>
-    <label style="margin-top:10px">Delivery costs</label>
+    <label>Delivery costs</label>
     <div class="rb-row">
       <div class="rb" id="rbCostNone" onclick="setCost('none')">None</div>
       <div class="rb on" id="rbCostTransport" onclick="setCost('transport')">Transport</div>
       <div class="rb" id="rbCostFull" onclick="setCost('full')">Transport + labor</div>
+    </div>
+    <label style="margin-top:10px">Mode</label>
+    <div class="rb-row">
+      <div class="rb on" id="rbWalk" onclick="setT('walk')">Walk</div>
+      <div class="rb" id="rbS" onclick="setT('drive')">Drive</div>
     </div>
     <div id="wageRow" style="display:none">
       <div class="sl-row"><label>Hourly wage</label><span class="sl-val" id="wVal">$17/hr</span></div>
@@ -301,6 +312,10 @@ var map,donorMarker=null,npMarkers=[],routeLine=null;
 function updateUnitLabel(){
   document.getElementById('unitsLabel').textContent='Pounds donated per trip';
   document.getElementById('produceNote').style.display='none';
+  if(document.getElementById('catNote')){
+    var p=PR[currentCat||DONORS[0].cat];
+    document.getElementById('catNote').textContent='National estimate: $'+p.C.toFixed(2)+'/lb · '+Math.round(p.a*100)+'% avg markup (USDA ERS)';
+  }
 }
 
 function sl(el,vid,fmt){document.getElementById(vid).textContent=fmt(el.value);compute()}
@@ -337,6 +352,14 @@ function toggleAllDonors(){
   }
 }
 var includeLabor=false;
+var currentCat=DONORS[0].cat;
+function setCat(cat){
+  currentCat=cat;
+  var p=PR[cat];
+  document.getElementById('catNote').textContent='National estimate: $'+p.C.toFixed(2)+'/lb · '+Math.round(p.a*100)+'% avg markup (USDA ERS)';
+  updateUnitLabel();
+  compute();
+}
 var deliveryCost='transport'; // none, transport, full
 function setCost(mode){
   deliveryCost=mode;
@@ -453,7 +476,7 @@ function updateMap(){
 function compute(){
   var totalMins=0,travelMins=0,packMins=0;
   if(!N){document.getElementById('results').innerHTML='<div class="empty">Click a blue nonprofit pin on the map, or use the dropdown on the left.</div>';return}
-  var p=PR[D.cat],ed=edVal(p.a,p.C,p.s),t=mRate(gv('income')),n=gv('units'),shifts=gv('shifts');
+  var p=PR[currentCat],ed=edVal(p.a,p.C,p.s),t=mRate(gv('income')),n=gv('units'),shifts=gv('shifts');
   var gas=gv('gas'),mpg=gv('mpg'),spd=gv('spd'),cont=gv('cont');
   var wage=includeLabor?gv('wage'):0;
   var dist=routeDistMiles!==null?routeDistMiles:hav(D.lat,D.lon,N.lat,N.lon);
@@ -635,9 +658,9 @@ window.addEventListener('load',function(){
   updateUnitLabel();
   // donor list init
   document.getElementById('dSearch').value=D.name;
-  document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Units/shift: '+D.units+'<br>Cost/unit: $'+PR[D.cat].C.toFixed(2);
+  // dInfo now set in selectDonor
 
-  document.getElementById('dInfo').innerHTML='Category: '+D.cat+'<br>Cost/'+PR[D.cat].unit+': $'+PR[D.cat].C.toFixed(2)+'<br>Default: '+D.units+' '+PR[D.cat].unit+'/trip';
+  // dInfo now set in selectDonor
   // np list init — populated on focus
 });
 </script>

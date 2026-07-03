@@ -50,6 +50,7 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
 .mv-ok{color:#15803D}
 .mv-no{color:#991B1B}
 .mv-neu{color:#111111}
+.mn{font-size:10px;color:#9CA3AF;margin-top:4px;line-height:1.4}
 .ann{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:14px 16px;display:flex;align-items:center;gap:12px}
 .ann-text{font-size:12px;color:#15803D;flex:1}
 .ann-val{font-size:24px;font-weight:700;color:#16A34A;flex-shrink:0}
@@ -460,12 +461,12 @@ function compute(){
       '<div class="v-bracket"><div class="v-bracket-lbl">Tax bracket</div><div class="v-bracket-val">'+((t*100).toFixed(0))+'%</div></div>'+
     '</div>'+
     '<div class="metrics">'+
-      '<div class="mc"><div class="ml">Tax savings / trip</div><div class="mv mv-ok">$'+sav.toFixed(2)+'</div></div>'+
-      '<div class="mc"><div class="ml">Net benefit / trip</div><div class="mv '+(net>=0?'mv-ok':'mv-no')+'">$'+net.toFixed(2)+'</div></div>'+
-      '<div class="mc"><div class="ml">Trip cost</div><div class="mv mv-neu">$'+trip.toFixed(2)+'</div></div>'+
-      '<div class="mc"><div class="ml">Donation value</div><div class="mv mv-neu">$'+Vg.toFixed(2)+'</div></div>'+
-      '<div class="mc"><div class="ml">Viability threshold</div><div class="mv mv-neu">$'+thr.toFixed(2)+'</div></div>'+
-      '<div class="mc"><div class="ml">Break-even units</div><div class="mv mv-neu">'+be.toFixed(1)+'</div></div>'+
+      '<div class="mc"><div class="ml">Tax savings / trip</div><div class="mv mv-ok">$'+sav.toFixed(2)+'</div><div class="mn">Reduction in your tax bill per donation trip (PATH Act deduction &times; your tax rate)</div></div>'+
+      '<div class="mc"><div class="ml">Profit / trip</div><div class="mv '+(net>=0?'mv-ok':'mv-no')+'">$'+net.toFixed(2)+'</div><div class="mn">Tax savings minus transportation and labor costs</div></div>'+
+      '<div class="mc"><div class="ml">Trip cost</div><div class="mv mv-neu">$'+trip.toFixed(2)+'</div><div class="mn">Fuel, labor, and container costs for one donation trip</div></div>'+
+      '<div class="mc"><div class="ml">Annual profit</div><div class="mv '+(ann>=0?'mv-ok':'mv-no')+'">'+(ann>=0?'$'+Math.round(ann).toLocaleString():'-$'+Math.round(Math.abs(ann)).toLocaleString())+'</div><div class="mn">Profit per trip &times; '+Math.round(shifts)+' trips/week &times; 50 weeks</div></div>'+
+      '<div class="mc"><div class="ml">Min. items to donate</div><div class="mv mv-neu">'+Math.ceil(be)+'</div><div class="mn">Fewest '+PR[D.cat].unit+' per trip needed for tax savings to cover trip cost</div></div>'+
+      '<div class="mc"><div class="ml">Route distance</div><div class="mv mv-neu">'+(routeDistMiles!==null?routeDistMiles.toFixed(2):hav(D.lat,D.lon,N.lat,N.lon).toFixed(2))+' mi</div><div class="mn">'+( transport==='walk'?'Walking':'Driving')+' distance to '+N.name+'</div></div>'+
     '</div>'+
 
     '<div class="disc">Tax savings realized only with positive taxable income and donation to a qualified 501(c)(3) under the PATH Act of 2015. Walking routes via OpenRouteService. Trip cost uses actual route distance.</div>';

@@ -120,6 +120,22 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
       <div class="rb on" id="rbWalk" onclick="setT('walk')">Walk</div>
       <div class="rb" id="rbS" onclick="setT('drive')">Drive</div>
     </div>
+    <label style="margin-top:10px">Delivery costs</label>
+    <div class="rb-row">
+      <div class="rb" id="rbCostNone" onclick="setCost('none')">None</div>
+      <div class="rb on" id="rbCostTransport" onclick="setCost('transport')">Transport</div>
+      <div class="rb" id="rbCostFull" onclick="setCost('full')">Transport + labor</div>
+    </div>
+    <div id="wageRow" style="display:none">
+      <div class="sl-row"><label>Hourly wage</label><span class="sl-val" id="wVal">$17/hr</span></div>
+      <input type="range" id="wage" min="7.25" max="50" step="0.25" value="17" oninput="sl(this,'wVal',function(v){return '$'+parseFloat(v).toFixed(2)+'/hr'})">
+      <div style="font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px">NY minimum wage: $17/hr</div>
+    </div>
+    <div id="packRow" style="display:none">
+      <div class="sl-row"><label>Pack &amp; hand-off time</label><span class="sl-val" id="packVal">15 min</span></div>
+      <input type="range" id="pack" min="0" max="60" step="5" value="15" oninput="sl(this,'packVal',function(v){return v+' min'})">
+      <div style="font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px">Time spent packing and handing off food.</div>
+    </div>
 
     <div style="margin-top:20px;border-top:1px solid #E5E7EB;padding-top:14px">
       <div style="font-size:11px;font-weight:600;color:#6B7280;margin-bottom:12px">Advanced settings</div>
@@ -321,6 +337,16 @@ function toggleAllDonors(){
   }
 }
 var includeLabor=false;
+var deliveryCost='transport'; // none, transport, full
+function setCost(mode){
+  deliveryCost=mode;
+  document.getElementById('rbCostNone').className='rb'+(mode==='none'?' on':'');
+  document.getElementById('rbCostTransport').className='rb'+(mode==='transport'?' on':'');
+  document.getElementById('rbCostFull').className='rb'+(mode==='full'?' on':'');
+  document.getElementById('wageRow').style.display=mode==='full'?'block':'none';
+  document.getElementById('packRow').style.display=mode==='full'?'block':'none';
+  compute();
+}
 function setT(t){
   transport=t;
   document.getElementById('rbWalk').className='rb'+(t==='walk'?' on':'');

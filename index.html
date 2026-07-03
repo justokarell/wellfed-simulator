@@ -120,11 +120,8 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     </div>
 
     <div style="margin-top:20px;border-top:1px solid #E5E7EB;padding-top:14px">
-      <div onclick="toggleAdv()" style="cursor:pointer;user-select:none;font-size:11px;font-weight:600;color:#6B7280;display:flex;align-items:center;gap:6px">
-        <span id="advArrow" style="display:inline-block;font-size:9px;transition:transform .2s">&#9654;</span>
-        Advanced settings
-      </div>
-      <div id="advPanel" style="display:none;margin-top:12px">
+      <div style="font-size:11px;font-weight:600;color:#6B7280;margin-bottom:12px">Advanced settings</div>
+      <div id="advPanel" style="display:block;margin-top:0">
         <label style="font-size:11px;color:#6B7280;margin-bottom:6px;display:block">Trip costs</label>
         <div class="rb-row" style="margin-bottom:12px">
           <div class="rb on" id="rbTripOn" onclick="setTrip(true)">Include</div>

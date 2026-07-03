@@ -58,15 +58,17 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
 .dd-item:hover{background:#F0FDF4;color:#15803D}
 .dd-cat{padding:6px 12px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#9CA3AF;pointer-events:none}
 .disc{font-size:10px;color:#9CA3AF;margin-top:14px;border-top:1px solid #E5E7EB;padding-top:12px;line-height:1.6}
-.savings-hero{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:18px 22px;margin-bottom:14px}
-.savings-hero-top{display:flex;align-items:flex-end;gap:16px;margin-bottom:6px}
-.savings-hero-amount{font-size:40px;font-weight:700;color:#16A34A;letter-spacing:-1px;line-height:1}
-.savings-hero-per{font-size:14px;color:#6B7280;margin-bottom:6px}
-.savings-hero-per strong{color:#15803D;font-size:18px}
-.savings-hero-sub{font-size:12px;color:#6B7280}
-.savings-hero-negative{background:#FEF2F2;border-color:#FCA5A5}
-.savings-hero-negative .savings-hero-amount{color:#DC2626}
-.savings-hero-negative .savings-hero-per strong{color:#DC2626}
+.cards-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.card{background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:16px 18px}
+.card-title{font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.card-main{font-size:36px;font-weight:700;color:#15803D;letter-spacing:-1px;line-height:1;margin-bottom:4px}
+.card-main-neg{color:#DC2626}
+.card-sub{font-size:11px;color:#6B7280;margin-bottom:12px}
+.card-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-top:1px solid #F3F4F6}
+.card-row-label{font-size:11px;color:#6B7280}
+.card-row-note{font-size:10px;color:#9CA3AF;margin-top:1px}
+.card-row-val{font-size:13px;font-weight:600;color:#111111;flex-shrink:0;margin-left:12px;text-align:right}
+.card-row-val-green{color:#15803D}
 @media(max-width:640px){
   .layout{grid-template-columns:1fr;grid-template-rows:auto 1fr}
   .side{border-right:none;border-bottom:1px solid #E5E7EB}
@@ -450,30 +452,26 @@ function compute(){
   }
   var trip=tripBase+labor;
   var sav=t*ed*n,net=sav-trip,Vg=n*p.C,thr=p.C*trip/(t*ed),ok=Vg>=thr,ann=net*shifts*50,be=trip/(t*ed);
-  var heroClass=ann>=0?'savings-hero':'savings-hero savings-hero-negative';
-  var heroAmt=ann>=0?'$'+Math.round(ann).toLocaleString():'-$'+Math.round(Math.abs(ann)).toLocaleString();
-  var netAmt=(net>=0?'$':'−$')+Math.abs(net).toFixed(2);
+  var annAmt=ann>=0?'$'+Math.round(ann).toLocaleString():'-$'+Math.round(Math.abs(ann)).toLocaleString();
+  var distVal=routeDistMiles!==null?routeDistMiles.toFixed(2):hav(D.lat,D.lon,N.lat,N.lon).toFixed(2);
   document.getElementById('results').innerHTML=
-    '<div class="'+heroClass+'">'+
-      '<div class="savings-hero-top">'+
-        '<div class="savings-hero-amount">'+heroAmt+'</div>'+
-        '<div class="savings-hero-per">/ year &nbsp;&nbsp; <strong>'+netAmt+'</strong> / trip</div>'+
+    '<div class="cards-row">'+
+      '<div class="card">'+
+        '<div class="card-title">Trip</div>'+
+        '<div class="card-row"><div class="card-row-label">Distance</div><div class="card-row-val">'+distVal+' mi</div></div>'+
+        '<div class="card-row"><div class="card-row-label">Travel time</div><div class="card-row-val">'+Math.round(travelMins)+' min</div></div>'+
+        '<div class="card-row"><div class="card-row-label">Pack &amp; hand-off</div><div class="card-row-val">'+Math.round(packMins)+' min</div></div>'+
+        '<div class="card-row"><div class="card-row-label">Total trip time</div><div class="card-row-val">'+Math.round(totalMins)+' min</div></div>'+
+        '<div class="card-row"><div><div class="card-row-label">Trip cost</div><div class="card-row-note">Fuel, labor &amp; containers</div></div><div class="card-row-val">$'+trip.toFixed(2)+'</div></div>'+
       '</div>'+
-      '<div class="savings-hero-sub">'+Math.round(shifts)+' trips/week &times; 50 weeks &middot; '+Math.round(gv('units'))+' '+PR[D.cat].unit+'/trip &middot; '+((t*100).toFixed(0))+'% tax bracket</div>'+
-    '</div>'+
-    '<div class="verdict '+(ok?'v-ok':'v-no')+'">'+
-      '<div style="font-size:24px">'+(ok?'&#x2705;':'&#x274C;')+'</div>'+
-      '<div><div class="v-title">'+(ok?'Viable trip':'Below threshold')+'</div>'+
-      '<div class="v-sub">'+(ok?'$'+Vg.toFixed(2)+' donation clears the $'+thr.toFixed(2)+' threshold &middot; '+dist.toFixed(2)+' mi to '+N.name:'Need '+Math.ceil(be-n)+' more lbs to break even &middot; '+dist.toFixed(2)+' mi to '+N.name)+'</div></div>'+
-      '<div class="v-bracket"><div class="v-bracket-lbl">Tax bracket</div><div class="v-bracket-val">'+((t*100).toFixed(0))+'%</div></div>'+
-    '</div>'+
-    '<div class="metrics">'+
-      '<div class="mc"><div class="ml">Tax savings / trip</div><div class="mv mv-ok">$'+sav.toFixed(2)+'</div><div class="mn">Reduction in your tax bill per donation trip (PATH Act deduction &times; your tax rate)</div></div>'+
-      '<div class="mc"><div class="ml">Profit / trip</div><div class="mv '+(net>=0?'mv-ok':'mv-no')+'">$'+net.toFixed(2)+'</div><div class="mn">Tax savings minus transportation and labor costs</div></div>'+
-      '<div class="mc"><div class="ml">Trip cost</div><div class="mv mv-neu">$'+trip.toFixed(2)+'</div><div class="mn">Fuel, labor, and container costs for one donation trip</div></div>'+
-      '<div class="mc"><div class="ml">Total trip time</div><div class="mv mv-neu">'+Math.round(totalMins)+' min</div><div class="mn">'+Math.round(travelMins)+' min travel + '+Math.round(packMins)+' min pack &amp; hand-off</div></div>'+
-      '<div class="mc"><div class="ml">Min. lbs to donate</div><div class="mv mv-neu">'+Math.ceil(be)+' lbs</div><div class="mn">Fewest pounds per trip needed for tax savings to cover trip cost</div></div>'+
-      '<div class="mc"><div class="ml">Route distance</div><div class="mv mv-neu">'+(routeDistMiles!==null?routeDistMiles.toFixed(2):hav(D.lat,D.lon,N.lat,N.lon).toFixed(2))+' mi</div><div class="mn">'+( transport==='walk'?'Walking':'Driving')+' distance to '+N.name+'</div></div>'+
+      '<div class="card">'+
+        '<div class="card-title">Your profit</div>'+
+        '<div class="card-main '+(net<0?'card-main-neg':'')+'">'+(net>=0?'$':'-$')+Math.abs(net).toFixed(2)+'<span style="font-size:16px;font-weight:400;color:#6B7280"> / trip</span></div>'+
+        '<div class="card-sub">Tax savings of $'+sav.toFixed(2)+' minus trip cost of $'+trip.toFixed(2)+'</div>'+
+        '<div class="card-row"><div><div class="card-row-label">Tax savings / trip</div><div class="card-row-note">Your tax bill goes down by this amount</div></div><div class="card-row-val card-row-val-green">$'+sav.toFixed(2)+'</div></div>'+
+        '<div class="card-row"><div><div class="card-row-label">Annual profit</div><div class="card-row-note">'+Math.round(shifts)+' trips/week &times; 50 weeks</div></div><div class="card-row-val card-row-val-green">'+annAmt+'</div></div>'+
+        '<div class="card-row"><div><div class="card-row-label">Min. lbs to break even</div><div class="card-row-note">Below this, trip cost exceeds tax savings</div></div><div class="card-row-val">'+Math.ceil(be)+' lbs</div></div>'+
+      '</div>'+
     '</div>'+
 
     '<div class="disc">Tax savings realized only with positive taxable income and donation to a qualified 501(c)(3) under the PATH Act of 2015. Walking routes via OpenRouteService. Trip cost uses actual route distance.</div>';

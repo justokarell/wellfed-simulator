@@ -556,7 +556,7 @@ window.addEventListener('load',function(){
   var allPts=DONORS.concat(NPS);
   var avgLat=allPts.reduce(function(s,p){return s+p.lat},0)/allPts.length;
   var avgLon=allPts.reduce(function(s,p){return s+p.lon},0)/allPts.length;
-  map.setView([avgLat,avgLon],12);
+  map.setView([avgLat,avgLon],10);
   initAllPins();
   // auto-select first donor and nearest nonprofit
   selectDonor(DONORS[0]);
@@ -578,7 +578,7 @@ window.addEventListener('load',function(){
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(function(pos){
       var ulat=pos.coords.latitude,ulon=pos.coords.longitude;
-      map.setView([ulat,ulon],15);
+      map.setView([ulat,ulon],13);
       // find nearest donor
       var best=null,bestDist=Infinity;
       DONORS.forEach(function(d){

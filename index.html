@@ -122,12 +122,14 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <div style="margin-top:20px;border-top:1px solid #E5E7EB;padding-top:14px">
       <div style="font-size:11px;font-weight:600;color:#6B7280;margin-bottom:12px">Advanced settings</div>
       <div id="advPanel" style="display:block;margin-top:0">
-        <label style="font-size:11px;color:#6B7280;margin-bottom:6px;display:block">Trip costs</label>
-        <div class="rb-row" style="margin-bottom:12px">
-          <div class="rb on" id="rbTripOn" onclick="setTrip(true)">Include</div>
-          <div class="rb" id="rbTripOff" onclick="setTrip(false)">Exclude</div>
-        </div>
+        <div class="sl-row"><label>Labor and handling cost per trip</label><span class="sl-val" id="laborVal">$0.00</span></div>
+        <input type="range" id="labor" min="0" max="100" step="1" value="0" oninput="sl(this,'laborVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
+        <div style="font-size:10px;color:#9CA3AF;margin-top:-4px;margin-bottom:10px;line-height:1.5">Staff time, packaging, or other non-transport costs per trip.</div>
+        <div class="sl-row"><label>Pack &amp; hand-off time</label><span class="sl-val" id="packVal">15 min</span></div>
+        <input type="range" id="pack" min="0" max="60" step="5" value="15" oninput="sl(this,'packVal',function(v){return v+' min'})">
+        <div style="font-size:10px;color:#9CA3AF;margin-top:-4px;margin-bottom:10px;line-height:1.5">Time to sort, pack, and hand off food. Costs calculated at your delivery wage rate.</div>
         <div id="tripCostPanel" style="display:none">
+          <div style="font-size:11px;font-weight:600;color:#6B7280;margin-bottom:8px;border-top:1px solid #E5E7EB;padding-top:10px">Drive settings</div>
           <div class="sl-row"><label>Gas price</label><span class="sl-val" id="gVal">$3.80/gal</span></div>
           <input type="range" id="gas" min="2" max="8" step="0.1" value="3.8" oninput="sl(this,'gVal',function(v){return '$'+parseFloat(v).toFixed(2)+'/gal'})">
           <div class="sl-row"><label>Vehicle MPG</label><span class="sl-val" id="mVal">25 mpg</span></div>
@@ -137,20 +139,14 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
           <div class="sl-row"><label>Container cost</label><span class="sl-val" id="cVal">$5.00</span></div>
           <input type="range" id="cont" min="0" max="20" step="0.5" value="5" oninput="sl(this,'cVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
         </div>
-        <div class="sl-row" style="margin-top:8px"><label>Labor and handling cost per trip</label><span class="sl-val" id="laborVal">$0.00</span></div>
-        <input type="range" id="labor" min="0" max="100" step="1" value="0" oninput="sl(this,'laborVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
-        <div style="font-size:10px;color:#9CA3AF;margin-top:-4px;margin-bottom:4px;line-height:1.5">Staff time, packaging, or other non-transport costs per trip.</div>
-        <div class="sl-row" style="margin-top:8px"><label>Pack &amp; hand-off time</label><span class="sl-val" id="packVal">15 min</span></div>
-        <input type="range" id="pack" min="0" max="60" step="5" value="15" oninput="sl(this,'packVal',function(v){return v+' min'})">
-        <div style="font-size:10px;color:#9CA3AF;margin-top:-4px;margin-bottom:4px;line-height:1.5">Time to sort, pack, and hand off food. Costs calculated at your delivery wage rate.</div>
       </div>
     </div>
   </div>
 
   <div class="main">
     <div class="legend">
-      <span><span style="display:inline-block;width:12px;height:12px;background:#f59e0b;border-radius:2px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> Your business</span>
-      <span><span style="display:inline-block;width:12px;height:12px;background:#3b82f6;border-radius:50%;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> Nonprofits (click to select)</span>
+      <span><span style="display:inline-block;width:12px;height:12px;background:#f59e0b;border-radius:50%;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> Your business</span>
+      <span><span style="display:inline-block;width:12px;height:12px;background:#15803D;border-radius:3px;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> Nonprofits (click to select)</span>
       <span id="selLabel" style="color:#15803D;font-weight:500"></span>
       <span style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:#6B7280;cursor:pointer" onclick="toggleAllDonors()">
         <span id="allDonorsToggle" style="display:inline-block;width:28px;height:16px;background:#E5E7EB;border-radius:8px;position:relative;transition:background .2s">
@@ -342,12 +338,15 @@ function setLabor(on){
   compute();
 }
 
-function makeDonorIcon(){
-  return L.divIcon({html:'<div style="width:14px;height:14px;background:#f59e0b;border:2px solid white;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>',className:'',iconAnchor:[7,7]});
+function makeDonorIcon(selected){
+  var sz=selected?18:14;
+  return L.divIcon({html:'<div style="width:'+sz+'px;height:'+sz+'px;background:#f59e0b;border:2px solid white;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.35)"></div>',className:'',iconAnchor:[sz/2,sz/2]});
 }
 function makeNPIcon(sel){
-  var sz=sel?16:13,col=sel?'#16A34A':'#3b82f6';
-  return L.divIcon({html:'<div style="width:'+sz+'px;height:'+sz+'px;background:'+col+';border:2px solid white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>',className:'',iconAnchor:[sz/2,sz/2]});
+  var sz=sel?16:13,col=sel?'#15803D':'#15803D',op=sel?1:0.7;
+  // square pin shape for nonprofits
+  var html='<div style="width:'+sz+'px;height:'+sz+'px;background:'+col+';border:2px solid white;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,.4);opacity:'+op+'"></div>';
+  return L.divIcon({html:html,className:'',iconAnchor:[sz/2,sz/2]});
 }
 
 var routeDistMiles=null;
@@ -411,7 +410,7 @@ function updateMap(){
   if(donorMarker)donorMarker.remove();
   donorMarker=null;
   if(D){
-    donorMarker=L.marker([D.lat,D.lon],{icon:makeDonorIcon()}).addTo(map)
+    donorMarker=L.marker([D.lat,D.lon],{icon:makeDonorIcon(true)}).addTo(map)
       .bindTooltip('<b>'+D.name+'</b>',{direction:'top'});
   }
   // update NP pin highlights
@@ -465,7 +464,7 @@ function compute(){
     '<div class="verdict '+(ok?'v-ok':'v-no')+'">'+
       '<div style="font-size:24px">'+(ok?'&#x2705;':'&#x274C;')+'</div>'+
       '<div><div class="v-title">'+(ok?'Viable trip':'Below threshold')+'</div>'+
-      '<div class="v-sub">'+(ok?'$'+Vg.toFixed(2)+' donation clears the $'+thr.toFixed(2)+' threshold &middot; '+dist.toFixed(2)+' mi to '+N.name:'Need '+Math.ceil(be-n)+' more units to break even &middot; '+dist.toFixed(2)+' mi to '+N.name)+'</div></div>'+
+      '<div class="v-sub">'+(ok?'$'+Vg.toFixed(2)+' donation clears the $'+thr.toFixed(2)+' threshold &middot; '+dist.toFixed(2)+' mi to '+N.name:'Need '+Math.ceil(be-n)+' more lbs to break even &middot; '+dist.toFixed(2)+' mi to '+N.name)+'</div></div>'+
       '<div class="v-bracket"><div class="v-bracket-lbl">Tax bracket</div><div class="v-bracket-val">'+((t*100).toFixed(0))+'%</div></div>'+
     '</div>'+
     '<div class="metrics">'+
@@ -544,7 +543,7 @@ function initAllPins(){
   });
   // All donor pins - hidden by default, stored in allDonorMarkers
   DONORS.forEach(function(d){
-    var icon=L.divIcon({html:'<div style="width:10px;height:10px;background:#f59e0b;border:2px solid white;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div>',className:'',iconAnchor:[5,5]});
+    var icon=L.divIcon({html:'<div style="width:10px;height:10px;background:#f59e0b;border:2px solid white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div>',className:'',iconAnchor:[5,5]});
     var m=L.marker([d.lat,d.lon],{icon:icon})
       .bindTooltip('<b>'+d.name+'</b><br><span style="font-size:10px;color:#666">'+d.cat+' &middot; '+d.area+'</span>',{direction:'top'})
       .on('click',function(){selectDonor(d);});
@@ -561,6 +560,14 @@ window.addEventListener('load',function(){
   var avgLon=allPts.reduce(function(s,p){return s+p.lon},0)/allPts.length;
   map.setView([avgLat,avgLon],12);
   initAllPins();
+  // auto-select first donor and nearest nonprofit
+  selectDonor(DONORS[0]);
+  var nearestNP=NPS.reduce(function(best,np){
+    var d=hav(DONORS[0].lat,DONORS[0].lon,np.lat,np.lon);
+    return d<best.d?{np:np,d:d}:best;
+  },{np:NPS[0],d:Infinity}).np;
+  selectNP(nearestNP);
+  document.getElementById('nSearch').value=nearestNP.name;
   // try to get user location
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(function(pos){

@@ -89,7 +89,7 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <input type="text" id="dSearch" placeholder="Type to search..." autocomplete="off"
       style="width:100%;font-size:13px;padding:8px 10px;border-radius:7px;border:1px solid #E5E7EB;color:#111111;font-family:'Inter',sans-serif;margin-bottom:4px"
       oninput="filterDonors(this.value)" onfocus="showDonorList()" onblur="setTimeout(hideDonorList,200)">
-    <div id="dList" style="display:none;position:absolute;z-index:1000;background:#fff;border:1px solid #E5E7EB;border-radius:7px;width:248px;max-height:200px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,.1)"></div>
+    <div id="dList" style="display:none;position:fixed;z-index:9999;background:#fff;border:1px solid #E5E7EB;border-radius:7px;width:260px;max-height:220px;overflow-y:auto;box-shadow:0 4px 16px rgba(0,0,0,.15)"></div>
     <select id="dSel" style="display:none"></select>
 
     <div class="sec">Food Category</div>
@@ -107,7 +107,7 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <input type="text" id="nSearch" placeholder="Type to search..." autocomplete="off"
       style="width:100%;font-size:13px;padding:8px 10px;border-radius:7px;border:1px solid #E5E7EB;color:#111111;font-family:'Inter',sans-serif;margin-bottom:4px"
       oninput="filterNPs(this.value)" onfocus="showNPList()" onblur="setTimeout(hideNPList,200)">
-    <div id="nList" style="display:none;position:absolute;z-index:1000;background:#fff;border:1px solid #E5E7EB;border-radius:7px;width:248px;max-height:200px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,.1)"></div>
+    <div id="nList" style="display:none;position:fixed;z-index:9999;background:#fff;border:1px solid #E5E7EB;border-radius:7px;width:260px;max-height:220px;overflow-y:auto;box-shadow:0 4px 16px rgba(0,0,0,.15)"></div>
     <select id="nSel" style="display:none"><option value="">— pick a nonprofit —</option></select>
     <div id="distBadge"></div>
 
@@ -209,6 +209,9 @@ var NPS=[
   {id:"allsaints",area:"Upper East Side",name:"All Saints Episcopal Church",lat:40.7614,lon:-73.9650},
   {id:"nycp",area:"Upper East Side",name:"NY Common Pantry",lat:40.7958,lon:-73.9492},
   {id:"crossroads",area:"Upper East Side",name:"Crossroads at St. Bartholomew's",lat:40.7573,lon:-73.9728},
+  {id:"allsoulsues",area:"Upper East Side",name:"All Souls Unitarian Church Food Pantry",lat:40.7754,lon:-73.9582},
+  {id:"allsaintsues",area:"Upper East Side",name:"All Saints Episcopal Church",lat:40.7614,lon:-73.9650},
+  {id:"p2p",area:"Stamford, CT",name:"Person-to-Person Food Pantry",lat:41.0367,lon:-73.5525},
   // Stamford
   {id:"newcov",area:"Stamford, CT",name:"New Covenant Center",lat:41.0477,lon:-73.5512},
   {id:"foodbank",area:"Stamford, CT",name:"Food Bank of Lower Fairfield County",lat:41.0690,lon:-73.5203},
@@ -281,6 +284,9 @@ var DONORS=[
   {id:"canard",area:"Stamford, CT",name:"Canard Cafe Bar Stamford",lat:41.0520,lon:-73.5357,cat:"Baked Goods",units:40},
   {id:"matthews",area:"Stamford, CT",name:"Matthew's Bakery",lat:41.0408,lon:-73.5535,cat:"Baked Goods",units:65},
   {id:"lorca",area:"Stamford, CT",name:"Lorca Coffee Bar",lat:41.0561,lon:-73.5383,cat:"Beverages",units:15},
+  {id:"ellas",area:"Upper East Side",name:"Ella's Cafe Espresso & Wine Bar",lat:40.7716,lon:-73.9566,cat:"Baked Goods",units:35},
+  {id:"winfield",area:"Stamford, CT",name:"Winfield Street Coffee",lat:41.0556,lon:-73.5394,cat:"Baked Goods",units:30},
+  {id:"thirdplace",area:"Stamford, CT",name:"Third Place by Half Full Brewery",lat:41.0455,lon:-73.5377,cat:"Prepared Meals",units:40},
   // Midtown / Midtown East
   {id:"lebern",area:"Midtown",name:"Le Bernardin",lat:40.7614,lon:-73.9818,cat:"Prepared Meals",units:60},
   {id:"capgrille51",area:"Midtown",name:"The Capital Grille (W 51st St)",lat:40.7609,lon:-73.9811,cat:"Prepared Meals",units:65},
@@ -578,9 +584,25 @@ function filterNPs(q){
   var filtered=NPS.filter(function(n){return n.name.toLowerCase().indexOf(q.toLowerCase())>=0});
   renderNList(filtered);showNPList();
 }
-function showDonorList(){var el=document.getElementById('dList');renderDList(DONORS);el.style.display='block'}
+function showDonorList(){
+  var el=document.getElementById('dList');
+  var inp=document.getElementById('dSearch');
+  var r=inp.getBoundingClientRect();
+  el.style.top=(r.bottom+4)+'px';
+  el.style.left=r.left+'px';
+  el.style.width=r.width+'px';
+  renderDList(DONORS);el.style.display='block';
+}
 function hideDonorList(){document.getElementById('dList').style.display='none'}
-function showNPList(){var el=document.getElementById('nList');renderNList(NPS);el.style.display='block'}
+function showNPList(){
+  var el=document.getElementById('nList');
+  var inp=document.getElementById('nSearch');
+  var r=inp.getBoundingClientRect();
+  el.style.top=(r.bottom+4)+'px';
+  el.style.left=r.left+'px';
+  el.style.width=r.width+'px';
+  renderNList(NPS);el.style.display='block';
+}
 function hideNPList(){document.getElementById('nList').style.display='none'}
 function selectDonor(d){userInteracted=true;
   D=d;
@@ -623,7 +645,7 @@ window.addEventListener('load',function(){
   var allPts=DONORS.concat(NPS);
   var avgLat=allPts.reduce(function(s,p){return s+p.lat},0)/allPts.length;
   var avgLon=allPts.reduce(function(s,p){return s+p.lon},0)/allPts.length;
-  map.setView([avgLat,avgLon],10);
+  map.setView([avgLat,avgLon],8);
   initAllPins();
   // auto-select first donor and nearest nonprofit
   selectDonor(DONORS[0]);

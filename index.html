@@ -112,7 +112,7 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <div id="distBadge"></div>
 
     <div class="sec">Donation</div>
-    <div class="sl-row"><label id="unitsLabel">Meals donated per trip</label><span class="sl-val" id="uVal">20</span></div>
+    <div class="sl-row"><label id="unitsLabel">Pounds donated per trip</label><span class="sl-val" id="uVal">20</span></div>
     <input type="range" id="units" min="1" max="500" step="5" value="50" oninput="sl(this,'uVal',function(v){return v})">
     <div id="produceNote" style="display:none;font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px;line-height:1.5">Fresh produce cost basis assumed at $1.00/lb (USDA ERS benchmark).</div>
     <div class="sl-row"><label>Trips per week</label><span class="sl-val" id="shVal">5</span></div>
@@ -129,7 +129,7 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
       <div class="rb" id="rbCostSelf" onclick="setCost('self')">I deliver</div>
       <div class="rb" id="rbCostHire" onclick="setCost('hire')">Hire delivery</div>
     </div>
-    <div id="modeRow">
+    <div id="modeRow" style="display:none">
     <label style="margin-top:10px">Mode</label>
     <div class="rb-row">
       <div class="rb on" id="rbWalk" onclick="setT('walk')">Walk</div>

@@ -86,16 +86,13 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
 <div class="layout">
   <div class="side">
     <div class="sec">Donor Business</div>
-    <label>Select your business</label>
     <input type="text" id="dSearch" placeholder="Type to search..." autocomplete="off"
       style="width:100%;font-size:13px;padding:8px 10px;border-radius:7px;border:1px solid #E5E7EB;color:#111111;font-family:'Inter',sans-serif;margin-bottom:4px"
       oninput="filterDonors(this.value)" onfocus="showDonorList()" onblur="setTimeout(hideDonorList,200)">
     <div id="dList" style="display:none;position:absolute;z-index:1000;background:#fff;border:1px solid #E5E7EB;border-radius:7px;width:248px;max-height:200px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,.1)"></div>
     <select id="dSel" style="display:none"></select>
-    <div class="dinfo" id="dInfo"></div>
 
     <div class="sec">Food Category</div>
-    <label>What type of food do you donate?</label>
     <select id="catSel" onchange="setCat(this.value)">
       <option value="Prepared Meals">Prepared Meals</option>
       <option value="Baked Goods">Baked Goods</option>
@@ -106,7 +103,6 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <div style="font-size:10px;color:#9CA3AF;margin-bottom:10px;line-height:1.5" id="catNote"></div>
 
     <div class="sec">Nonprofit</div>
-    <label>Select or click a pin on the map</label>
     <input type="text" id="nSearch" placeholder="Type to search..." autocomplete="off"
       style="width:100%;font-size:13px;padding:8px 10px;border-radius:7px;border:1px solid #E5E7EB;color:#111111;font-family:'Inter',sans-serif;margin-bottom:4px"
       oninput="filterNPs(this.value)" onfocus="showNPList()" onblur="setTimeout(hideNPList,200)">
@@ -582,7 +578,7 @@ function selectDonor(d){userInteracted=true;
   document.getElementById('dSearch').value=d.name;
   document.getElementById('units').value=d.units;
   document.getElementById('uVal').textContent=d.units;
-  document.getElementById('dInfo').innerHTML='Category: '+d.cat+'<br>Cost/'+PR[d.cat].unit+': $'+PR[d.cat].C.toFixed(2)+'<br>Default: '+d.units+' '+PR[d.cat].unit+'/trip';
+
   updateUnitLabel();
   N=null;routeDistMiles=null;
   document.getElementById('nSearch').value='';document.getElementById('distBadge').innerHTML='';document.getElementById('selLabel').textContent='';

@@ -89,7 +89,7 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <input type="text" id="dSearch" placeholder="Type to search..." autocomplete="off"
       style="width:100%;font-size:13px;padding:8px 10px;border-radius:7px;border:1px solid #E5E7EB;color:#111111;font-family:'Inter',sans-serif;margin-bottom:4px"
       oninput="filterDonors(this.value)" onfocus="showDonorList()" onblur="setTimeout(hideDonorList,200)">
-    <div id="dList" style="display:none;position:fixed;z-index:9999;background:#fff;border:1px solid #E5E7EB;border-radius:7px;width:260px;max-height:220px;overflow-y:auto;box-shadow:0 4px 16px rgba(0,0,0,.15)"></div>
+
     <select id="dSel" style="display:none"></select>
 
     <div class="sec">Food Category</div>
@@ -107,7 +107,7 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <input type="text" id="nSearch" placeholder="Type to search..." autocomplete="off"
       style="width:100%;font-size:13px;padding:8px 10px;border-radius:7px;border:1px solid #E5E7EB;color:#111111;font-family:'Inter',sans-serif;margin-bottom:4px"
       oninput="filterNPs(this.value)" onfocus="showNPList()" onblur="setTimeout(hideNPList,200)">
-    <div id="nList" style="display:none;position:fixed;z-index:9999;background:#fff;border:1px solid #E5E7EB;border-radius:7px;width:260px;max-height:220px;overflow-y:auto;box-shadow:0 4px 16px rgba(0,0,0,.15)"></div>
+
     <select id="nSel" style="display:none"><option value="">— pick a nonprofit —</option></select>
     <div id="distBadge"></div>
 
@@ -423,7 +423,8 @@ function makeNPIcon(sel){
 
 var routeDistMiles=null;
 
-function selectNP(np){userInteracted=true;
+function selectNP(np,silent){
+  if(!silent)userInteracted=true;
   N=np;
   document.getElementById('nSel').value=np.id;
   document.getElementById('nSearch').value=np.name;
@@ -604,7 +605,8 @@ function showNPList(){
   renderNList(NPS);el.style.display='block';
 }
 function hideNPList(){document.getElementById('nList').style.display='none'}
-function selectDonor(d){userInteracted=true;
+function selectDonor(d,silent){
+  if(!silent)userInteracted=true;
   D=d;
   document.getElementById('dSearch').value=d.name;
   document.getElementById('units').value=d.units;
@@ -640,6 +642,15 @@ function initAllPins(){
 }
 
 window.addEventListener('load',function(){
+  // Create dropdowns and append to body to escape sidebar overflow clipping
+  var dList=document.createElement('div');
+  dList.id='dList';
+  dList.style.cssText='display:none;position:fixed;z-index:9999;background:#fff;border:1px solid #E5E7EB;border-radius:7px;width:260px;max-height:220px;overflow-y:auto;box-shadow:0 4px 16px rgba(0,0,0,.15)';
+  document.body.appendChild(dList);
+  var nList=document.createElement('div');
+  nList.id='nList';
+  nList.style.cssText='display:none;position:fixed;z-index:9999;background:#fff;border:1px solid #E5E7EB;border-radius:7px;width:260px;max-height:220px;overflow-y:auto;box-shadow:0 4px 16px rgba(0,0,0,.15)';
+  document.body.appendChild(nList);
   map=L.map('map',{zoomControl:true,scrollWheelZoom:false});
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19}).addTo(map);
   var allPts=DONORS.concat(NPS);
@@ -648,7 +659,7 @@ window.addEventListener('load',function(){
   map.setView([avgLat,avgLon],8);
   initAllPins();
   // auto-select first donor and nearest nonprofit
-  selectDonor(DONORS[0]);
+  selectDonor(DONORS[0],true);
   var nearestNP=NPS.reduce(function(best,np){
     var d=hav(DONORS[0].lat,DONORS[0].lon,np.lat,np.lon);
     return d<best.d?{np:np,d:d}:best;
@@ -676,7 +687,7 @@ window.addEventListener('load',function(){
         if(dist<bestDist){bestDist=dist;best=d;}
       });
       if(best){
-        selectDonor(best);
+        selectDonor(best,true);
         // re-select nearest nonprofit to the new donor
         var nearestToUser=NPS.reduce(function(b,np){
           var d=hav(best.lat,best.lon,np.lat,np.lon);

@@ -59,13 +59,13 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
 .dd-item:hover{background:#F0FDF4;color:#15803D}
 .dd-cat{padding:6px 12px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#9CA3AF;pointer-events:none}
 .disc{font-size:10px;color:#9CA3AF;margin-top:14px;border-top:1px solid #E5E7EB;padding-top:12px;line-height:1.6}
-.cards-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
-.card{background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:16px 18px}
+.cards-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;align-items:start}
+.card{background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:14px 18px}
 .card-title{font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
-.card-main{font-size:36px;font-weight:700;color:#15803D;letter-spacing:-1px;line-height:1;margin-bottom:4px}
+.card-main{font-size:36px;font-weight:700;color:#15803D;letter-spacing:-1px;line-height:1;margin-bottom:2px}
 .card-main-neg{color:#DC2626}
 .card-sub{font-size:11px;color:#6B7280;margin-bottom:12px}
-.card-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-top:1px solid #F3F4F6}
+.card-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-top:1px solid #F3F4F6}
 .card-row-label{font-size:11px;color:#6B7280}
 .card-row-note{font-size:10px;color:#9CA3AF;margin-top:1px}
 .card-row-val{font-size:13px;font-weight:600;color:#111111;flex-shrink:0;margin-left:12px;text-align:right}
@@ -674,10 +674,10 @@ function compute(){
       '<div class="card">'+
         '<div class="card-title">Total savings</div>'+
         '<div class="card-main '+(net<0?'card-main-neg':'')+'">'+(net>=0?'$':'-$')+Math.abs(net).toFixed(2)+'<span style="font-size:16px;font-weight:400;color:#6B7280"> / trip</span></div>'+
-        (trip>0?'<div class="card-sub">Tax savings of $'+sav.toFixed(2)+' minus trip cost of $'+trip.toFixed(2)+'</div>':'')+
+        '<div class="card-sub">Tax savings of $'+sav.toFixed(2)+' minus trip cost of $'+trip.toFixed(2)+'</div>'+
 
         '<div class="card-row"><div><div class="card-row-label">Annual savings</div><div class="card-row-note">'+Math.round(shifts)+' trips/week &times; 50 weeks</div></div><div class="card-row-val card-row-val-green">'+annAmt+'</div></div>'+
-        '<div class="card-row"><div><div class="card-row-label">Minimum lbs per trip to break even</div><div class="card-row-note">Below this, trip cost exceeds tax savings</div></div><div class="card-row-val">'+Math.ceil(be)+' lbs</div></div>'+
+        (trip>0?'<div class="card-row"><div><div class="card-row-label">Minimum lbs per trip to break even</div><div class="card-row-note">Below this, trip cost exceeds tax savings</div></div><div class="card-row-val">'+Math.ceil(be)+' lbs</div></div>':'')+
       '</div>'+
     '</div>'+
 

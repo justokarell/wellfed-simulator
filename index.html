@@ -58,8 +58,10 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
 .dd-item{padding:8px 12px;font-size:12px;color:#111111;cursor:pointer;border-radius:4px}
 .dd-item:hover{background:#F0FDF4;color:#15803D}
 .dd-cat{padding:6px 12px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#9CA3AF;pointer-events:none}
-.disc{font-size:10px;color:#9CA3AF;margin-top:14px;border-top:1px solid #E5E7EB;padding-top:12px;line-height:1.6}
-.cards-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;align-items:start}
+.disc{font-size:11px;color:#6B7280;margin-top:14px;border-top:1px solid #E5E7EB;padding-top:12px;line-height:1.7}
+.disc-icon{font-size:11px;color:#6B7280;cursor:pointer;text-decoration:none;vertical-align:middle;margin-left:4px;border-bottom:1px dotted #6B7280}
+.disc-icon:hover{color:#111111}
+.cards-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .card{background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:14px 18px}
 .card-title{font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
 .card-main{font-size:36px;font-weight:700;color:#15803D;letter-spacing:-1px;line-height:1;margin-bottom:2px}
@@ -662,6 +664,11 @@ function compute(){
   var annAmt=ann>=0?'$'+Math.round(ann).toLocaleString():'-$'+Math.round(Math.abs(ann)).toLocaleString();
   var distVal=routeDistMiles!==null?routeDistMiles.toFixed(2):hav(D.lat,D.lon,N.lat,N.lon).toFixed(2);
   document.getElementById('results').innerHTML=
+    '<div style="display:flex;justify-content:flex-end;margin-bottom:6px">'+
+      '<a href="#disclaimer" class="disc-icon" onclick="document.getElementById('disclaimer').scrollIntoView({behavior:'smooth'});return false;">'+
+        'ⓘ Important disclaimers'+
+      '</a>'+
+    '</div>'+
     '<div class="cards-row">'+
       '<div class="card">'+
         '<div class="card-title">Trip</div>'+
@@ -677,11 +684,19 @@ function compute(){
         '<div class="card-sub">Tax savings of $'+sav.toFixed(2)+' minus trip cost of $'+trip.toFixed(2)+'</div>'+
 
         '<div class="card-row"><div><div class="card-row-label">Annual savings</div><div class="card-row-note">'+Math.round(shifts)+' trips/week &times; 50 weeks</div></div><div class="card-row-val card-row-val-green">'+annAmt+'</div></div>'+
-        (trip>0?'<div class="card-row"><div><div class="card-row-label">Minimum lbs per trip to break even</div><div class="card-row-note">Below this, trip cost exceeds tax savings</div></div><div class="card-row-val">'+Math.ceil(be)+' lbs</div></div>':'')+
+        '<div class="card-row"><div><div class="card-row-label">Minimum lbs per trip to break even</div><div class="card-row-note">Below this, trip cost exceeds tax savings</div></div><div class="card-row-val">'+Math.ceil(be)+' lbs</div></div>'+
       '</div>'+
     '</div>'+
 
-    '<div class="disc">Tax savings realized only with positive taxable income and donation to a qualified 501(c)(3) under the PATH Act of 2015. Walking routes via OpenRouteService. Trip cost uses actual route distance.</div>';
+    '<div class="disc" id="disclaimer">'+
+      '<strong style="color:#374151;font-size:11px">Important disclaimers</strong><br><br>'+
+      '<strong>Eligibility.</strong> The PATH Act enhanced deduction (IRC §170(e)(3)) applies to C corporations and certain pass-through entities. Sole proprietors, S-corps, and partnerships may have different rules. Consult a CPA to confirm eligibility for your business structure.<br><br>'+
+      '<strong>Federal only.</strong> Tax savings shown reflect federal marginal income tax rates only. State and local income taxes are not included and may further increase or decrease your actual savings.<br><br>'+
+      '<strong>Documentation required.</strong> To claim the deduction, donations must be made to a qualified 501(c)(3) organization and supported by a written acknowledgment from the recipient. Proper records of food type, quantity, and fair market value are required by the IRS.<br><br>'+
+      '<strong>Cost basis estimates.</strong> Food cost per pound is based on USDA Economic Research Service national averages. Actual deduction value depends on your real food costs, which may differ significantly.<br><br>'+
+      '<strong>Not tax advice.</strong> This tool provides estimates for informational purposes only and does not constitute legal, accounting, or tax advice. Always consult a qualified CPA or tax professional before making tax decisions.<br><br>'+
+      '<strong>Routing.</strong> Walking and driving routes provided by OpenRouteService. Trip cost calculations use actual route distance.'+
+    '</div>';
 }
 
 function renderDList(items){

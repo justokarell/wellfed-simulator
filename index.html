@@ -170,6 +170,9 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
           <input type="range" id="spd" min="5" max="40" step="1" value="15" oninput="sl(this,'sVal',function(v){return v+' mph'})">
           <div class="sl-row"><label>Container cost</label><span class="sl-val" id="cVal">$5.00</span></div>
           <input type="range" id="cont" min="0" max="20" step="0.5" value="5" oninput="sl(this,'cVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
+          <div class="sl-row"><label>Vehicle count</label><span class="sl-val" id="vcVal">1</span></div>
+          <input type="range" id="vcount" min="1" max="10" step="1" value="1" oninput="sl(this,'vcVal',function(v){return v+' vehicle'+(v>1?'s':'')})">
+          <div style="font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px">Number of vehicles making the trip. Multiplies fuel cost.</div>
         </div>
       </div>
     </div>
@@ -546,7 +549,10 @@ function compute(){
     if(transport==='walk'){
       tripBase=(dist*2)*(totalWage/3)+packCost+cont;
     } else {
-      tripBase=tc(dist*2,gas,mpg,totalWage,spd,cont)+packCost;
+      var vcount=parseFloat(document.getElementById('vcount').value)||1;
+      var fuelCost=(dist*2)*(gas/mpg)*vcount;         // fuel scales with vehicle count
+      var laborCost=(dist*2)*(totalWage/spd);          // labor scales with headcount only
+      tripBase=fuelCost+laborCost+cont+packCost;
     }
   }
   var trip=tripBase;
@@ -680,6 +686,7 @@ window.addEventListener('load',function(){
     ['mVal','mpg',function(v){return v+' mpg'}],
     ['sVal','spd',function(v){return v+' mph'}],
     ['cVal','cont',function(v){return '$'+parseFloat(v).toFixed(2)}],
+    ['vcVal','vcount',function(v){return v+' vehicle'+(v>1?'s':'')}],
   ];
   sliderBindings.forEach(function(b){
     var slider=document.getElementById(b[1]);

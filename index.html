@@ -664,11 +664,7 @@ function compute(){
   var annAmt=ann>=0?'$'+Math.round(ann).toLocaleString():'-$'+Math.round(Math.abs(ann)).toLocaleString();
   var distVal=routeDistMiles!==null?routeDistMiles.toFixed(2):hav(D.lat,D.lon,N.lat,N.lon).toFixed(2);
   document.getElementById('results').innerHTML=
-    '<div style="display:flex;justify-content:flex-end;margin-bottom:6px">'+
-      '<a href="#disclaimer" class="disc-icon" onclick="document.getElementById('disclaimer').scrollIntoView({behavior:'smooth'});return false;">'+
-        'ⓘ Important disclaimers'+
-      '</a>'+
-    '</div>'+
+    '<div style="display:flex;justify-content:flex-end;margin-bottom:6px"><a href="#disclaimer" class="disc-icon" onclick="document.getElementById(&quot;disclaimer&quot;).scrollIntoView({behavior:&quot;smooth&quot;});return false;">ⓘ Important disclaimers</a></div>'+
     '<div class="cards-row">'+
       '<div class="card">'+
         '<div class="card-title">Trip</div>'+

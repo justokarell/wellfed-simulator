@@ -252,6 +252,35 @@ var NPS=[
   {id:"helphouse",area:"Inwood",name:"Help House Love Kitchen",lat:40.8627,lon:-73.9181},
   {id:"jewishwh",area:"Washington Heights",name:"Jewish Council of Washington Heights",lat:40.8541,lon:-73.9345},
   {id:"bethelwh",area:"Washington Heights",name:"Bethel Holy Church Pantry",lat:40.8315,lon:-73.9408},
+  // Harlem additions
+  {id:"cathedralcares",area:"Harlem",name:"Cathedral Community Cares Food Pantry",lat:40.8034,lon:-73.9621},
+  {id:"createfood",area:"Harlem",name:"Create Food Pantry",lat:40.8006,lon:-73.9511},
+  {id:"nycommonpantry2",area:"East Harlem",name:"New York Common Pantry",lat:40.7958,lon:-73.9492},
+  // Midtown / Chelsea / Hell's Kitchen
+  {id:"holyapostles",area:"Chelsea",name:"Holy Apostles Soup Kitchen",lat:40.7494,lon:-73.9988},
+  {id:"stpetersfood",area:"Chelsea",name:"Saint Peter's Food Pantry",lat:40.7441,lon:-74.0020},
+  {id:"stfrancisbread",area:"Midtown",name:"Saint Francis Breadline",lat:40.7487,lon:-73.9908},
+  {id:"hkcupboard",area:"Hell's Kitchen",name:"HK Community Cupboard",lat:40.7620,lon:-73.9941},
+  // Greenwich Village / Lower Manhattan
+  {id:"xaviermission",area:"Chelsea",name:"Xavier Mission",lat:40.7378,lon:-73.9955},
+  {id:"welcometable",area:"Greenwich Village",name:"Welcome Table Soup Kitchen",lat:40.7379,lon:-73.9945},
+  {id:"stjoeskitchen",area:"Greenwich Village",name:"St. Joe's Soup Kitchen",lat:40.7345,lon:-73.9951},
+  {id:"reddoor",area:"Greenwich Village",name:"The Red Door Place Food Pantry",lat:40.7381,lon:-74.0004},
+  {id:"churchascension",area:"Greenwich Village",name:"Church of the Ascension Food Pantry",lat:40.7341,lon:-73.9957},
+  {id:"villagetemple",area:"East Village",name:"Village Temple Soup Kitchen",lat:40.7339,lon:-73.9923},
+  // Lower East Side / East Village
+  {id:"trinityLESfull",area:"Lower East Side",name:"Trinity Lower Eastside Soup Kitchen",lat:40.7260,lon:-73.9802},
+  {id:"bowerymission2",area:"Lower East Side",name:"Bowery Mission",lat:40.7221,lon:-73.9931},
+  // Stamford additions
+  {id:"salvationstam2",area:"Stamford, CT",name:"Salvation Army Stamford Food Pantry",lat:41.0408,lon:-73.5557},
+  // Stamford additional nonprofits
+  {id:"communityaction",area:"Stamford, CT",name:"Community Action Agency Stamford",lat:41.0441,lon:-73.5389},
+  {id:"wilson164",area:"Stamford, CT",name:"164 Wilson Food Pantry",lat:41.0477,lon:-73.5504},
+  {id:"neighborgreenwich",area:"Greenwich, CT",name:"Neighbor to Neighbor Greenwich",lat:41.0352,lon:-73.6196},
+  // Upper East Side additional nonprofits
+  {id:"urbanoutreach",area:"Upper East Side",name:"Urban Outreach Center",lat:40.7798,lon:-73.9476},
+  {id:"allsoulsues2",area:"Upper East Side",name:"All Souls Unitarian Church Food Pantry",lat:40.7754,lon:-73.9582},
+  {id:"allsaintsues2",area:"Upper East Side",name:"All Saints Episcopal Food Distribution",lat:40.7614,lon:-73.9650},
 ];
 var DONORS=[
   // UWS
@@ -310,6 +339,70 @@ var DONORS=[
   {id:"dunkinuws",area:"Upper West Side",name:"Dunkin (Broadway UWS)",lat:40.7899,lon:-73.9749,cat:"Baked Goods",units:30},
   {id:"bestbagel",area:"Midtown",name:"Best Bagel & Coffee",lat:40.7522,lon:-73.9911,cat:"Baked Goods",units:60},
   {id:"capgrillefidi",area:"Financial District",name:"The Capital Grille (Broadway FiDi)",lat:40.7078,lon:-74.0102,cat:"Prepared Meals",units:65},
+  // Midtown additions
+  {id:"lapecora_bryant",area:"Midtown",name:"La Pecora Bianca Bryant Park",lat:40.7525,lon:-73.9832,cat:"Prepared Meals",units:55},
+  {id:"grandeboucherie",area:"Midtown",name:"La Grande Boucherie",lat:40.7626,lon:-73.9808,cat:"Prepared Meals",units:60},
+  {id:"monkeybar",area:"Midtown",name:"Monkey Bar",lat:40.7599,lon:-73.9732,cat:"Prepared Meals",units:40},
+  {id:"parkerquinn",area:"Midtown",name:"Parker & Quinn",lat:40.7526,lon:-73.9851,cat:"Prepared Meals",units:45},
+  {id:"stkmidtown",area:"Midtown",name:"STK Steakhouse Midtown",lat:40.7547,lon:-73.9828,cat:"Prepared Meals",units:60},
+  {id:"tonysdinapoli",area:"Midtown",name:"Tony's Di Napoli Times Square",lat:40.7565,lon:-73.9854,cat:"Prepared Meals",units:65},
+  {id:"islaandco",area:"Midtown",name:"Isla & Co. Midtown",lat:40.7518,lon:-73.9841,cat:"Baked Goods",units:40},
+  {id:"carminests",area:"Midtown",name:"Carmine's Times Square",lat:40.7575,lon:-73.9867,cat:"Prepared Meals",units:70},
+  {id:"leparisien",area:"Midtown",name:"Le Parisien Bakery",lat:40.7595,lon:-73.9869,cat:"Baked Goods",units:50},
+  {id:"angelina",area:"Midtown",name:"Angelina Bakery Times Square",lat:40.7630,lon:-73.9833,cat:"Baked Goods",units:45},
+  {id:"bibbleandsip",area:"Midtown",name:"Bibble & Sip",lat:40.7628,lon:-73.9852,cat:"Baked Goods",units:35},
+  {id:"heritagegrand",area:"Midtown",name:"Heritage Grand Bakery",lat:40.7523,lon:-73.9827,cat:"Baked Goods",units:45},
+  {id:"grandbrasserie",area:"Midtown",name:"Grand Brasserie Grand Central",lat:40.7525,lon:-73.9776,cat:"Prepared Meals",units:50},
+  {id:"crumblycafe",area:"Midtown East",name:"Crumbly Cafe & Bakery",lat:40.7569,lon:-73.9643,cat:"Baked Goods",units:35},
+  // Greenwich Village / West Village
+  {id:"boucheriewv",area:"West Village",name:"Boucherie West Village",lat:40.7330,lon:-74.0029,cat:"Prepared Meals",units:55},
+  {id:"olioepiu",area:"Greenwich Village",name:"OLIO E PIU",lat:40.7338,lon:-73.9998,cat:"Prepared Meals",units:50},
+  {id:"daandrea",area:"Greenwich Village",name:"Da Andrea Greenwich Village",lat:40.7362,lon:-73.9959,cat:"Prepared Meals",units:45},
+  {id:"lalanterna",area:"Greenwich Village",name:"La Lanterna di Vittorio",lat:40.7307,lon:-74.0000,cat:"Prepared Meals",units:40},
+  {id:"lafayettebakery",area:"NoHo",name:"Lafayette Grand Cafe & Bakery",lat:40.7276,lon:-73.9937,cat:"Baked Goods",units:60},
+  {id:"libraebakery",area:"East Village",name:"Librae Bakery",lat:40.7281,lon:-73.9908,cat:"Baked Goods",units:40},
+  {id:"banterynyc",area:"Greenwich Village",name:"Banter NYC",lat:40.7279,lon:-74.0010,cat:"Baked Goods",units:35},
+  {id:"marylane",area:"West Village",name:"The Mary Lane",lat:40.7366,lon:-74.0065,cat:"Prepared Meals",units:35},
+  // Lower East Side / East Village
+  {id:"katzsdeli",area:"Lower East Side",name:"Katz's Delicatessen",lat:40.7222,lon:-73.9874,cat:"Prepared Meals",units:55},
+  {id:"bungalow",area:"East Village",name:"Bungalow",lat:40.7237,lon:-73.9880,cat:"Prepared Meals",units:40},
+  {id:"doublechicken",area:"Lower East Side",name:"Double Chicken Please",lat:40.7196,lon:-73.9905,cat:"Prepared Meals",units:35},
+  // Harlem / Washington Heights
+  {id:"harlemPublic",area:"Harlem",name:"Harlem Public",lat:40.8287,lon:-73.9484,cat:"Prepared Meals",units:45},
+  {id:"homesweetharlem",area:"Harlem",name:"Home Sweet Harlem",lat:40.8194,lon:-73.9522,cat:"Prepared Meals",units:35},
+  {id:"harlembreakfast",area:"Harlem",name:"Harlem Breakfast Club",lat:40.8111,lon:-73.9464,cat:"Prepared Meals",units:30},
+  {id:"terraVita",area:"Washington Heights",name:"Terravita Uptown",lat:40.8481,lon:-73.9381,cat:"Prepared Meals",units:45},
+  {id:"malecon",area:"Washington Heights",name:"Malecon Restaurant",lat:40.8464,lon:-73.9386,cat:"Prepared Meals",units:50},
+  {id:"cocinaconselo",area:"Harlem",name:"Cocina Consuelo",lat:40.8240,lon:-73.9492,cat:"Prepared Meals",units:30},
+  {id:"goodgood",area:"East Harlem",name:"The Good Good",lat:40.8013,lon:-73.9422,cat:"Prepared Meals",units:35},
+  {id:"ftwashpublic",area:"Washington Heights",name:"Fort Washington Public House",lat:40.8389,lon:-73.9410,cat:"Prepared Meals",units:40},
+  {id:"radiorest",area:"Washington Heights",name:"Radio Restaurant",lat:40.8475,lon:-73.9315,cat:"Prepared Meals",units:40},
+  // UWS bakeries
+  {id:"rosettabakery",area:"Upper West Side",name:"Rosetta Bakery",lat:40.7723,lon:-73.9818,cat:"Baked Goods",units:45},
+  {id:"levainuws",area:"Upper West Side",name:"Levain Bakery",lat:40.7800,lon:-73.9803,cat:"Baked Goods",units:50},
+  // Stamford additions
+  {id:"puertovallarta",area:"Stamford, CT",name:"Puerto Vallarta Stamford",lat:41.0514,lon:-73.5375,cat:"Prepared Meals",units:50},
+  {id:"flinders",area:"Stamford, CT",name:"Flinders Lane Kitchen & Bar",lat:41.0546,lon:-73.5408,cat:"Prepared Meals",units:40},
+  {id:"americano",area:"Stamford, CT",name:"The Americano Stamford",lat:41.0531,lon:-73.5410,cat:"Prepared Meals",units:40},
+  {id:"quartiere",area:"Stamford, CT",name:"Quartiere Stamford",lat:41.0527,lon:-73.5399,cat:"Prepared Meals",units:35},
+  {id:"divina",area:"Stamford, CT",name:"Divina Modern Italian",lat:41.0551,lon:-73.5404,cat:"Prepared Meals",units:40},
+  {id:"ckakaqellu",area:"Stamford, CT",name:"Cka Ka Qellu",lat:41.0526,lon:-73.5411,cat:"Prepared Meals",units:45},
+  {id:"zaza",area:"Stamford, CT",name:"ZAZA Italian Gastrobar",lat:41.0553,lon:-73.5383,cat:"Prepared Meals",units:40},
+  {id:"taqueriagari",area:"Stamford, CT",name:"Taqueria Garibaldi Stamford",lat:41.0541,lon:-73.5396,cat:"Prepared Meals",units:35},
+  {id:"blackstones",area:"Stamford, CT",name:"Blackstones Steakhouse",lat:41.0550,lon:-73.5388,cat:"Prepared Meals",units:50},
+  // Stamford additions
+  {id:"harpandhoney",area:"Stamford, CT",name:"Harp & Honey",lat:41.0709,lon:-73.5246,cat:"Baked Goods",units:30},
+  {id:"beldotti",area:"Stamford, CT",name:"Beldotti Bakeries",lat:41.0810,lon:-73.5325,cat:"Baked Goods",units:50},
+  {id:"birchbakehouse",area:"Old Greenwich, CT",name:"Birch Bakehouse",lat:41.0316,lon:-73.5674,cat:"Baked Goods",units:35},
+  {id:"raphaelsbakery",area:"Greenwich, CT",name:"Raphael's Bakery",lat:41.0274,lon:-73.6240,cat:"Baked Goods",units:40},
+  // Upper East Side additions
+  {id:"cafemaud",area:"Upper East Side",name:"Cafe Maud",lat:40.7772,lon:-73.9519,cat:"Baked Goods",units:30},
+  {id:"cafedalsace",area:"Upper East Side",name:"Cafe d'Alsace",lat:40.7795,lon:-73.9509,cat:"Prepared Meals",units:40},
+  {id:"eatalycaffe",area:"Upper East Side",name:"Eataly Caffe UES",lat:40.7745,lon:-73.9595,cat:"Baked Goods",units:35},
+  {id:"maman",area:"Upper East Side",name:"maman UES",lat:40.7755,lon:-73.9567,cat:"Baked Goods",units:30},
+  {id:"lemoulincafe",area:"Upper East Side",name:"Le Moulin a Cafe",lat:40.7698,lon:-73.9519,cat:"Baked Goods",units:35},
+  {id:"ralphscoffee",area:"Upper East Side",name:"Ralph's Coffee",lat:40.7717,lon:-73.9658,cat:"Beverages",units:20},
+  {id:"cafecommerce",area:"Upper East Side",name:"Cafe Commerce",lat:40.7694,lon:-73.9633,cat:"Prepared Meals",units:35},
 ];
 var PR={
   "Mixed / General":{a:1.89,s:.50,C:2.20,unit:"lbs"},
@@ -582,7 +675,7 @@ function compute(){
         '<div class="card-title">Total savings</div>'+
         '<div class="card-main '+(net<0?'card-main-neg':'')+'">'+(net>=0?'$':'-$')+Math.abs(net).toFixed(2)+'<span style="font-size:16px;font-weight:400;color:#6B7280"> / trip</span></div>'+
         '<div class="card-sub">Tax savings of $'+sav.toFixed(2)+' minus trip cost of $'+trip.toFixed(2)+'</div>'+
-        '<div class="card-row"><div><div class="card-row-label">Tax savings / trip</div><div class="card-row-note">Your tax bill goes down by this amount</div></div><div class="card-row-val card-row-val-green">$'+sav.toFixed(2)+'</div></div>'+
+        '<div class="card-row"><div><div class="card-row-label">Tax savings / trip</div><div class="card-row-note">Reduction in total tax owed.</div></div><div class="card-row-val card-row-val-green">$'+sav.toFixed(2)+'</div></div>'+
         '<div class="card-row"><div><div class="card-row-label">Annual savings</div><div class="card-row-note">'+Math.round(shifts)+' trips/week &times; 50 weeks</div></div><div class="card-row-val card-row-val-green">'+annAmt+'</div></div>'+
         '<div class="card-row"><div><div class="card-row-label">Minimum lbs per trip to break even</div><div class="card-row-note">Below this, trip cost exceeds tax savings</div></div><div class="card-row-val">'+Math.ceil(be)+' lbs</div></div>'+
       '</div>'+
@@ -594,11 +687,11 @@ function compute(){
 function renderDList(items){
   var el=document.getElementById('dList');
   el.innerHTML='';
-  var last='';
+  if(!items.length){
+    var empty=document.createElement('div');empty.className='dd-item';empty.textContent='No results';empty.style.color='#9CA3AF';el.appendChild(empty);
+    return;
+  }
   items.forEach(function(d){
-    if(d.area!==last){
-      var cat=document.createElement('div');cat.className='dd-cat';cat.textContent=d.area;el.appendChild(cat);last=d.area;
-    }
     var item=document.createElement('div');item.className='dd-item';item.textContent=d.name;
     item.onclick=function(){selectDonor(d);};
     el.appendChild(item);
@@ -607,11 +700,11 @@ function renderDList(items){
 function renderNList(items){
   var el=document.getElementById('nList');
   el.innerHTML='';
-  var last='';
+  if(!items.length){
+    var empty=document.createElement('div');empty.className='dd-item';empty.textContent='No results';empty.style.color='#9CA3AF';el.appendChild(empty);
+    return;
+  }
   items.forEach(function(n){
-    if(n.area!==last){
-      var cat=document.createElement('div');cat.className='dd-cat';cat.textContent=n.area;el.appendChild(cat);last=n.area;
-    }
     var item=document.createElement('div');item.className='dd-item';item.textContent=n.name;
     item.onclick=function(){selectNP(n);document.getElementById('nSearch').value=n.name;hideNPList();};
     el.appendChild(item);
@@ -632,7 +725,10 @@ function showDonorList(){
   el.style.top=(r.bottom+4)+'px';
   el.style.left=r.left+'px';
   el.style.width=r.width+'px';
-  renderDList(DONORS);el.style.display='block';
+  var q=inp.value.trim();
+  var items=q?DONORS.filter(function(d){return d.name.toLowerCase().indexOf(q.toLowerCase())>=0}):DONORS;
+  renderDList(items);
+  el.style.display='block';
 }
 function hideDonorList(){document.getElementById('dList').style.display='none'}
 function showNPList(){
@@ -642,7 +738,10 @@ function showNPList(){
   el.style.top=(r.bottom+4)+'px';
   el.style.left=r.left+'px';
   el.style.width=r.width+'px';
-  renderNList(NPS);el.style.display='block';
+  var q=inp.value.trim();
+  var items=q?NPS.filter(function(n){return n.name.toLowerCase().indexOf(q.toLowerCase())>=0}):NPS;
+  renderNList(items);
+  el.style.display='block';
 }
 function hideNPList(){document.getElementById('nList').style.display='none'}
 function selectDonor(d,silent){

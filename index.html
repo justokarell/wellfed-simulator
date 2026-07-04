@@ -24,8 +24,8 @@ label{font-size:11px;color:#6B7280;display:block;margin-bottom:4px;font-weight:5
 select{width:100%;font-size:13px;padding:8px 10px;border-radius:7px;border:1px solid #E5E7EB;background:#fff;color:#111111;font-family:'Inter',sans-serif;cursor:pointer;margin-bottom:10px}
 select:focus{outline:2px solid #16A34A;outline-offset:1px}
 .sl-row{display:flex;justify-content:space-between;margin-bottom:3px}
-.sl-val{font-size:12px;font-weight:600;color:#16A34A}
-.num-input{width:60px;font-size:12px;padding:3px 6px;border-radius:5px;border:1px solid #E5E7EB;color:#111111;font-family:'Inter',sans-serif;text-align:right;background:#fff}
+.sl-val{font-size:12px;font-weight:600;color:#16A34A;cursor:text;border-bottom:1px dashed #16A34A;min-width:30px;display:inline-block;text-align:right}
+.sl-val:focus{outline:none;background:#F0FDF4;border-radius:3px;padding:0 2px}
 input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:10px}
 .rb-row{display:flex;gap:6px;margin-bottom:10px}
 .rb{flex:1;padding:7px 0;text-align:center;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid #E5E7EB;background:#FFFFFF;color:#6B7280;transition:all .15s;user-select:none}
@@ -115,20 +115,16 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <div class="sec">Donation</div>
     <div class="sl-row"><label id="unitsLabel">Pounds donated per trip</label><span class="sl-val" id="uVal">20</span></div>
     <input type="range" id="units" min="1" max="500" step="5" value="50" oninput="sl(this,'uVal',function(v){return v})">
-    <input type="number" id="units_num" class="num-input" min="1" max="500" step="5" style="margin-top:4px;margin-bottom:6px" oninput="slNum(this,'units',function(v){return v+' lbs'})">
     <div id="produceNote" style="display:none;font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px;line-height:1.5">Fresh produce cost basis assumed at $1.00/lb (USDA ERS benchmark).</div>
     <div class="sl-row"><label>Trips per week</label><span class="sl-val" id="shVal">5</span></div>
     <input type="range" id="shifts" min="1" max="7" step="1" value="5" oninput="sl(this,'shVal',function(v){return v})">
-    <input type="number" id="shifts_num" class="num-input" min="1" max="7" step="1" style="margin-top:4px;margin-bottom:6px" oninput="slNum(this,'shifts',function(v){return v+' trips'})">
     <div class="sl-row"><label>Pack &amp; hand-off time</label><span class="sl-val" id="packVal">0 min</span></div>
     <input type="range" id="pack" min="0" max="60" step="5" value="0" oninput="sl(this,'packVal',function(v){return v+' min'})">
-    <input type="number" id="pack_num" class="num-input" min="0" max="60" step="5" style="margin-top:4px;margin-bottom:6px" oninput="slNum(this,'pack',function(v){return v+' min'})">
     <div style="font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px;line-height:1.5">Time to pack and hand off food, regardless of who delivers. Default 0.</div>
 
     <div class="sec">Income</div>
     <div class="sl-row"><label>Annual taxable income</label><span class="sl-val" id="iVal">$120,000</span></div>
     <input type="range" id="income" min="10000" max="700000" step="5000" value="120000" oninput="sl(this,'iVal',function(v){return '$'+Math.round(v).toLocaleString()})">
-    <input type="number" id="income_num" class="num-input" min="10000" max="700000" step="5000" style="margin-top:4px;margin-bottom:6px" oninput="slNum(this,'income',function(v){return '$'+Math.round(v).toLocaleString()})">
 
     <div class="sec">Delivery</div>
     <label>Delivery costs</label>
@@ -147,18 +143,15 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
     <div id="wageRow" style="display:none">
       <div class="sl-row"><label>Hourly wage</label><span class="sl-val" id="wVal">$17/hr</span></div>
       <input type="range" id="wage" min="7.25" max="50" step="0.25" value="17" oninput="sl(this,'wVal',function(v){return '$'+parseFloat(v).toFixed(2)+'/hr'})">
-    <input type="number" id="wage_num" class="num-input" min="7.25" max="50" step="0.25" style="margin-top:4px;margin-bottom:6px" oninput="slNum(this,'wage',function(v){return '$'+parseFloat(v).toFixed(2)+'/hr'})">
       <div style="font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px">NY minimum wage: $17/hr</div>
       <div class="sl-row"><label>Headcount</label><span class="sl-val" id="headVal">1</span></div>
-      <input type="range" id="headcount" min="1" max="10" step="1" value="1" oninput="sl(this,'headVal',function(v){return v+' person'+(v>
-    <input type="number" id="headcount_num" class="num-input" min="1" max="10" step="1" style="margin-top:4px;margin-bottom:6px" oninput="slNum(this,'headcount',function(v){return v+' person'+(v>1?'s':'')})">1?'s':'')})">
+      <input type="range" id="headcount" min="1" max="10" step="1" value="1" oninput="sl(this,'headVal',function(v){return v+' person'+(v>1?'s':'')})">1?'s':'')})">
       <div style="font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px">Number of people being paid to deliver.</div>
     </div>
 
     <div id="hireRow" style="display:none">
       <div class="sl-row"><label>Total delivery cost per trip</label><span class="sl-val" id="hireVal">$20.00</span></div>
       <input type="range" id="hireCost" min="0" max="200" step="1" value="20" oninput="sl(this,'hireVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
-    <input type="number" id="hireCost_num" class="num-input" min="0" max="200" step="1" style="margin-top:4px;margin-bottom:6px" oninput="slNum(this,'hireCost',function(v){return '$'+parseFloat(v).toFixed(2)})">
       <div style="font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px">Flat cost paid to a delivery person or service per trip.</div>
     </div>
 
@@ -171,16 +164,12 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
           
           <div class="sl-row"><label>Gas price</label><span class="sl-val" id="gVal">$3.80/gal</span></div>
           <input type="range" id="gas" min="2" max="8" step="0.1" value="3.8" oninput="sl(this,'gVal',function(v){return '$'+parseFloat(v).toFixed(2)+'/gal'})">
-    <input type="number" id="gas_num" class="num-input" min="2" max="8" step="0.1" style="margin-top:4px;margin-bottom:6px" oninput="slNum(this,'gas',function(v){return '$'+parseFloat(v).toFixed(2)+'/gal'})">
           <div class="sl-row"><label>Vehicle MPG</label><span class="sl-val" id="mVal">25 mpg</span></div>
           <input type="range" id="mpg" min="10" max="60" step="1" value="25" oninput="sl(this,'mVal',function(v){return v+' mpg'})">
-    <input type="number" id="mpg_num" class="num-input" min="10" max="60" step="1" style="margin-top:4px;margin-bottom:6px" oninput="slNum(this,'mpg',function(v){return v+' mpg'})">
           <div class="sl-row"><label>Avg speed</label><span class="sl-val" id="sVal">15 mph</span></div>
           <input type="range" id="spd" min="5" max="40" step="1" value="15" oninput="sl(this,'sVal',function(v){return v+' mph'})">
-    <input type="number" id="spd_num" class="num-input" min="5" max="40" step="1" style="margin-top:4px;margin-bottom:6px" oninput="slNum(this,'spd',function(v){return v+' mph'})">
           <div class="sl-row"><label>Container cost</label><span class="sl-val" id="cVal">$5.00</span></div>
           <input type="range" id="cont" min="0" max="20" step="0.5" value="5" oninput="sl(this,'cVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
-    <input type="number" id="cont_num" class="num-input" min="0" max="20" step="0.5" style="margin-top:4px;margin-bottom:6px" oninput="slNum(this,'cont',function(v){return '$'+parseFloat(v).toFixed(2)})">
         </div>
       </div>
     </div>
@@ -347,24 +336,32 @@ function updateUnitLabel(){
   }
 }
 
-function sl(el,vid,fmt){
-  document.getElementById(vid).textContent=fmt(el.value);
-  var ni=document.getElementById(el.id+'_num');
-  if(ni)ni.value=el.value;
-  compute();
-}
-function slNum(numEl,sliderId,fmt){
+function sl(el,vid,fmt){document.getElementById(vid).textContent=fmt(el.value);compute()}
+
+function bindEditableVal(spanId, sliderId, parseVal){
+  var span=document.getElementById(spanId);
   var slider=document.getElementById(sliderId);
-  var val=parseFloat(numEl.value);
-  if(isNaN(val))return;
-  val=Math.min(Math.max(val,parseFloat(slider.min)),parseFloat(slider.max));
-  slider.value=val;
-  document.getElementById(slider.id+'_val')?document.getElementById(slider.id+'_val').textContent=fmt(val):'';
-  // find the sl-val span via sibling
-  var row=slider.previousElementSibling;
-  if(row){var span=row.querySelector('.sl-val');if(span)span.textContent=fmt(val);}
-  compute();
+  if(!span||!slider)return;
+  span.contentEditable='true';
+  span.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){e.preventDefault();this.blur();}
+  });
+  span.addEventListener('blur',function(){
+    var raw=this.textContent.replace(/[^0-9.\-]/g,'');
+    var val=parseFloat(raw);
+    if(!isNaN(val)){
+      val=Math.min(Math.max(val,parseFloat(slider.min)),parseFloat(slider.max));
+      slider.value=val;
+      var fmt=slider._fmt;
+      if(fmt)this.textContent=fmt(val);
+      compute();
+    } else {
+      // restore
+      this.textContent=slider._fmt?slider._fmt(slider.value):slider.value;
+    }
+  });
 }
+
 
 var advOpen=false;
 function toggleAdv(){
@@ -670,6 +667,25 @@ function initAllPins(){
 }
 
 window.addEventListener('load',function(){
+  // Bind editable value spans to sliders
+  var sliderBindings=[
+    ['uVal','units',function(v){return Math.round(v)+' lbs'}],
+    ['shVal','shifts',function(v){return v+' trips'}],
+    ['packVal','pack',function(v){return v+' min'}],
+    ['iVal','income',function(v){return '$'+Math.round(v).toLocaleString()}],
+    ['wVal','wage',function(v){return '$'+parseFloat(v).toFixed(2)+'/hr'}],
+    ['headVal','headcount',function(v){return v+' person'+(v>1?'s':'')}],
+    ['hireVal','hireCost',function(v){return '$'+parseFloat(v).toFixed(2)}],
+    ['gVal','gas',function(v){return '$'+parseFloat(v).toFixed(2)+'/gal'}],
+    ['mVal','mpg',function(v){return v+' mpg'}],
+    ['sVal','spd',function(v){return v+' mph'}],
+    ['cVal','cont',function(v){return '$'+parseFloat(v).toFixed(2)}],
+  ];
+  sliderBindings.forEach(function(b){
+    var slider=document.getElementById(b[1]);
+    if(slider)slider._fmt=b[2];
+    bindEditableVal(b[0],b[1],b[2]);
+  });
   // Create dropdowns and append to body to escape sidebar overflow clipping
   var dList=document.createElement('div');
   dList.id='dList';

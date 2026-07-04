@@ -154,6 +154,11 @@ input[type=range]{width:100%;accent-color:#16A34A;cursor:pointer;margin-bottom:1
       <input type="range" id="hireCost" min="0" max="200" step="1" value="20" oninput="sl(this,'hireVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
       <div style="font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px">Flat cost paid to a delivery person or service per trip.</div>
     </div>
+    <div id="miscRow" style="display:none">
+      <div class="sl-row"><label>Miscellaneous cost</label><span class="sl-val" id="miscVal">$0.00</span></div>
+      <input type="range" id="misc" min="0" max="200" step="1" value="0" oninput="sl(this,'miscVal',function(v){return '$'+parseFloat(v).toFixed(2)})">
+      <div style="font-size:10px;color:#9CA3AF;margin-top:-6px;margin-bottom:10px">Parking, tolls, incidentals, etc.</div>
+    </div>
 
     <div style="margin-top:20px;border-top:1px solid #E5E7EB;padding-top:14px">
       
@@ -420,6 +425,7 @@ function setCost(mode){
   document.getElementById('hireRow').style.display=mode==='hire'?'block':'none';
   document.getElementById('modeRow').style.display=mode==='self'?'block':'none';
   document.getElementById('tripCostPanel').style.display=mode==='self'&&transport==='drive'?'block':'none';
+  document.getElementById('miscRow').style.display=mode==='self'?'block':'none';
   compute();
 }
 function setT(t){
@@ -428,6 +434,7 @@ function setT(t){
   document.getElementById('rbS').className='rb'+(t==='drive'?' on':'');
   // show/hide drive-only settings
   document.getElementById('tripCostPanel').style.display=(t==='drive'&&deliveryCost==='self')?'block':'none';
+  document.getElementById('miscRow').style.display=deliveryCost==='self'?'block':'none';
   if(D&&N)fetchRoute();else compute();
 }
 function setLabor(on){
@@ -547,12 +554,14 @@ function compute(){
   } else {
     // self: fuel (if driving) + labor time + pack time
     if(transport==='walk'){
-      tripBase=(dist*2)*(totalWage/3)+packCost+cont;
+      var misc=parseFloat(document.getElementById('misc').value)||0;
+      tripBase=(dist*2)*(totalWage/3)+packCost+cont+misc;
     } else {
       var vcount=parseFloat(document.getElementById('vcount').value)||1;
       var fuelCost=(dist*2)*(gas/mpg)*vcount;         // fuel scales with vehicle count
       var laborCost=(dist*2)*(totalWage/spd);          // labor scales with headcount only
-      tripBase=fuelCost+laborCost+cont+packCost;
+      var misc=parseFloat(document.getElementById('misc').value)||0;
+      tripBase=fuelCost+laborCost+cont+packCost+misc;
     }
   }
   var trip=tripBase;
@@ -687,6 +696,7 @@ window.addEventListener('load',function(){
     ['sVal','spd',function(v){return v+' mph'}],
     ['cVal','cont',function(v){return '$'+parseFloat(v).toFixed(2)}],
     ['vcVal','vcount',function(v){return v+' vehicle'+(v>1?'s':'')}],
+    ['miscVal','misc',function(v){return '$'+parseFloat(v).toFixed(2)}],
   ];
   sliderBindings.forEach(function(b){
     var slider=document.getElementById(b[1]);
